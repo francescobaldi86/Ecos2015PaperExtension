@@ -1,0 +1,24 @@
+function [mfr_fuel_tot , load_ME , load_AE , sfoc_ME , sfoc_AE] = calculatesHybridMode(power_aux,power_prop,ETA_PROP,ENG)
+
+for idx_ME = 1 : 5
+    for idx_AE = 1 : 5
+        number_ME_on = idx_ME - 1 ;
+        number_AE_on = idx_AE - 1 ;
+        % First, we check that we could deliver the required power
+        if idx_ME * ENG.MCR_ME + idx_AE * ENG_MCR_ME < power_aux + power_prop
+            load_ME(idx_ME,idx_AE) = 0 ;
+            load_AE(idx_ME,idx_AE) = 0 ;
+            sfoc_ME(idx_ME,idx_AE) = 1e4 ;
+            sfoc_AE(idx_ME,idx_AE) = 1e4 ;
+        elseif sum(idx_ME + idx_AE) == 3 
+            % Calculation as normal
+        elseif (power_aux + power_prop) < 0.3 * (idx_ME * ENG.MCR_ME + idx_AE * ENG_MCR_ME)
+            % If the load is too low, we just do not calculate
+            load_ME(idx_ME,idx_AE) = 0 ;
+            load_AE(idx_ME,idx_AE) = 0 ;
+            sfoc_ME(idx_ME,idx_AE) = 1e4 ;
+            sfoc_AE(idx_ME,idx_AE) = 1e4 ;
+        else
+            
+            
+

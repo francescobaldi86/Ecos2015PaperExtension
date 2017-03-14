@@ -1,0 +1,57 @@
+%% BirkaEA_main_engines_efficiency %%
+
+% Calculates the SFOC using original data (worsned by 5%) and including the
+% ISO correction
+%% Defining an "ISO correction function" 
+% It takes in the factors that play a role in the calculation 
+for i = 1 : 4
+    for j = 1 : n_data
+        if ME_on.(char(ME_names(i)))(j)
+            %% Power - fuel flow - efficiency
+            ME_bsfc_ISO = polyval(ME_POLY_FUEL_RACK_2_ISO_BSFC,ME_pos_fuel_rack.(char(ME_names(i)))(j)) ;
+            ME_bsfc.(char(ME_names(i)))(j) = bsfcISOCorrection(ME_bsfc_ISO , ME_pos_fuel_rack.(char(ME_names(i)))(j) , ME_T_LTcooling.(char(ME_names(i)))(j) , ME_T_charge_air.(char(ME_names(i))) , LHV , 0.8) ;
+            ME_mfr_fuel.(char(ME_names(i)))(j) = polyval(ME_POLY_FUEL_RACK_MFR_FUEL,ME_pos_fuel_rack.(char(ME_names(i)))(j)) ;
+            ME_power.(char(ME_names(i)))(j) = ME_mfr_fuel.(char(ME_names(i)))(j) / ME_bsfc.(char(ME_names(i)))(j) * 3.6e6 ;
+            ME_load.(char(ME_names(i)))(j) = ME_power.(char(ME_names(i)))(j) / MCR_ME ;
+                        energy.ME.power(j) = ME_power.(char(ME_names(i)))(j) ;
+                        exergy.ME.power(j) = ME_power.(char(ME_names(i)))(j) ;
+            %% Air flow 
+            ME_rho_air = ME_p_charge_air.(char(ME_names(i)))(j) / R_AIR / ME_T_charge_air(char(ME_names(i)))(j) ;
+            ME_mfr_air.(char(ME_names(i)))(j) = ME_V_SW * ME_rho_air * ME_rpm.(char(ME_names(i)))(j) / 60 / 2 * ETA_VOL * ME_N_CYL ;
+            ME_T_air.(char(ME_names(i)))(j,1) = T_ER(j) ;
+            ME_T_air.(char(ME_names(i)))(j,2) = T_ER(j) * ME_p_charge_air.(char(ME_names(i)))(j) ^ ((K_AIR - 1) / K_AIR) / ETA_IS_TC ;
+            ME_T_air.(char(ME_names(i)))(j,3) = ME_T_charge_air.(char(ME_names(i)))(j) ;
+                        energy.ME.air(j,2) = ME_mfr_air.(char(ME_names(i)))(j) * CP_AIR * (ME_T_air.(char(ME_names(i)))(j,2) - T0(j)) ;
+                        energy.ME.air(j,1) = ME_mfr_air.(char(ME_names(i)))(j) * CP_AIR * (ME_T_air.(char(ME_names(i)))(j,1) - T0(j)) ;
+                        energy.ME.air(j,3) = ME_mfr_air.(char(ME_names(i)))(j) * CP_AIR * (ME_T_air.(char(ME_names(i)))(j,3) - T0(j)) ;
+            %% Exhaust flow
+            ME_mfr_eg.(char(ME_names(i)))(j) = ME_mfr_air.(char(ME_names(i)))(j) + ME_mfr_fuel.(char(ME_names(i)))(j) ;
+                        energy.ME.eg(j,2) = ME_mfr_eg.(char(ME_names(i)))(j) * CP_EG * (ME_T_eg.(char(ME_names(i)))(j,1) - T0(j)) ;
+                        energy.ME.eg(j,2) = ME_mfr_eg.(char(ME_names(i)))(j) * CP_EG * (ME_T_eg.(char(ME_names(i)))(j,2) - T0(j)) ;
+                        energy.ME.eg(j,3) = ME_mfr_eg.(char(ME_names(i)))(j) * CP_EG * (ME_T_eg.(char(ME_names(i)))(j,3) - T0(j)) ;
+            %% HT and LT cooling
+                        energy.ME.ht(j) = polyval(ME_POLY_LOAD_2_QDOT_HT,ME_load.(char(ME_names(i)))(j)) ;
+                        energy.ME.lt(j) = polyval(ME_POLY_LOAD_2_QDOT_LT,ME_load.(char(ME_names(i)))(j)) ;
+            ME_mfr_ht = energy.ME.ht(j) / CP_W / (ME_T_HTcooling.(char(ME_names(i)))(j,2) - ME_T_HTcooling.(char(ME_names(i)))(j,1)) ;
+            ME_mfr_lt = energy.ME.lt(j) / CP_W / (ME_T_LTcooling.(char(ME_names(i)))(j,2) - ME_T_HTcooling.(char(ME_names(i)))(j,1)) ;
+            %% Lubricating Oil
+                        energy.ME.lo(j) = ME_MFR_LO * CP_LO * (ME_T_lub_oil.(char(ME_names(i)))(j,2) - ME_T_lub_oil.(char(ME_names(i)))(j,1)) ;
+            %% Charge air cooling, LT stage
+                        energy.ME.cac_lt(j) = energy.ME.lt(j) - energy.ME.lo(j) ;
+            %% Charge air cooling, HT stage
+                        energy.ME.cac_ht(j) = energy.ME.lt(j) - energy.ME.lo(j) ;
+        
+        
+        
+        
+        
+        
+        % Auxiliary engines
+        AE_bsfc_ISO = polyval(AE_POLY_LOAD_2_ISO_BSFC,AE_Power.(char(AE_names(i)))(j)/MCR_AE) ;
+        AE_bsfc.(char(AE_names(i)))(j) = bsfcISOCorrection(AE_bsfc_ISO , AE_pos_fuel_rack.(char(AE_names(i)))(j) , AE_T_LTcooling.(char(AE_names(i)))(j) , AE_T_charge_air.(char(AE_names(i))) , LHV , 0.8) ;
+        AE_load.(char(AE_names(i)))(j) = AE_power.(char(AE_names(i)))(j) / MCR_AE ;
+        AE_rho_air = AE_p_charge_air(char(AE_names(i)))(j) / R_AIR / AE_T_charge_air(char(AE_names(i)))(j) ;
+        AE_mfr_air = AE_V_SW * AE_rho_air * AE_rpm.(char(AE_names(i)))(j) / 60 / 2 * ETA_VOL * AE_N_CYL ;
+    end
+end
+        

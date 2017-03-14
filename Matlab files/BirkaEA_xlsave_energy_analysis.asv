@@ -1,0 +1,13 @@
+%%% Script name: BirkaEA_xlsave_energy_analysis
+%
+% This script saves the results of the energy analysis in an excel file
+% that can then be used for plotting and further analysis
+
+% Writing the full name of the output file
+output_file_fullname = char([char(folder_main) char(filename_output)]) ;
+% Doing the sum-up
+for i = 1 : 
+sum(
+% Writing the files
+struct2xls(output_file_fullname,energy.ME,'Sheet','MainEngines')
+struct2xls(output_file_fullname,energy.AE,'Sheet','AuxiliaryEngines')
