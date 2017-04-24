@@ -39,26 +39,42 @@ def unitStructure():
     for idx in structure.keys():
         if idx[1] == "E":  # This basically means that this operation is only done if the system is an engine
             structure[idx] = {"TC": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
-            structure[idx]["TC"] = {"Air": {"type": "PF"}, "EG": {"type": "PF"}}  # Turbocharger
-            structure[idx]["BPvalve"] = {"Air": {"type": "PF"}}  # Bypass valve
-            structure[idx]["WasteGate"] = {"EG": {"type": "PF"}}  # Waste gate
-            structure[idx]["CAC_HT"] = {"Air": {"type": "PF"}, "HTwater": {"type": "PF"}}  # Charge air cooler, HT stage
-            structure[idx]["CAC_LT"] = {"Air": {"type": "PF"}, "LTwater": {"type": "PF"}}  # Charge air cooler, LT stage
-            structure[idx]["LOC"] = {"LubOil": {"type": "PF"}, "LTwater": {"type": "PF"}}  # Lubricating oil cooler
-            structure[idx]["JWC_HT"] = {"QdotJW": {"type": "Qdot"}, "HTwater": {"type": "PF"}}  # Jacket water cooler
-            # Cylinders
-            structure[idx]["Cyl"] = {"Air": {"type": "PF"}, "HTwater": {"type": "PF"}, "Power": {"type": "Wdot"}}
-
+            structure[idx]["TC"] = {"Air_in": {"type": "CPF"}, "EG_in": {"type": "CPF"},
+                                    "Air_out": {"type": "CPF"}, "EG_out": {"type": "CPF"}}  # Turbocharger
+            structure[idx]["Comp"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
+            structure[idx]["BPvalve"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}}  # Bypass valve
+            structure[idx]["Turbine"] = {"EG_in": {"type": "CPF"}, "EG_out": {"type": "CPF"}}  # Turbocharger turbine
+            structure[idx]["WasteGate"] = {"EG_in": {"type": "CPF"},"EG_out": {"type": "CPF"}}  # Waste gate
+            structure[idx]["CAC_HT"] = {"Air_in": {"type": "CPF"}, "HTwater_in": {"type": "IPF"},
+                                        "Air_out": {"type": "CPF"}, "HTwater_out": {"type": "IPF"}}  # Charge air
+            # cooler, HT stage
+            structure[idx]["CAC_LT"] = {"Air_in": {"type": "CPF"}, "LTwater_in": {"type": "IPF"},
+                                        "Air_out": {"type": "CPF"}, "LTwater_out": {"type": "IPF"}}  # Charge air
+            # cooler, LT stage
+            structure[idx]["LOC"] = {"LubOil_in": {"type": "IPF"}, "LTwater_in": {"type": "IPF"},
+                                     "LubOil_out": {"type": "IPF"}, "LTwater_out": {"type": "IPF"}}  # Lubricating oil
+            # cooler
+            structure[idx]["JWC"] = {"QdotJW": {"type": "Qdot"}, "HTwater_in": {"type": "IPF"},
+                                                                    "HTwater_out": {"type": "IPF"}}  # Jacket water
+            # cooler Cylinders
+            structure[idx]["Cyl"] = {"Air_in": {"type": "CPF"},  "FuelPh_in": {"type": "IPF"}, "EG_out": {"type":
+                                                                                                              "CPF"},
+                                     "Power": {"type": "Wdot"}, "FuelCh_in": {"type": "Wdot"}, "QdotJW": {"type":
+                                                                                                             "Qdot"}}
             # Only auxiliary engines AND main engines 2/3 have the exhaust gas boiler
             if idx[0] == "A" or idx[2] == "2" or idx[2] == "3":
                 # Heat recovery steam generator
-                structure[idx]["HRSG"] = {"EG": {"type": "PF"}, "Steam": {"type": "PF"}}
+                structure[idx]["HRSG"] = {"EG": {"type": "CPF"}, "Steam": {"type": "CPF"}}
         elif idx == "Other":
             structure[idx] = {"Boiler": {}, "SWC": {}, "LTCS": {}, "SWCS": {}}
-            structure[idx]["Boiler"] = {"Air": {"type": "PF"}, "EG": {"type": "PF"}, "Steam": {"type": "PF"}}
-            structure[idx]["SWC"] = {"SeaWater": {"type": "PF"}, "LTWater": {"type": "PF"}}
-            structure[idx]["HTLTMixer"] = {"HTWater": {"type": "PF"}, "LTWater": {"type": "PF"}}
-            structure[idx]["HTLTSplitter"] = {"HTWater": {"type": "PF"}, "LTWater": {"type": "PF"}}
+            structure[idx]["Boiler"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
+                                        "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
+            structure[idx]["SWC"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+                                     "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+            structure[idx]["HTLTMixer"] = {"HTWater_in": {"type": "IPF"}, "LTWater": {"type": "IPF"},
+                                           "HTWater_out": {"type": "IPF"}}
+            structure[idx]["HTLTSplitter"] = {"HTWate_in": {"type": "IPF"}, "LTWater": {"type": "IPF"},
+                                              "HTWater_out": {"type": "IPF"}}
         else:
             print("Error! There is an unrecognized element in the unit name structure at system level")
     return structure
@@ -68,16 +84,32 @@ def flowPreparation(structure, database_index):
     for system in structure:
         for unit in structure[system]:
             for flow in structure[system][unit]:
-                if flow["type"] == "PF":
-                    structure[system][unit][flow]["mdot_in"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["mdot_out"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["T_in"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["T_out"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["h_in"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["h_out"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["cp"] = 0
-                elif flow["type"] == "Qdot":
-                    structure[system][unit][flow]["Qdot_in"] = pd.Series(index=database_index)
-                    structure[system][unit][flow]["Qdot_out"] = pd.Series(index=database_index)
+                if flow["type"] == "IPF": # Incompressible physical energy flow
+                    structure[system][unit][flow]["mdot"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["T"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["cp"] = 0  # Note that the CP is a fixed, individual value
+                elif flow["type"] == "CPF": # Compressible physical energy flow
+                    structure[system][unit][flow]["mdot"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["T"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["h"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["p"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["s"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["cp"] = 0  # Note that the CP is a fixed, individual value
+                elif flow["type"] == "Qdot": # Heat flow
+                    structure[system][unit][flow]["Qdot"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["T"] = pd.Series(index=database_index)
+                elif flow["type"] == "Wdot": # Work flow
+                    structure[system][unit][flow]["Wdot"] = pd.Series(index=database_index) # in KW
+                    structure[system][unit][flow]["omega"] = pd.Series(index=database_index) # In rpm
+                    # Note that Wdot flows apply to chemical, electrical and mechanical power
+                else:
+                    print("Error, input type not recognized")
     return structure
+
+
+
+def generalStatus():
+    structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Boiler": {}}
+    for idx in structure.keys():
+        # Adding the load and the "on/off"
+        structure[idx] = {"Load": {}, "OnOff": {}}

@@ -1,5 +1,4 @@
 
-
 ###########################################################################
 #
 ###########		ENERGY AND EXERGY ANALYSIS OF A CRUISE SHIP		###########
@@ -18,7 +17,7 @@
 
 
 
-# The Main.py script calls other scripts and functions. It is divided in the following sections:
+# The main.py script calls other scripts and functions. It is divided in the following sections:
 # - INPUT
 # - DATA READING
 # - DATA CLEANING
@@ -37,7 +36,7 @@
 
 # Loading appropriate modules
 import pandas as pd
-import input 
+import input
 
 filenames = input.filenames() # Note: this is just a test
 
@@ -53,21 +52,20 @@ filenames = input.filenames() # Note: this is just a test
 # Responsible: FA
 
 data_path = 'C:\\Users\\FrancescoBaldi\\Dropbox\\Energy and exergy analysis of a cruise ship - Journal Extension\\'
-df_load = pd.read_hdf(data_path + 'birka_all_data.h5','table')
+df_load = pd.read_hdf(data_path + 'birka_all_data.h5' ,'table')
 
-import Constants
+import constants
 CONSTANTS = {}
-CONSTANTS["General"] = Constants.general() # loading dictionary with general, physical constants
-CONSTANTS["Steam"] = Constants.steamProperties() # loading dictionary with steam properties constants
-CONSTANTS["MainEngines"] = Constants.mainEngines(CONSTANTS) # loading dictionary with main-engine related constants
-CONSTANTS["AuxEngines"] = Constants.auxiliaryEngines(CONSTANTS) # loading dictionary with auxiliary-engine related constants
-CONSTANTS["OtherUnits"] = Constants.otherUnits()
-N_POINTS = 319*4*24
-temp = Constants.monthLimits(N_POINTS)
+CONSTANTS["General"] = constants.general() # loading dictionary with general, physical constants
+CONSTANTS["Steam"] = constants.steamProperties() # loading dictionary with steam properties constants
+CONSTANTS["MainEngines"] = constants.mainEngines(CONSTANTS) # loading dictionary with main-engine related constants
+CONSTANTS["AuxEngines"] = constants.auxiliaryEngines \
+    (CONSTANTS) # loading dictionary with auxiliary-engine related constants
+CONSTANTS["OtherUnits"] = constants.otherUnits()
+N_POINTS = 319* 4 * 24
+temp = constants.monthLimits(N_POINTS)
 MONTH_LIMIT_IDX = temp[0]
 DAY_LIMIT_IDX = temp[1]
-
-
 
 ######################################
 ## DATA CLEANING			##
@@ -82,9 +80,18 @@ DAY_LIMIT_IDX = temp[1]
 ######################################
 ## DATA PROCESSING		##
 ######################################
-
 # Responsible: FB
 
+# Preparing the data structures
+import unitstructures as us
+
+data_processed = us.unitStructure()  # Here we initiate the structure fields
+data_processed = us.flowPreparation(data_processed)  # Here we create the appropriate empty data series for each field
+
+# Running the pre-processing required for filling in the data structures:
+import preprocessing as pp
+# First reading readily available measurements
+data_processed = pp.readMainEnginesExistingValues(data_processed)
 
 
 

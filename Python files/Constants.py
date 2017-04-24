@@ -10,7 +10,7 @@ def general():
     output["CP_AIR"] = 1.02   # Air specific heat, in [kJ/kgK] 
     output["CP_EG"] = 1.08   # EG specific heat, in [kJ/kgK] 
     output["CP_LO"] = 2.1   # Lubricating oil specific heat, in [kW/kgK]
-    output["CP_W"] = 4.187   # Water specifi heat, in [kW/kgK] 
+    output["CP_WATER"] = 4.187   # Water specifi heat, in [kW/kgK]
     output["RHO_W"] = 1000.0   # Water density, in [kg/m^3]
     output["RHO_LO"] = 850.0   # Lubricating oil density, in [kg/m^3]
     output["LHV_HFO"] = 41170.0   # Heavy Fuel Oil lower heating value, in [kJ/kg]
@@ -20,7 +20,10 @@ def general():
     output["CP_HFO"] = 1.8   # Fuel specific heat, [kJ/kg]
     output["RHO_HFO"] = numpy.mean([890, 919, 924, 926, 925, 921, 924, 918, 920, 919, 933])  # HFO density, in [kg/m^3]
     output["AIR_STOIC"] = 14.7  # Stoichiometric ratio fuel/air for Diesel-type fuels
-    output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency 
+    output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency
+    output["P_ATM"] = 1.10325 # Assumption on atmospheric pressure
+    output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
+    output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxiliaryEngines": ["AE1", "AE2", "AE3", "AE4"]}
     return output
 
 def steamProperties():
