@@ -6,10 +6,16 @@ data_path = '/Users/fredde/Database/'
 df_load = pd.read_hdf(data_path + 'birka_all_data.h5','table')
 
 df_load.head()
-list(df_load)
+import ftfy
+a = list(df_load)
+for i in range(len(a)):
+    a[i]=ftfy.fix_text(a[i])
+
+print(a)
+
+df_load[list(df_load)[1]].plot()
 
 
 headers = open(data_path + 'headers.csv','w')
-a = list(df_load)
 for item in a:
-    headers.write('\n' + item)
+    headers.write('\n'+str(item.encode('utf-8')))
