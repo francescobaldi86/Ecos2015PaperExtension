@@ -1,10 +1,20 @@
 import numpy
 import pdb
 
-def general(): 
+
+def constantsSetting():
+    output = {}
+    output["General"] = general()  # loading dictionary with general, physical constants
+    output["Steam"] = steamProperties()  # loading dictionary with steam properties constants
+    output["MainEngines"] = mainEngines(output)  # loading dictionary with main-engine related constants
+    output["AuxEngines"] = auxiliaryEngines(output)  # loading dictionary with auxiliary-engine related constants
+    output["OtherUnits"] = otherUnits()
+    return output
+
+
+def general():
     # GENERAL CONSTANTS
     output = {}
-    pass
     output["R_AIR"] = 8314.0 / 29 # Air gas constant
     output["K_AIR"] = 1.4   # Air specific heat ratio
     output["CP_AIR"] = 1.02   # Air specific heat, in [kJ/kgK] 
@@ -23,7 +33,7 @@ def general():
     output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency
     output["P_ATM"] = 1.10325 # Assumption on atmospheric pressure
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
-    output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxiliaryEngines": ["AE1", "AE2", "AE3", "AE4"]}
+    output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
     return output
 
 def steamProperties():
@@ -101,10 +111,10 @@ def auxiliaryEngines(CONSTANTS):
     output["QDOT_2_JWC_DES"] = 414.0  # Heat flow to the jacket water cooler at the engine design point, in [kW]
     output["QDOT_2_LOC_DES"] = 331.0  # Heat flow to the lubricating oil cooler at the engine design point, in [kW]
 # Assuming that the amount of heat from the engine to the HT cooling systems behaves in the same way as that of the main engines.
-    output["POLY_LOAD_2_QDOT_HT"] = (CONSTANTS["MainEngine"]["POLY_LOAD_2_QDOT_HT"] *
+    output["POLY_LOAD_2_QDOT_HT"] = (CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_HT"] *
                                      (output["QDOT_2_CAC_HT_DES"] + output["QDOT_2_JWC_DES"]) /
                                      CONSTANTS["MainEngines"]["QDOT_HT_DES"])
-    output["POLY_LOAD_2_QDOT_LT"] = (CONSTANTS["MainEngine"]["POLY_LOAD_2_QDOT_LT"] *
+    output["POLY_LOAD_2_QDOT_LT"] = (CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_LT"] *
                                      (output["QDOT_2_CAC_LT_DES"] + output["QDOT_2_LOC_DES"]) /
                                      CONSTANTS["MainEngines"]["QDOT_LT_DES"])
 # Assuming that the sare of the charge air cooling heat going to the HT stage is linearly increasing from 0 to its value at the engine design point.
