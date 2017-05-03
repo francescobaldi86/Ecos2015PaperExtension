@@ -3,7 +3,7 @@ import numpy as np
 
 data_path = '/Users/fredde/Database/'
 
-df_load = pd.read_hdf(data_path + 'birka_all_data.h5','table')
+df_load = pd.read_hdf(data_path + 'all_data_1year_comp.h5','table')
 
 df_load.head()
 import ftfy
