@@ -2,3 +2,9 @@ Python files/.idea/
 Python files/__pycache__/
 Python files/constants.pyc
 desktop.ini
+Manuscript/*.aux
+Manuscript/*.log
+Manuscript/*.spl
+Manuscript/*.synctex.gz
+Manuscript/*.bbl
+Manuscript/*.blg

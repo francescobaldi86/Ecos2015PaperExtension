@@ -1,0 +1,314 @@
+%% 
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%% 
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%% 
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%% 
+
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% For including figures, graphicx.sty has been loaded in
+%% elsarticle.cls. If you prefer to use the old commands
+%% please give \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+\def\bibsection{\section*{References}}
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%% \usepackage{lineno}
+
+\journal{Energy}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for theassociated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Energy and exergy analysis of a cruise ship}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{}
+%% \address[label1]{}
+%% \address[label2]{}
+
+\author[EPFL]{Francesco Baldi}
+\author[Linneus]{Fredrik Ahlgren}
+\author[DTU]{Tuong-Van Nguyen}
+\author[CTU]{Cecilia Gabrielii}
+\author[CTU]{Karin Andersson}
+
+\address[EPFL]{Industrial Process Energy Systems Engineering (IPESE), \'{E}cole Polytechnique F\'{e}d\'{e}rale de Lausanne, 1950, Sion, Switzerland}
+\address[Linneus]{Kalmar Maritime Academy, Linnaeus University, Kalmar, Sweden}
+\address[DTU]{Department of Mechanical Engineering, Technical University of Denmark, Lyngby, Denmark}
+\address[CTU]{Department of Mechanics and Maritime Sciences, Chalmers University of technology, Gothenburg, Sweden}
+
+\begin{abstract}
+%% Text of abstract
+
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+
+%% PACS codes here, in the form: \PACS code \sep code
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+low carbon shipping \sep energy analysis \sep exergy analysis \sep energy efficiency
+
+\end{keyword}
+
+\end{frontmatter}
+
+%% \linenumbers
+
+%% main text
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+%% \section{}
+%% \label{}
+
+%% If you have bibdatabase file and want bibtex to generate the
+%% bibitems, please use
+%%
+%%  \bibliographystyle{elsarticle-num} 
+%%  \bibliography{<your bibdatabase>}
+
+%% else use the following coding to input the bibitems directly in the
+%% TeX file.
+
+\section{Introduction} \label{sec:introduction}
+
+\subsection{Background}
+
+According to the third IMO GHG Study, in 2012 CO$_2$ emissions from shipping amounted to a total of 949 million tonnes, contributing to 2.7\% of global anthropogenic CO$_2$ emissions [1]. Although this contribution appears relatively low, the trend is that shipping will play an even greater role in the future due to the increased transport demand according to all IMO future scenarios [1]. As an example, global transport demand has increased by 3.8\% in 2013, compared to a global GBP growth of 2.3\% the same year, which shows how shipping tends to rise even faster than global economy [2].
+
+International Energy Agency data show that the OECD countries have reduced the CO$_2$ impact from shipping, but a larger amount has been moved to the non-OECD countries [3]. The fact that shipping needs to even further reduce its CO$_2$ emissions in the near future is essential for being able to achieve the goals of maintaining the climate below a 2-degree level in 2050 [4]. Finally, in the Baltic Sea an emission control area is enforced by the International Maritime Organisation since January 2015 which stipulates that the fuel used must not contain more than 0.1\% sulphur, therefore requiring the use of more expensive distillate fuels.
+
+Altogether, these conditions present a challenge to the shipping companies who attempt to reduce their fuel consumption, environmental impact, and operative costs. A wide range of fuel saving solutions for shipping are available and partially implemented in the existing fleet, both from the design and operational perspective; several specific studies have been conducted on these technologies, and a more detailed treatise would be out of the scope of this work. In this context, it has been acknowledged that the world fleet is heterogeneous, and measures need to be evaluated on a ship-to-ship basis [5,6]. In this process, a deeper understanding of energy use on board of the specific ship is vital.
+
+\subsection{Previous work}
+
+The idea of analyzing in detail the energy flows of ship systems is not new. The studies published in these regards can generally be divided in two main categories: those based on operational measurements, and those based on mathematical modeling the ship systems. 
+
+The work presented by \cite{Thomas2010}, \cite{Basurko2013} (fishing vessels) and \cite{Baldi2015} (product tanker) falls in the first category. Although the results differ from study to study, all agree in putting propulsion at the top of the list of energy requirement (from 76\% to 87.3\% in the case of fishing vessels \cite{Thomas2010,Basurko2013}, 68\% in the case of the chemical tanker \cite{Baldi2015}, although it should be noted that in the former two cases heat demand is not taken into account).  
+
+A number of studies concerning ship energy systems can be found in literature. Thomas et al. [7] and Basurko et al. [8] worked on energy auditing fishing vessels; Shi et al. [11, 12] proposed models for predicting ship fuel consumption for some specific vessel types; Balaji and Yaakob [9] analysed ship heat availability for use in ballast water treatment technologies. These studies have been of particular interest in their relative fields, but a more comprehensive approach of the totality of the ship energy system is missing. In addition, an analysis purely based on the First law of thermodynamics does not account for the irreversibilities of the systems and for the different quality of heat flows [16]. Exergy analysis, which is based on both the First and the Second laws of thermodynamics, can help addressing this shortcoming. Widely used in other industrial sectors, exergy analysis in not commonly employed in maritime technology studies, and is mostly related to waste heat recovery systems [17, 18] and refrigeration plants [19, 20]. The application of exergy analysis in shipping is still limited; Zaili and Zhaofeng [10] proposed the energy and exergy analysis of the propulsion system of an existing vessel showing that there is potential in improving ship power plant efficiency by recovering the exergy in the exhaust gas and by improving operations of the main engines.
+In a previous study of the energy and exergy analysis of a product tanker [11] the dominance of propulsion as main consumer on board was highlighted, together with the substantial availability of waste heat for recover. On cruise vessels, the number of different uses of energy is larger and a complex system of different energy carriers (chemical, thermal, electrical or mechanical) is present in order to fulfill the needs for transport combined with passenger services and comfort, such as cooking and cooling in restaurants, air conditioning, and passenger entertainment facilities.
+The complexity of the energy system of a ship where the energy required by propulsion is no longer the trivial main contributor to the whole energy consumption thus makes this kind of system of particular interest for the analysis of how energy is produced, transformed, and used on board. The complexity of such systems was modelled and investigated previously by Marty et al. [12,13], but to the best of our knowledge there is no study in literature describing cruise ships’ energy and exergy analyses based on actual measurements.
+
+To add:
+- REF: Marty, Exergy analysis of complex ship energy systems
+- the fact that many people talk about ORCs, without focusing on the larger picture
+- REF: Bouman, State-of-the-art technologies, measures and potential for reducing GHG emissions from shipping, A review
+- REF: Andersson, Shipping and the Environment (book)
+- REF: Koroglu, Advanced exergy analysis of an ORC WHR of a marine power plant
+- REF: A comparative life cycle assessment of marine power systems
+
+
+
+\subsection{Aim}
+
+The aim of this paper is to provide a better understanding of how energy is used on board of a cruise ship and where the largest potential for improvement is located by applying energy and exergy analysis to the a case study. The combination of a method rarely applied in the shipping sector to a ship type featuring a complex energy system is considered as the main contribution of this work to the existing literature in the field.
+
+
+\section{Method} \label{sec:method}
+
+\subsection{Method overview} \label{sec:met:overview}
+
+\subsection{Energy analysis} \label{sec:met:energy}
+
+\subsection{Exergy analysis} \label{sec:met:exergy}
+
+\subsection{Case study vessel} \label{sec:met:case}
+
+The ship under study is a cruise ship operating on a daily basis in the Baltic Sea between Stockholm and the island of Åland. The ship is 176.9 m long and has a beam of 28.6 m, and has a design speed of 21 knots. The ship was built in Aker Finnyards, Raumo Finland in 2004. The ship has a capacity of 1800 passengers and has several restaurants, night clubs and bars, as well as saunas and pools. This means that the energy system regarding the heat and electricity demand is more complex than a regular cargo vessel in the same size. Typical ship operations, although they can vary slightly between different days, are represented in Figure 1. It should be noted that the ship stops and drifts in open sea during night hours before mooring at its destination in the morning, if allowed by weather conditions.
+
+The ship systems are summarized in Figure 2. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four Wärtsilä 4-stroke Diesel engines (ME) rated 5850 kW each All engines are equipped with selective catalytic reactors (SCR) for NOX emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
+
+Auxiliary power is provided by four auxiliary engines (AE) rated 2760 kW each. Auxiliary power is needed on board for a number of alternative functions, from pumps in the engine room to lights, restaurants, ventilation and entertainment for the passengers. 
+
+Auxiliary heat needs are fulfilled by the exhaust gas steam generators (HRSG) located on all four AEs and on two of the four MEs or by oil-fired auxiliary boilers (mainly when in port, or during winter), by the heat recovery on the HT cooling water systems (HRHT), and by the auxiliary, oil fired boilers (AB). The heat is needed for passenger and crew accommodation, as well as for the heating of the highly viscous heavy fuel oil used for engines and boilers. This last part, however, is drastically reduced since the 1st of January 2015, as new regulations entering into force require the use of low-sulphur fuels, which require a much more limited heating.
+
+\subsection{Data gathering} \label{sec:met:gathering}
+
+\subsection{Data preprocessing} \label{sec:met:processing}
+
+\subsection{Ship energy system modeling} \label{sec:met:modeling}
+
+\subsection{Estimation of the heat demand} \label{sec:met:heat}
+
+\subsubsection*{Production-side}
+
+In a top-down model, the demand of an energy system is modeled based on the production side of the energy balance. According to the top-down approach, the total heat consumption is calculated based on the sum of the heat provided by the three main heat sources available on board:
+\begin{itemize}
+	\item Exhaust gas boilers
+	\item Auxiliary oil-fired boilers
+	\item Heat recovery on the HT cooling systems
+\end{itemize}
+
+For the case of the EGBs, the heat transferred from the exhaust gas to the steam ($\dot{Q}_{EGB}$) is calculated according to equation \ref{eq:egb}:
+\begin{equation}
+\dot{Q}_{EGB} = \dot{m}_{eg} c_{p,eg} (T_{eg,EGB,in} - T_{eg,EGB,out})
+\end{equation}\label{eq:egb}
+
+Where measurements of the exhaust gas temperature before and after the EGBs (respectively $T_{eg,EGB,in}$ and $T_{eg,EGB,out}$) are available from the DLS; the mass flow of exhaust gas ($\dot{m}_{eg}$) is calculated as described in appendices \ref{app:me} and \ref{app:ae}; and the specific heat at constant pressure of the exhaust gas ($c_{p,eg}$) is assumed to be constant and equal to 1.08 $\frac{kJ}{kgK}$.
+
+For the case of the ABs, the heat transferred to the steam ($\dot{Q}_{AB}$) is calculated according to equation \ref{eq:ab}:
+\begin{equation}
+\dot{Q}_{AB} = \dot{m}_{fuel,AB} \eta_{AB}
+\end{equation} \label{eq:ab}
+
+Where the fuel consumption of the ABs ($\dot{m}_{fuel,AB}$) is available on a monthly basis. No information was available concerning the first-law efficiency of the boilers ($ \eta_{AB}$). \cite{Cohen1962} estimated it to vary between 0.83 and 0.89 depending on the load of the boiler, while according to a more recent experimental campaign presented in \cite{Mrzljak2017} the efficiency varies between 0.7 and 0.79. In the absence of more specific available data, a value of 0.8 was selected for $ \eta_{AB}$
+
+The contribution from the heat recovery on the high temperature cooling systems of the engines ($\dot{Q}_{HRHT}$) represents the main uncertainty related to the top-down estimations. This contribution cannot be measured, neither directly or indirectly, and hence needs to be estimated. 
+
+For this reason, two calculated values for the top-down heat demand are provided:
+\begin{itemize}
+	\item A \textbf{high boundary} case, where it is assumed that almost all of the heat available from the HT cooling systems (an utilization factor of 0.9 is assumed to account for losses) is used. This corresponds to the assumption that the use of the waste heat from the HT cooling systems is prioritized over the use of waste heat from the exhaust gas of the engines.
+	\begin{equation}
+	\dot{Q}_{HRHT} = f_{HRHT} \dot{Q}_{HT,tot} 
+	\end{equation}
+	\item a \textbf{low boundary} case, where it is assumed that the waste heat from the cooling systems is only used when the ship is in port (again assuming a utilization factor of 0.9). 
+\end{itemize}
+
+In both cases, the available heat from the HT cooling systems is estimated as explained in Section \ref{eq:met:modeling}.
+
+
+
+\subsubsection*{Consumers-side}
+Following, the assumptions that we have made related to the bottom-up estimations of ship heat demand:
+\begin{itemize}
+	\item The maximum demand for \textbf{spacial heating} is connected to a design minimum outer air temperature of -5$^o$C.
+	\item The minimum demand for \textbf{spacial heating} is 0 for an external temperature of 20$^o$C (NOTE: Maybe 15 is more reasonable?)
+	\item \textbf{Spacial heating} demand is linearly dependent on the external air temperature
+	\item In the HVAC unit, the "\textbf{Preheater}" is only used when heating (i.e., in winter) while the "\textbf{Reheater}" is only used when cooling (i.e., in summer)
+	\item Every passenger contributes with a total of 150 W of free heat during the day (8-23, ref. to "walking, seated" activity from \cite{Wang2000}) and 100 W during night (23-8, ref. to "seated at rest" activity from \cite{Wang2000}). For the crew, as it is assumed that they perform a more intense activity than the passengers, the daily contribution is considered equal to 160 (ref. to "moderate work" activity from \cite{Wang2000}) 
+	\item The heat required for \textbf{tank heating} is linearly dependent on the external sea water temperature. The maximum heat is required for an external seawater temperature of 0$^o$C
+	\item The heat required from the \textbf{galley} depends on two parameters:
+	\begin{itemize}
+		\item The \textbf{number of passengers} (linear dependence)
+		\item the \textbf{hour of the day}. The hour-dependent factor is 0 at night (21-7), 0.1 during non-eating times (10-11 and 14-18) and 1 during eating times
+	\end{itemize}
+	\item The heat required from the \textbf{hot water} depends on two parameters:
+	\begin{itemize}
+		\item The \textbf{number of passengers} (linear dependence)
+		\item the \textbf{hour of the day}. The hour-dependent factor is assumed based on the estimations for a land-based hotel reported in \cite{Chung2015}.
+	\end{itemize}   
+\end{itemize}
+
+In Table \ref{tab:heatConsumers} we summarize all heat consumers on board the case study vessel. For each entry, we provide the design heat demand and the variables we assumed the actual heat demand to depend on:
+\begin{table}
+	\begin{tabular}{lrccccc}
+		\hline 
+		Name & $\dot{Q}_{des}$ [kW] & \multicolumn{5}{c}{Depends on...} \\ 
+		\hline 
+		 & & $T_{air}$ & t & $N_{pax}$ & $f_{TL}$ & $\lambda$ \\ 
+		\hline 
+		Hot water heater & 1200 &  & x & x &  &  \\ 
+		HVAC Preheater & 3500 & x & x & x &  &  \\ 
+		HVAC Reheater & 1780 & x & x & x &  &  \\ 
+		Tank heating & 208 &  &  &  & x &  \\ 
+		Other tanks & 138 &  &  &  & x &  \\ 
+		HFO Tank heating & 271 &  &  &  & x &  \\ 
+		Machinery space heaters & 281 & x &  &  &  &  \\ 
+		Bilge water separator & 26 &  &  &  &  &  \\ 
+		Hot water calorifier & 366 &  & x &  &  &  \\ 
+		Fuel oil heater & 103 &  &  &  &  & x \\ 
+		HFO Separator & 37 &  &  &  &  &  \\ 
+		Galley & 602 &  & x & x &  &  \\
+		\hline 
+	\end{tabular} \label{tab:heatConsumers}
+\end{table}
+\section{Energy analysis}
+\label{sec:energy}
+
+\subsection{Exploratory data analysis}
+
+\subsection{Mechanical and electric energy demand}
+
+\subsection{Heat demand}
+
+
+\section{Exergy Analysis}
+\label{sec:exergy}
+
+
+\section{Discussion}
+\label{sec:discussion}
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+\appendix
+
+\section{Estimation of air and exhaust gas flows in the main engines}
+
+\section{Estimation of air and exhaust gas flows in the auxiliary engines}
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+%% \begin{thebibliography}{widestlabel}
+%% \bibitem{label}
+%% Text of bibliographic item
+%%\end{thebibliography}
+
+\end{document}
+\endinput
+%%
+%% End of file `elsarticle-template-num.tex'.
