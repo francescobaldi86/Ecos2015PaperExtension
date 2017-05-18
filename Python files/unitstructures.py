@@ -34,7 +34,7 @@
 import pandas as pd
 
 
-def unitStructure():
+def flowStructure():
     structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}
     for idx in structure.keys():
         if idx[1] == "E":  # This basically means that this operation is only done if the system is an engine
@@ -84,26 +84,31 @@ def flowPreparation(structure, database_index):
     for system in structure:
         for unit in structure[system]:
             for flow in structure[system][unit]:
-                if structure[system][unit][flow]["type"] == "IPF": # Incompressible physical energy flow
+                if flow["type"] == "IPF": # Incompressible physical energy flow
                     structure[system][unit][flow]["mdot"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["T"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["cp"] = 0  # Note that the CP is a fixed, individual value
-                elif structure[system][unit][flow]["type"] == "CPF": # Compressible physical energy flow
+                elif flow["type"] == "CPF": # Compressible physical energy flow
                     structure[system][unit][flow]["mdot"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["T"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["h"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["h0"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["p"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["s"] = pd.Series(index=database_index)
+                    structure[system][unit][flow]["s0"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["cp"] = 0  # Note that the CP is a fixed, individual value
-                elif structure[system][unit][flow]["type"] == "Qdot": # Heat flow
+                elif flow["type"] == "Qdot": # Heat flow
                     structure[system][unit][flow]["Qdot"] = pd.Series(index=database_index)
                     structure[system][unit][flow]["T"] = pd.Series(index=database_index)
-                elif structure[system][unit][flow]["type"] == "Wdot": # Work flow
+                elif flow["type"] == "Wdot": # Work flow
                     structure[system][unit][flow]["Wdot"] = pd.Series(index=database_index) # in KW
                     structure[system][unit][flow]["omega"] = pd.Series(index=database_index) # In rpm
                     # Note that Wdot flows apply to chemical, electrical and mechanical power
                 else:
                     print("Error, input type not recognized")
+                structure[system][unit][flow]["Edot"] = pd.Series(index=database_index)
+                structure[system][unit][flow]["Hdot"] = pd.Series(index=database_index)
+
     return structure
 
 
@@ -114,3 +119,6 @@ def generalStatus():
         # Adding the load and the "on/off"
         structure[idx] = {"Load": {}, "OnOff": {}}
     return structure
+
+
+

@@ -85,7 +85,7 @@ import constants as kk
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
 
-dataset_processed = us.unitStructure()  # Here we initiate the structure fields
+dataset_processed = us.flowStructure()  # Here we initiate the structure fields
 dataset_processed = us.flowPreparation(dataset_processed,dataset_raw.index)  # Here we create the appropriate empty data series for each field
 dataset_status = us.generalStatus() # Here we simply initiate the "status" structure
 

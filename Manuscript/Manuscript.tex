@@ -134,60 +134,114 @@ low carbon shipping \sep energy analysis \sep exergy analysis \sep energy effici
 
 \subsection{Background}
 
-According to the third IMO GHG Study, in 2012 CO$_2$ emissions from shipping amounted to a total of 949 million tonnes, contributing to 2.7\% of global anthropogenic CO$_2$ emissions [1]. Although this contribution appears relatively low, the trend is that shipping will play an even greater role in the future due to the increased transport demand according to all IMO future scenarios [1]. As an example, global transport demand has increased by 3.8\% in 2013, compared to a global GBP growth of 2.3\% the same year, which shows how shipping tends to rise even faster than global economy [2].
+According to the third IMO GHG Study, in 2012 CO$_2$ emissions from shipping amounted to a total of 949 million tonnes, contributing to 2.7\% of global anthropogenic CO$_2$ emissions \cite{Smith2014}. Although this contribution appears relatively low, the trend is that shipping will play an even greater role in the future due to the increased transport demand according to all IMO future scenarios \cite{Smith2014}. As an example, global transport demand has increased by 3.4\% in 2014, compared to a global GBP growth of 2.5\% the same year, which shows how shipping tends to rise even faster than global economy \cite{UNCTAD2015}.
 
-International Energy Agency data show that the OECD countries have reduced the CO$_2$ impact from shipping, but a larger amount has been moved to the non-OECD countries [3]. The fact that shipping needs to even further reduce its CO$_2$ emissions in the near future is essential for being able to achieve the goals of maintaining the climate below a 2-degree level in 2050 [4]. Finally, in the Baltic Sea an emission control area is enforced by the International Maritime Organisation since January 2015 which stipulates that the fuel used must not contain more than 0.1\% sulphur, therefore requiring the use of more expensive distillate fuels.
+International Energy Agency data show that the OECD countries have reduced the CO$_2$ impact from shipping, but a larger amount has been moved to the non-OECD countries [3]. The fact that shipping needs to even further reduce its CO$_2$ emissions in the near future is essential for being able to achieve the goals of maintaining the climate below a 2-degree level in 2050 [4]. Finally, in the Baltic Sea an emission control area is enforced by the International Maritime Organisation since January 2015 which stipulates that the fuel used must not contain more than 0.1\% sulphur, therefore requiring the use of more expensive distillate fuels. More generally making shipping sustainable is a challenge that will demand growing attention by the shipping industry \cite{Andersson2016}
 
-Altogether, these conditions present a challenge to the shipping companies who attempt to reduce their fuel consumption, environmental impact, and operative costs. A wide range of fuel saving solutions for shipping are available and partially implemented in the existing fleet, both from the design and operational perspective; several specific studies have been conducted on these technologies, and a more detailed treatise would be out of the scope of this work. In this context, it has been acknowledged that the world fleet is heterogeneous, and measures need to be evaluated on a ship-to-ship basis [5,6]. In this process, a deeper understanding of energy use on board of the specific ship is vital.
+Altogether, these conditions present a challenge to the shipping companies who attempt to reduce their fuel consumption, environmental impact, and operative costs. A wide range of fuel saving solutions for shipping are available and partially implemented in the existing fleet, both from the design and operational perspective; several specific studies have been conducted on these technologies, and a more detailed treatise would be out of the scope of this work. In this context, it has been acknowledged that the world fleet is heterogeneous, and measures need to be evaluated on a ship-to-ship basis \cite{Bouman2017}. In this process, a deeper understanding of energy use on board of the specific ship is vital.
 
 \subsection{Previous work}
 
-The idea of analyzing in detail the energy flows of ship systems is not new. The studies published in these regards can generally be divided in two main categories: those based on operational measurements, and those based on mathematical modeling the ship systems. 
+The idea of improving the understanding of the behavior of the energy system of a ship is not new. Most of the work published around this subject relates to the use  of mathematical models of the ship systems. 
 
-The work presented by \cite{Thomas2010}, \cite{Basurko2013} (fishing vessels) and \cite{Baldi2015} (product tanker) falls in the first category. Although the results differ from study to study, all agree in putting propulsion at the top of the list of energy requirement (from 76\% to 87.3\% in the case of fishing vessels \cite{Thomas2010,Basurko2013}, 68\% in the case of the chemical tanker \cite{Baldi2015}, although it should be noted that in the former two cases heat demand is not taken into account).  
+Most authors focused on the propulsion part of the problem, as this is often the most relevant energy demand on board. Shi et al. proposed a modeling approach for predicting ship fuel consumption of a cargo/passenger ferry \cite{Shi2009}; Theotokoats and Tzelepis applied a similar procedure to the case of a Handymax product carrier \cite{Theotokatos2015}, similarly to Tillig et al., who also added the dynamic element to their predictive model \cite{Tillig2016}. 
 
-A number of studies concerning ship energy systems can be found in literature. Thomas et al. [7] and Basurko et al. [8] worked on energy auditing fishing vessels; Shi et al. [11, 12] proposed models for predicting ship fuel consumption for some specific vessel types; Balaji and Yaakob [9] analysed ship heat availability for use in ballast water treatment technologies. These studies have been of particular interest in their relative fields, but a more comprehensive approach of the totality of the ship energy system is missing. In addition, an analysis purely based on the First law of thermodynamics does not account for the irreversibilities of the systems and for the different quality of heat flows [16]. Exergy analysis, which is based on both the First and the Second laws of thermodynamics, can help addressing this shortcoming. Widely used in other industrial sectors, exergy analysis in not commonly employed in maritime technology studies, and is mostly related to waste heat recovery systems [17, 18] and refrigeration plants [19, 20]. The application of exergy analysis in shipping is still limited; Zaili and Zhaofeng [10] proposed the energy and exergy analysis of the propulsion system of an existing vessel showing that there is potential in improving ship power plant efficiency by recovering the exergy in the exhaust gas and by improving operations of the main engines.
-In a previous study of the energy and exergy analysis of a product tanker [11] the dominance of propulsion as main consumer on board was highlighted, together with the substantial availability of waste heat for recover. On cruise vessels, the number of different uses of energy is larger and a complex system of different energy carriers (chemical, thermal, electrical or mechanical) is present in order to fulfill the needs for transport combined with passenger services and comfort, such as cooking and cooling in restaurants, air conditioning, and passenger entertainment facilities.
-The complexity of the energy system of a ship where the energy required by propulsion is no longer the trivial main contributor to the whole energy consumption thus makes this kind of system of particular interest for the analysis of how energy is produced, transformed, and used on board. The complexity of such systems was modelled and investigated previously by Marty et al. [12,13], but to the best of our knowledge there is no study in literature describing cruise ships’ energy and exergy analyses based on actual measurements.
+The work referenced above allowed improving the understanding of how many operational (such as the ship's speed) and environmental (such as wave height and wind speed) parameters influence the ship's energy performance. These studies, however, are not based on actual measurements of the ship's operations. Also, they focus entirely on the ship's power demand for propulsion. This is a very reasonable practice for most ship types, given that propulsion represent the largest part of the total energy demand, but does not allow improving the knowledge of the remaining part of the system.
 
-To add:
-- REF: Marty, Exergy analysis of complex ship energy systems
-- the fact that many people talk about ORCs, without focusing on the larger picture
-- REF: Bouman, State-of-the-art technologies, measures and potential for reducing GHG emissions from shipping, A review
-- REF: Andersson, Shipping and the Environment (book)
-- REF: Koroglu, Advanced exergy analysis of an ORC WHR of a marine power plant
-- REF: A comparative life cycle assessment of marine power systems
+% Data-driven analysis
+Other authors filled the gap by both including electric energy demand, and by basing their work on measurements from actual ship operations. The work presented by Thomas et al. \cite{Thomas2010} and Basurko et al. \cite{Basurko2013} shows the application of energy auditing methods to fishing vessels. This approach represents a step forward towards improving the understanding of how energy is used on board during actual ship operations.  
+
+More generally, several authors have highlighted the importance of a detailed knowledge of the ship's operational profile in order to appropriately assess and optimize possible alternatives for improving ship energy efficiency \cite{Banks2013}. Coraddu et al., started from a statistical analysis of measured ship operations and used the aggregated data, together with a computational model of the vessel, to provide a better prediction of the actual ship's operational efficiency \cite{Coraddu2014}. The importance of considering the operational profile was also showed in the case of the optimization of engine-propeller interaction \cite{Baldi2015c}, in the process of retrofitting existing systems \cite{Baldi2015b,Choi2013}, and in ship design \cite{Ghassemi2017,Solem2015}. 
+
+% Heat availability
+Heat demand is rarely a subject of concern on board ships, with some notable exceptions. This is due to a combination of generally low demand and high availability from the waste heat of the engines. In a previous publications by the authors, for instance, it is shown that in the case of a product tanker, although the heat demand was estimated to account for roughly 20\% of the total energy demand of the ship on a yearly basis, it only contributes to 4.1\% of the total fuel consumption (contribution of the auxiliary boilers), while the rest of the demand is fulfilled using waste heat \cite{Baldi2015a}.
+
+%% WHR and heat availability
+It should be noted that, however, much research effort has been devoted, especially in recent times, to the improvement of the efficiency of ship energy systems by recovering the waste heat available from the engines. With reference to different types of technologies, case studies, and designs,the several authors showed the existance of a quite significant potential for energy saving when WHR systems are employed, ranging from around 1\% for single-pressure steam cycles applied to two-stroke engines \cite{Theotokatos2012} to more complex systems based on ORCs (up to 10\%, \cite{Hountalas2012}) or including the cooling systems as a source of waste heat (over10\%, \cite{Dimopoulos2012}).  The case of the installation of an ORC on board of the vessel investigated in this study (see Section \ref{sec:met:case}) was presented in \cite{Mondejar2015}, showing a similar potential.
+
+The potential uses for waste heat on board are not limited to improving the efficiency of the power plant. Waste heat is commonly used for fulfilling on board heat demand for spatial heating and freshwater generation \cite{Molland2011,Baldi2015a,Mccarthy1990};  Balaji et al. proposed the use of waste heat for ballast-water systems \cite{Balaji2012}; Salmi et al. suggested its use for adsorption refrigeration systems \cite{Salmi2017}. A detailed review of potential uses for waste heat from marine engines is presented by Shu et al \cite{Shu2013}. 
+
+% Cruise ships
+Some ship types constitute notable examples. On cruise ships the heat demand is significantly higher compared to standard cargo ships. Referring to winter conditions, Marty et al. estimated the instantaneous heat demand of a selected cruise ship to reach roughly 23 MW, compared to an estimated peak of 49 MW for propulsion and electric auxiliaries combined \cite{Marty2012}.  
+
+
+This shows how the heat from the engines should be considered as a potential resource, rather than a waste, and that there is potential for improvement based on the optimal use of these heat sources. The work presented by the authors in \cite{Baldi2016} represent a step in this direction; however, there is the need for an increased detail in the estimation of the heat demand. 
+
+% Exergy analysis
+Exergy analysis provides a more accurate estimation of the potential for energy recovery on board. The application of exergy analysis to the case of ship energy systems is, however, still limited. Dimopoulos et al. showed how the process optimizing the WHR system of a container ship can be more efficient if exergy efficiency, rather than energy efficiency, is used as the target of the optimization \cite{Dimopoulos2012}; Baldi et al. also analyzed the exergy flows on board of a product tanker, showing that this allows having a more accurate understanding of what parts of the system show potential for improvement \cite{Baldi2015a}; similar results were obtained by Marty et al., who focused on the power plant of a cruise ship \cite{Marty2016}. Koroglu et al. made a step futher also including advanced exergy analysis in their study \cite{Koroglu2017}.
 
 
 
 \subsection{Aim}
 
-The aim of this paper is to provide a better understanding of how energy is used on board of a cruise ship and where the largest potential for improvement is located by applying energy and exergy analysis to the a case study. The combination of a method rarely applied in the shipping sector to a ship type featuring a complex energy system is considered as the main contribution of this work to the existing literature in the field.
+Given the existing limitations of the current available information in scientific literature highlighted in the previous section, the objective of this work is the following:
+\begin{itemize}
+	\item Analyse the demand of a cruise ship in terms of propulsion power, electric power and heat, based on operational measurements.
+	\item Analyse the current efficiency of the system, and potential ways to improve it, by means of applying exergy analysis
+	\item Provide a more detailed analysis of the heat demand of a cruise ship, as a basis for further studies on how to optimize the whole efficiency of the propulsion plant.
+\end{itemize}
+
+
+
 
 
 \section{Method} \label{sec:method}
 
-\subsection{Method overview} \label{sec:met:overview}
+Here an overview of the method is provided: 
+\begin{itemize}
+	\item Data gathering
+	\item Data filtering
+	\item Data pre-processing
+	\item Heat demand estimation
+	\item Statistical analysis
+	\item Energy and exergy analysis
+\end{itemize}
+
+In this paper, we present the application of energy and exergy analysis (described in sections \ref{set:met:energy} and \ref{sec:met:exergy} to a cruise ship. This is done for one specific case study vessel, that is described in detail in Section \ref{sec:met:case}; in Section \ref{sec:met:gathering} we present the specifics of the available information, in particular the measured data and the technical documentation; these are used to generate the required information for calculating energy and exergy flows (Section \ref{sec:met:processing}. In these regards, the estimation of the heat demand is treated in a separate section (Sec. \ref{sec:met:heat} as it constituted a particularly challenging task and it is one of the central aspects of this article. 
 
 \subsection{Energy analysis} \label{sec:met:energy}
 
+This section should be written by TV :-)
+
 \subsection{Exergy analysis} \label{sec:met:exergy}
+
+This section should be written by TV :-)
 
 \subsection{Case study vessel} \label{sec:met:case}
 
-The ship under study is a cruise ship operating on a daily basis in the Baltic Sea between Stockholm and the island of Åland. The ship is 176.9 m long and has a beam of 28.6 m, and has a design speed of 21 knots. The ship was built in Aker Finnyards, Raumo Finland in 2004. The ship has a capacity of 1800 passengers and has several restaurants, night clubs and bars, as well as saunas and pools. This means that the energy system regarding the heat and electricity demand is more complex than a regular cargo vessel in the same size. Typical ship operations, although they can vary slightly between different days, are represented in Figure 1. It should be noted that the ship stops and drifts in open sea during night hours before mooring at its destination in the morning, if allowed by weather conditions.
+The energy and exergy analysis are here applied to a specific  cruise ship operating daily cruises in the Baltic Sea between Stockholm and the island of \.{A}land. The ship is 176.9 m long and has a beam of 28.6 m, and has a design speed of 21 knots. The ship was built in Aker Finnyards, Raumo Finland in 2004.
 
-The ship systems are summarized in Figure 2. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four Wärtsilä 4-stroke Diesel engines (ME) rated 5850 kW each All engines are equipped with selective catalytic reactors (SCR) for NOX emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
+The ship has a capacity of 1800 passengers and has several restaurants, night clubs and bars, as well as saunas and pools. This means that the energy system regarding the heat and electricity demand is more complex than a regular cargo vessel in the same size. Typical ship operations, although they can vary slightly between different days, are represented in Figure \ref{fig:typicalShipOperations}. It should be noted that the ship stops and drifts in open sea during night hours before mooring at its destination in the morning, if allowed by weather conditions.
+
+The ship systems are summarized in Figure \ref{fig:shipSystems}. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four Wärtsilä 4-stroke Diesel engines (ME) rated 5850 kW each All engines are equipped with selective catalytic reactors (SCR) for NOX emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
 
 Auxiliary power is provided by four auxiliary engines (AE) rated 2760 kW each. Auxiliary power is needed on board for a number of alternative functions, from pumps in the engine room to lights, restaurants, ventilation and entertainment for the passengers. 
 
 Auxiliary heat needs are fulfilled by the exhaust gas steam generators (HRSG) located on all four AEs and on two of the four MEs or by oil-fired auxiliary boilers (mainly when in port, or during winter), by the heat recovery on the HT cooling water systems (HRHT), and by the auxiliary, oil fired boilers (AB). The heat is needed for passenger and crew accommodation, as well as for the heating of the highly viscous heavy fuel oil used for engines and boilers. This last part, however, is drastically reduced since the 1st of January 2015, as new regulations entering into force require the use of low-sulphur fuels, which require a much more limited heating.
 
-\subsection{Data gathering} \label{sec:met:gathering}
+\subsection{Data gathering and pre-processing} \label{sec:met:gathering}
 
-\subsection{Data preprocessing} \label{sec:met:processing}
+This section should be written by FA :-)
 
-\subsection{Ship energy system modeling} \label{sec:met:modeling}
+\subsection{Data processing: Ship energy system modeling} \label{sec:met:modeling}
+
+Not all of the variables required to perform a full energy and exergy analysis of the system are available from measurements. In some cases, they are measurable, but not measured (e.g. some temperatures, mass flows, etc.). In other cases, they are simply impossible, or impractical, to measure (e.g. specific enthalpy, specific entropy). For this reason, part of the ship systems needed to be modeled in order to derive the unknown variables. 
+
+\subsubsection*{Main engines}
+
+Make a figure representing the main engines, with specified the variables for which we have measurements of. 
+
+List the main assumptions
+
+\subsubsection*{Auxiliary engines}
+
+Make a figure representing the main engines, with specified the variables for which we have measurements of. 
+
+List the main assumptions
+
+\subsubsection*{Auxiliary boilers}
+
+\subsubsection*{Cooling systems}
 
 \subsection{Estimation of the heat demand} \label{sec:met:heat}
 
@@ -223,6 +277,7 @@ For this reason, two calculated values for the top-down heat demand are provided
 	\dot{Q}_{HRHT} = f_{HRHT} \dot{Q}_{HT,tot} 
 	\end{equation}
 	\item a \textbf{low boundary} case, where it is assumed that the waste heat from the cooling systems is only used when the ship is in port (again assuming a utilization factor of 0.9). 
+	\item a reference case, (NOTE: We should discuss what the assumption could be here. The one we had in the ECOS paper? Or a value halfway between the highest and lowest estimate?)
 \end{itemize}
 
 In both cases, the available heat from the HT cooling systems is estimated as explained in Section \ref{eq:met:modeling}.
@@ -273,18 +328,44 @@ In Table \ref{tab:heatConsumers} we summarize all heat consumers on board the ca
 		\hline 
 	\end{tabular} \label{tab:heatConsumers}
 \end{table}
-\section{Energy analysis}
-\label{sec:energy}
-
-\subsection{Exploratory data analysis}
-
-\subsection{Mechanical and electric energy demand}
-
-\subsection{Heat demand}
 
 
-\section{Exergy Analysis}
-\label{sec:exergy}
+
+\section{Results (and discussion)}
+
+\subsection{Exploratory analysis} \label{sec:res:exploratory}
+
+Here we show and discuss about some interesting values. 
+\begin{itemize}
+	\item External temperature
+	\item Sea water temperature
+	\item Ship speed
+	\item Other
+\end{itemize}
+
+The results are presented in two main forms:
+\begin{itemize}
+	\item Time series (comparing some relevant trips with a daily time scale)
+	\item Distribution plot (or box plot...box plots are easier to compare, distribution plots are easier to interpret)
+\end{itemize}
+
+\subsection{Energy analysis} \label{sec:res:energy}
+
+The results are presented in three main forms:
+\begin{itemize}
+	\item Time series (comparing some relevant trips with a daily time scale)
+	\item Distribution plot (or box plot...box plots are easier to compare, distribution plots are easier to interpret)
+	\item Sankey diagrams
+\end{itemize}
+
+The results should be presented both for the full database and for each operational mode (port-sailing-drifting)
+
+\subsection{Heat demand} \label{sec:res:heat}
+
+\subsection{Exergy Analysis} \label{sec:res:exergy}
+
+
+
 
 
 \section{Discussion}
@@ -300,7 +381,7 @@ In Table \ref{tab:heatConsumers} we summarize all heat consumers on board the ca
 
 \section{Estimation of air and exhaust gas flows in the auxiliary engines}
 
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{bibliography}
 
 %% \begin{thebibliography}{widestlabel}
