@@ -1,20 +1,20 @@
-import csv
-headers_dict = '/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/data_import/headers_dict.csv'
+import pandas as pd
+project_path = '/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/'
+headers = pd.read_excel(project_path + 'General/headers_dict.xlsx')
+# Load the data from the Excel-file with headers. Please not the project_path
 
 #%%
 
-# Load the headers file. Excel seems to save with ; as the delimiter, but it is easy
-# fixed below. This creates as dictonary which then can be used as the translation.
+# Create a list of each column, then a dictonary which is acting as the translotor.
 
-with open(headers_dict, 'r') as f:
-    d={}
-    reader = csv.reader(f, delimiter=';')
-    for row in reader:
-        k, v = row
-        d[k] = v
-
-
-d[headers[0]]
-
+old = headers['ORIGINAL_HEADER']
+new = headers['NEW_HEADER']
+d = {}
+for n in range(len(old)):
+    d[new[n]] = old[n]
 
 #%%
+
+# Testing the function . Seems ok!
+
+print(d['AE1-CAC_AIR_P_OUT'])
