@@ -17,4 +17,6 @@ for n in range(len(old)):
 
 # Testing the function . Seems ok!
 
-print(d['AE1-CAC_AIR_P_OUT'])
+input = 'AE1-CAC_AIR_P_OUT'
+
+print('The input:\n'+ input + '\ngives output:\n' + d[input])
