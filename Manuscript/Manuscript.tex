@@ -40,7 +40,9 @@
 %% The amssymb package provides various useful mathematical symbols
 \usepackage{amssymb}
 %% The amsthm package provides extended theorem environments
-%% \usepackage{amsthm}
+\usepackage{amsthm}
+%% Tthe amsmath package provides the "align" environment for nicer equation formatting
+\usepackage{amsmath}
 \def\bibsection{\section*{References}}
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -199,13 +201,50 @@ Here an overview of the method is provided:
 
 In this paper, we present the application of energy and exergy analysis (described in sections \ref{set:met:energy} and \ref{sec:met:exergy} to a cruise ship. This is done for one specific case study vessel, that is described in detail in Section \ref{sec:met:case}; in Section \ref{sec:met:gathering} we present the specifics of the available information, in particular the measured data and the technical documentation; these are used to generate the required information for calculating energy and exergy flows (Section \ref{sec:met:processing}. In these regards, the estimation of the heat demand is treated in a separate section (Sec. \ref{sec:met:heat} as it constituted a particularly challenging task and it is one of the central aspects of this article. 
 
-\subsection{Energy analysis} \label{sec:met:energy}
+\subsection{Energy analysis}
 
-This section should be written by TV :-)
+\emph{Energy} can be stored, transformed from one form to another (e.g. heat to power) and transferred between systems, but can neither be created nor destroyed (conservation law)~\textbf{Bejan et al.}. The system under study is the \emph{ship energy system} and is thus taken as control volume. The energy balance can be expressed as:
 
-\subsection{Exergy analysis} \label{sec:met:exergy}
+\begin{align}
+	\sum_{\mathrm{in}} \dot{H}_{\mathrm{in}} &= \sum_{\mathrm{out}} \dot{H}_{\mathrm{out}} \\
+	\dot{H}_{\mathrm{fuel}} + \dot{H}_{\mathrm{air}} &= \sum_{{\mathrm{waste}}}\dot{H}_{{\mathrm{waste}}}+\dot{W}_{\mathrm{el}}+\dot{Q}_{\mathrm{heating}}
+\end{align}
 
-This section should be written by TV :-)
+The left-hand side term represents, on a time rate basis, the energy associated with the fuel consumed in the boilers and engines ($\dot{H}_{\mathrm{fuel}}$) and the air used in the combustion processes ($\dot{H}_{\mathrm{air}}$). The right-hand side term denotes the power ($\dot{W}_{\mathrm{el}}$) and heat ($\dot{Q}_{\mathrm{heating}}$) required on-site (e.g. propulsion and fuel heating), and the heat discharged into the environment ($\sum_{{\mathrm{waste}}}\dot{H}_{{\mathrm{waste}}}$) with, for instance, the exhaust gases.
+
+The energy flow associated with a material stream is calculated as the sum of the physical and chemical enthalpies, and kinetic and potential energies are neglected.    The physical energy is taken as the relative enthalpy, as underlined in~\textbf{Kotas et al.}, and the chemical energy is taken as the lower/higher heating value. The environmental conditions taken for the present analysis are the ambient pressure and seawater temperature.
+
+\subsection{Exergy analysis}
+
+\emph{Exergy} may be defined as the `maximum theoretical useful work (shaft work or electrical work) as the system is brought into complete thermodynamic equilibrium with the thermodynamic environment while the system interacts with it only'~\citep{Moran1989}. Unlike energy, exergy is not conserved but some is destroyed because of the irreversible phenomena taking place in real processes (e.g. chemical reactions like combustion). The exergy balance for the system under study can be expressed as:
+
+\begin{align}
+	\sum_{\mathrm{in}} \dot{E}_{\mathrm{in}} = \sum_{\mathrm{out}} \dot{E}_{\mathrm{out}} +\dot{E}_{d} \\
+	\dot{E}_{\mathrm{fuel}} + \dot{E}_{\mathrm{air}} &= \sum_{{\mathrm{waste}}}\dot{E}_{{\mathrm{waste}}}+\dot{E}_{W}+\dot{E}_{Q,\mathrm{heating}}+\dot{E}_{d} 
+\end{align}
+
+The left-hand side term represents, on a time rate basis, the exergy associated with the fuel and air. The right-hand side term denotes the exergy of the waste streams, the exergy transfers with heat and power, and the exergy destroyed in the ship system. Kinetic and potential exergies are neglected, and the exergy of a given material stream is derived as the sum of the physical and chemical exergies. The chemical exergy is calculated based on the reference environment of \textbf{Szargut (1989)}, and its value is approximatively equal to the higher heating value for hydrocarbon fuels. The exergy destruction can be calculated from the Gouy-Stodola theorem~\textbf:{Kotas (1995)}.    
+
+The exergy balance may alternatively be formulated as:
+\begin{equation}
+\dot{E}_{\mathrm{p}} = \dot{E}_{\mathrm{f}} - \dot{E}_{\mathrm{d}} - \dot{E}_{\mathrm{l}} 
+\end{equation}
+
+where $\dot{E}_{\mathrm{p}}$ is called the exergy product, and corresponds to the desired output of the system, in exergy terms (for example, the power produced in an engine). $\dot{E}_{\mathrm{f}}$ denotes the exergy fuel, and represents the resources spent to drive the studied process (for instance, the fuel used in a combustion process). The last term $\dot{E}_{\mathrm{l}}$ corresponds to the losses of a system, such as the heat discharged into the environment with cooling water. 
+
+\subsection{System performance}
+
+The following indicators are used to evaluate the system performance:
+\begin{itemize}
+	\item the exergy efficiency $\varepsilon$, defined as the ratio between the exergy product and fuel of a given component or system
+	\begin{equation} \varepsilon = \frac{\dot{E}_{\mathrm{p}}}{\dot{E}_{\mathrm{f}}} \end{equation}
+	\item the efficiency defect $\lambda$, presented in the work of Kotas, defined as the fraction of the total exergy input destroyed in the successive irreversible processes
+	\begin{equation} \lambda = \frac{\dot{E}_{\mathrm{d}}}{\dot{E}_{\mathrm{in,tot}}} \end{equation}
+	\item  the irreversibility share $\delta$, suggested in the work of Tsatsaronis, defined as the ratio between the exergy destroyed in the $i$-th component in relation to the exergy destroyed in the entire system
+	\begin{equation} \delta_i = \frac{\dot{E}_{\mathrm{d},i}}{\dot{E}_{\mathrm{d,tot}}} \end{equation}
+	
+\end{itemize}    
+
 
 \subsection{Case study vessel} \label{sec:met:case}
 

@@ -56,21 +56,17 @@ import datareading as dr
 data_path = 'C:\\Users\\FrancescoBaldi\\Dropbox\\Energy and exergy analysis of a cruise ship - Journal Extension\\'
 dataset_raw = pd.read_hdf(data_path + 'birka_all_data.h5' ,'table')
 
-
 #N_POINTS = 319* 4 * 24
 #temp = CONSTANTS.monthLimits(N_POINTS)
 #MONTH_LIMIT_IDX = temp[0]
 #DAY_LIMIT_IDX = temp[1]
-dataset_raw = dr.keysRenaming(dataset_raw)
+#dataset_raw = dr.keysRenaming(dataset_raw)
 
 ######################################
 ## DATA CLEANING			##
 ######################################
 
 # Responsible: FA
-
-
-
 
 
 ######################################

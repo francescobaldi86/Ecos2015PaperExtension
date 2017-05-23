@@ -46,34 +46,34 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS):
     # This function only reads existing series. It does not do any pre-processing action.
     for name in CONSTANTS["NAMES"]["MainEngines"]:
         # Reading main engines exhaust gas temperature, TC inlet and outlet
-        processed[name]["Cyl"]["EG_out"]["T"] = raw[name + "_TC_EG_T_in"]  # Measured before mixer with flow form bypass
-        processed[name]["TC"]["EG_out"]["T"] = raw[name + "_TC_EG_T_out"]  # Measured after mixer with waste gate
+        processed[name]["Cyl"]["EG_out"]["T"] = raw[name + "-TC_EG_T_IN"]  # Measured before mixer with flow form bypass
+        processed[name]["TC"]["EG_out"]["T"] = raw[name + "-TC_EG_T_OUT"]  # Measured after mixer with waste gate
         # Reading main engines exhaust gas temperature, after HRSG. Only two of the four main engines have the HRSG
         if name=="ME1" or name=="ME2":
-            processed[name]["HRSG"]["EG_out"]["T"] = raw[name + "_HRSG_EG_T_out"]
-            processed[name]["HRSG"]["EG_in"]["T"] = raw[name + "_TC_EG_T_out"]
+            processed[name]["HRSG"]["EG_out"]["T"] = raw[name + "_EGB_EG_T_OUT"]
+            processed[name]["HRSG"]["EG_in"]["T"] = raw[name + "-TC_EG_T_OUT"]
         # Temperature in the engine room, i.e. inlet to the compressor of the TC
         processed[name]["TC"]["Air_in"]["T"] = raw["ER_Air_T"]
         processed[name]["Comp"]["Air_in"]["T"] = processed[name]["TC"]["Air_in"]["T"]
         # Pressure of the charge air, at the compressor outlet (and, hence, at the cylinder inlet)
-        processed[name]["TC"]["Air_out"]["p"] = raw[name+"_air_p_out"]
+        processed[name]["TC"]["Air_out"]["p"] = raw[name+"-CAC_AIR_P_OUT"]
         processed[name]["Cyl"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"]
         processed[name]["BPvalve"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"]
         # Reading the HT temperature before and after the main engine
         # processed[name]["CAC_HT"]["Water_out"]["T"] = raw[name + "_HT_water_T_out"] # Note: this might be inconsistent
-        processed[name]["JWC"]["Water_in"]["T"] = raw[name + "_HT_water_T_in"]
+        processed[name]["JWC"]["Water_in"]["T"] = raw[name + "-HT_FW_T_IN"]
         # Reading the LT temperature before the main engine
-        processed[name]["CAC_LT"]["Water_in"]["T"] = raw[name + "_LT_water_T_in"]
+        processed[name]["CAC_LT"]["Water_in"]["T"] = raw[name + "-LT_FW_T_IN"]
         # Reading the Lubricating oil temperature before and after the Lubricating Oil Cooler (hence, In is higher)
-        processed[name]["LOC"]["LubOil_in"]["T"] = raw[name + "_LOC_LubOil_T_in"]
-        processed[name]["LOC"]["LubOil_out"]["T"] = raw[name + "_LOC_LubOil_T_out"]
+        processed[name]["LOC"]["LubOil_in"]["T"] = raw[name + "-LO_OIL_T_IN"]
+        processed[name]["LOC"]["LubOil_out"]["T"] = raw[name + "_LO-TURB_OIL_T_OUT"]
         # Reading fuel oil temperature before injection
-        processed[name]["Cyl"]["Fuel_in"]["T"] = raw[name + "_fuel_T_in"]
+        processed[name]["Cyl"]["Fuel_in"]["T"] = raw[name + "-CYL_FUEL_T_IN"]
         # Reading charge air temperature, after the charge air cooler (or at cylinder inlet)
-        processed[name]["CAC_LT"]["Air_out"]["T"] = raw[name + "_CAC_air_T_out"]
+        processed[name]["CAC_LT"]["Air_out"]["T"] = raw[name + "-CAC_AIR_T_OUT"]
         processed[name]["Cyl"]["Air_in"]["T"] = processed[name]["CAC_LT"]["Air_out"]["T"]
         # Reading Engine rpm
-        processed[name]["Cyl"]["Power_out"]["omega"] = raw[name + "_rpm"]
+        processed[name]["Cyl"]["Power_out"]["omega"] = raw[name + "__RPM_"]
         return processed
 
 
@@ -91,22 +91,24 @@ def assumptions(raw, processed,CONSTANTS):
 def readAuxEnginesExistingValues(raw, processed,CONSTANTS):
     for name in CONSTANTS["NAMES"]["AuxEngines"]:
         # Reading main engines exhaust gas temperature, TC inlet and outlet
-        processed[name]["TC"]["EG_in"]["T"] = raw[name + "_TC_EG_T_in"]
-        processed[name]["TC"]["EG_out"]["T"] = raw[name + "_TC_EG_T_out"]
+        processed[name]["TC"]["EG_in"]["T"] = raw[name + "-TC_EG_T_IN"]
+        processed[name]["TC"]["EG_out"]["T"] = raw[name + "_TC_EG_T_OUT"]
         # Reading main engines exhaust gas temperature, after HRSG
-        processed[name]["HRSG"]["EG_out"]["T"] = raw[name + "_HRSG_EG_T_out"]
+        processed[name]["HRSG"]["EG_out"]["T"] = raw[name + "_EGB_EG_T_OUT"]
+        processed[name]["HRSG"]["EG_in"]["T"] = processed[name]["TC"]["EG_out"]["T"]
         # Temperature in the engine room, i.e. inlet to the compressor of the TC
         processed[name]["TC"]["Air_in"]["T"] = raw["ER_Air_T"]
         # Reading the HT temperature before and after the main engine
-        processed[name]["JWC"]["Water_in"]["T"] = raw[name + "_HT_water_T_in"]
+        processed[name]["JWC"]["Water_in"]["T"] = raw[name + "-HT_FW_T_IN"]
         # Reading the LT temperature before the main engine
-        processed[name]["CAC_LT"]["Water_in"]["T"] = raw[name + "_LT_water_T_in"]
+        processed[name]["CAC_LT"]["Water_in"]["T"] = raw[name + "-LT_FW_T_IN"]
         # Reading the Lubricating oil temperature before and after the Lubricating oil cooler
-        processed[name]["LOC"]["LubOil_out"]["T"] = raw[name + "_LOC_LubOil_T_out"]
+        processed[name]["LOC"]["LubOil_out"]["T"] = raw[name + "-LO_OIL_T_OUT"]
         # Reading fuel oil temperature before injection
-        processed[name]["Cyl"]["Fuel_in"]["T"] = raw[name + "_fuel_T_in"]
-        # Reading charge air temperature. NOTE: THE PRESSURE IS NOT READ, because it does not participate in the EA
-        processed[name]["CAC_HT"]["Air_in"]["T"] = raw[name + "_CAC_air_T_in"]
+        processed[name]["Cyl"]["Fuel_in"]["T"] = raw[name + "-CYL_FUEL_T_IN"]
+        # Reading charge air temperature.
+        processed[name]["CAC_LT"]["Air_out"]["T"] = raw[name + "-CAC_AIR_T_OUT"]
+        processed[name]["CAC_LT"]["Air_out"]["p"] = raw[name + "-CAC_AIR_P_OUT"]
         processed[name]["Cyl"]["Power_out"]["Wdot"] = raw[name + "_Power"]
         return processed
 
@@ -126,7 +128,7 @@ def mainEngineFuelFlowCalculation(raw, processed, CONSTANTS):
         # This function calculates the fuel flow of the main engines
         # In the case of the main engines, the fuel flow of an engine is calculated given its fuel
         # rack position and its rotating speed.
-        fuel_rack_position = raw[name+"_frp"]
+        fuel_rack_position = raw[name+"__FRP_"]
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = CONSTANTS["MainEngines"]["MFR_FUEL_DES"] * (
         (CONSTANTS["MainEngines"]["POLY_FRP_2_MF"][0] + CONSTANTS["MainEngines"]["POLY_FRP_2_MF"][1] *
          fuel_rack_position) / (CONSTANTS["MainEngines"]["POLY_FRP_2_MF"][0] + CONSTANTS["MainEngines"][

@@ -1,5 +1,5 @@
 import csv
-headers_dict = '/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/data_import/headers_dict.csv'
+headers_dict = 'C:\\Users\\FrancescoBaldi\\switchdrive\\Work in progress\\Paper 0\\Ecos2015PaperExtension\\data_import\\headers_dict.csv'
 
 #%%
 
@@ -14,7 +14,7 @@ with open(headers_dict, 'r') as f:
         d[k] = v
 
 
-d[headers[0]]
+##d[headers[0]]
 
 
 #%%
