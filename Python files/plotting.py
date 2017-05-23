@@ -23,10 +23,10 @@ def plotPrompt(structure):
     #   user plotting by specifically asking for the required input
     output = {}
     output["variables"] = []
+    accepted_plot_mode = ["sankey", "hist", "timeSeries"]
     input1 = input("Provide input for advanced plotting. If you wish to switch to simple mode, type ""s"" ")
     if input1 == "s" or input1 == "S" or input1 == "Simple" or input1 == "simple":
         while True:
-            accepted_plot_mode = ["sankey", "hist", "timeSeries"]
             plot_mode = input("Switched to simple mode. Please enter the plot type. Available choices are: ""sankey"", ""hist"", ""timeSeries"" ")
             if plot_mode in accepted_plot_mode:
                 output["plot_mode"] = plot_mode
@@ -78,6 +78,45 @@ def plotPrompt(structure):
         # - To plot more than one variable in the same plot, a new entry is added with ";" as separator
         # - To add a new plot, the separator to be used is "%"
         # Example: "hist->ME1,TC,EG_in,T;ME1,TC,EG_out,T%timeSeries->ME1,TC,EG_in,T;ME1,TC,EG_out,T"
+        split1 = input1.split("%")
+        for plot in split1:
+            plot_info = {}
+            split2 = plot.split("->")
+            plot_mode = split2[0]
+            if plot_mode in accepted_plot_mode:
+                output["plot_mode"] = plot_mode
+            else:
+                print("The input you gave (" + plot_mode + ") for the plot type is not correct! Maybe there was a typo? Try again!")
+                break
+            split3 = split2[1].split(";")
+            for line in split3:
+                split4 = line.split(",")
+                plot_system = split4[0]
+                plot_component = split4[1]
+                plot_flow = split4[2]
+                plot_property = split4[3]
+                if plot_system in structure.keys():
+                    plot_info["system"] = plot_system
+                else:
+                    print("The input you gave (" + plot_system + ") for the system name is not correct! Maybe there was a typo? Try again!")
+                    break
+                if plot_component in structure[plot_info["system"]].keys():
+                    plot_info["component"] = plot_component
+                else:
+                    print("The input you gave (" + plot_component + ") for the component name is not correct! Maybe there was a typo? Try again!")
+                    break
+                if plot_flow in structure[plot_info["system"]][plot_info["component"]].keys():
+                    plot_info["flow"] = plot_flow
+                else:
+                    print("The input you gave (" + plot_flow + ") for the flow name is not correct! Maybe there was a typo? Try again!")
+                    break
+                if plot_property in structure[plot_info["system"]][plot_info["component"]][plot_info["flow"]].keys():
+                    plot_info["property"] = plot_property
+                else:
+                    print("The input you gave (" + plot_property + ") for the property name is not correct! Maybe there was a typo? Try again!")
+                    break
+
+
 
 
 def plotFromCSV(filename):
