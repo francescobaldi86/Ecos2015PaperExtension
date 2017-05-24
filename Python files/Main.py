@@ -53,8 +53,8 @@ filenames = input.filenames() # Note: this is just a test
 
 import datareading as dr
 
-data_path = 'C:\\Users\\FrancescoBaldi\\Dropbox\\Energy and exergy analysis of a cruise ship - Journal Extension\\'
-dataset_raw = pd.read_hdf(data_path + 'birka_all_data.h5' ,'table')
+data_path = 'C:\\Users\\FrancescoBaldi\\switchdrive\Work in progress\\Paper 0\\Ecos2015PaperExtension\\data_import\\'
+dataset_raw = pd.read_hdf(data_path + 'selected_data_1year_comp.h5' ,'table')
 
 #N_POINTS = 319* 4 * 24
 #temp = CONSTANTS.monthLimits(N_POINTS)
