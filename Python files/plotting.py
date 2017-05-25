@@ -2,7 +2,7 @@
 #import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
-def plotMain(type, filename, structure):
+def plotMain(type, structure, *args):
     # This function plots the contents of the analysed files.
     # Two input values for "type" are accepted:
     # - "off" [default]: does not print anything
@@ -10,11 +10,19 @@ def plotMain(type, filename, structure):
     # - "csv": reads info on what is to be read from a csv file
     if type == "prompt":
         plot_info = plotPrompt(structure)
+        data_type = "processed"
+    elif type == "prompt_raw":
+        hd = args[0]
+        plot_info = plotPromptRaw(structure,hd)
+        data_type = "raw"
     elif type == "csv":
+        filename = args[0]
         plot_info = plotFromCSV(filename)
+        data_type = "processed"
     else:
+        print("Either the -type- input was not correct, or you don't wish to print anything. No printout")
         return
-    plottingFunction(plot_info,structure)
+    plottingFunction(plot_info, structure, data_type)
 
 
 def plotPrompt(structure):
@@ -137,6 +145,39 @@ def plotPrompt(structure):
     return output
 
 
+def plotPromptRaw(structure, hd):
+    output = []
+    accepted_plot_mode = ["sankey", "hist", "timeSeries"]
+    output.append({})
+    output[0]["variables"] = []
+    while True:
+        plot_mode = input(
+            "Please enter the plot type. Available choices are: ""sankey"", ""hist"", ""timeSeries"" ")
+        if plot_mode in accepted_plot_mode:
+            output[0]["plot_mode"] = plot_mode
+            break
+        else:
+            print(
+                "The input you gave (" + plot_mode + ") for the plot type is not correct! Maybe there was a typo? Try again!")
+    while True:
+        # We start here a loop to allow for printing more things in the same figure
+        while True:
+            plot_var = input("Now input what variable you like to plot for. ")
+            if hd[plot_var] in structure.keys():
+                output[0]["variables"].append(hd[plot_var])
+                break
+            else:
+                print("The input you gave (" + plot_var + ") for the plot type is not correct! Maybe there was a typo? Try again!")
+        plot_cycle = input(
+            "Thanks! We have everything we need! Do you wish to add anything more to the same plot? if so, type ""y"". Otherwise, type any other character ")
+        if plot_cycle == "y":
+            print("Cool! Let's add a line to the plot, shall we?")
+        else:
+            print("OK, so no more inputs. Here comes the plot!")
+            break
+    return output
+
+
 
 def plotFromCSV(filename):
     # Plots a list of things defined in a CSV files
@@ -144,26 +185,44 @@ def plotFromCSV(filename):
 
 
 
-def plottingFunction(plot_info,data):
-    # Here is where the plot finally happens...
-    print("Still to be defined")
+def plottingFunction(plot_info, data, data_type):
     # Here we go
-    for figure in plot_info:
-        if figure["plot_mode"] == "sankey":
-            print("Plot Sankey diagram...as if this was easy")
-        else:
-            fig = plt.figure()
-            for plot in figure["variables"]:
-                x = data[plot["system"]][plot["component"]][plot["flow"]][plot["property"]]
-                if figure["plot_mode"] == "hist":
-                    num_bins = 50
-                    # the histogram of the data
-                    n, bins, patches = plt.hist(x, num_bins, normed=1, alpha=0.5)
-                    # add a 'best fit' line
-                    plt.xlabel(plot["property"]+" of "+plot["flow"]+" of "+plot["component"]+" in "+plot["system"])
-                    plt.ylabel('Probability')
-                if figure["plot_mode"] == "timeSeries":
-                    x.plot()
+    if data_type == "processed":
+        for figure in plot_info:
+            if figure["plot_mode"] == "sankey":
+                print("Plot Sankey diagram...as if this was easy")
+            else:
+                fig = plt.figure()
+                for plot in figure["variables"]:
+                    x = data[plot["system"]][plot["component"]][plot["flow"]][plot["property"]]
+                    if figure["plot_mode"] == "hist":
+                        num_bins = 50
+                        # the histogram of the data
+                        n, bins, patches = plt.hist(x, num_bins, normed=1, alpha=0.5)
+                        # add a 'best fit' line
+                        plt.xlabel(plot["property"]+" of "+plot["flow"]+" of "+plot["component"]+" in "+plot["system"])
+                        plt.ylabel('Probability')
+                    if figure["plot_mode"] == "timeSeries":
+                        x.plot()
+    elif data_type == "raw":
+        for figure in plot_info:
+            if figure["plot_mode"] == "sankey":
+                print("Plot Sankey diagram...as if this was easy")
+            else:
+                fig = plt.figure()
+                for plot in figure["variables"]:
+                    x = data[plot]
+                    if figure["plot_mode"] == "hist":
+                        num_bins = 50
+                        # the histogram of the data
+                        n, bins, patches = plt.hist(x, num_bins, normed=1, alpha=0.5)
+                        # add a 'best fit' line
+                        plt.xlabel("Variable of interest")
+                        plt.ylabel('Probability')
+                    if figure["plot_mode"] == "timeSeries":
+                        x.plot()
+    else:
+        print("Data type is wrong. It should be either -raw- or -processed-")
 
 
 

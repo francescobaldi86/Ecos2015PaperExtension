@@ -1,21 +1,18 @@
 # This file does the appropriate transformations to the data before it is processed
 
-import re
+import pandas as pd
 
-def keysRenaming(raw):
-    # This function renames the keys of the dataset appropriately, so that it is easier to read them later on
-    raw_keys = raw.keys()
-    new_keys = []
-    for idx in range(len(raw_keys)):
-        key = raw_keys[idx]
-        key = re.sub(" ","_",key)  # Substitutes spaces with underscores
-        key = re.sub("M.*:[0-9]{4}", "", key)  # Removes the beginning of the line, with the "MAIN" text and the number
-        key = re.sub("_Ave.*_900", "", key)  #  the last part, with "Average"
-        key = re.sub("_Raw.*_900", "", key)  # Removes the last part, with "Raw data"
-        key = re.sub(":av_", "", key)  # Removes the "av" particle in the beginning (when it exists)
-        new_keys.append(key)  # Reassigning the key
-    raw.columns = new_keys
-    return raw
+def keysRenaming(raw,translate_xls):
+    output = {}
+    headers = pd.read_excel(translate_xls)
+    # Create a list of each column, then a dictonary which is acting as the translotor.
+    old_selected = raw.keys()
+    old = headers['ORIGINAL_HEADER']
+    new = headers['NEW_HEADER']
+    for old_title in old_selected:
+        idx = pd.Index(old).get_loc(old_title)
+        output[new[idx]] = old_title
+    return output
 
 
 def columnSelection(raw):

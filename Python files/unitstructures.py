@@ -12,15 +12,13 @@
 # For each flow, first a "type" flow is defined. This helps in the calculations and flow definition:
 # --- Physical flow (PF)
 # --- Heat flow (Qdot)
-# --- Mech/El Power (Wdot)
+# --- Mech/El/Ch Power (Wdot)
 
 # For physical flows, the following data Series are initiated:
-# --- Inlet mass flow (mdot_in)
-# --- Outlet mass flow (mdot_out)
-# --- Inlet temperature (T_in)
-# --- Outlet temperature (T_out)
-# --- Inlet specific enthalpy (h_in)
-# --- Outlet specific enthalpy (h_out)
+# --- Mass flow (mdot)
+# --- Temperature (T)
+# --- Specific enthalpy (h)
+# --- Specific entropy (s)
 # --- Specific heat (NOTE: CONSTANT, NOT A SERIES) (cp)
 
 # For Heat flows, the following data Series are initiated:
@@ -45,17 +43,17 @@ def flowStructure():
             structure[idx]["BPvalve"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}}  # Bypass valve
             structure[idx]["Turbine"] = {"EG_in": {"type": "CPF"}, "EG_out": {"type": "CPF"}}  # Turbocharger turbine
             structure[idx]["WasteGate"] = {"EG_in": {"type": "CPF"},"EG_out": {"type": "CPF"}}  # Waste gate
-            structure[idx]["CAC_HT"] = {"Air_in": {"type": "CPF"}, "HTwater_in": {"type": "IPF"},
-                                        "Air_out": {"type": "CPF"}, "HTwater_out": {"type": "IPF"}}  # Charge air
+            structure[idx]["CAC_HT"] = {"Air_in": {"type": "CPF"}, "HTWater_in": {"type": "IPF"},
+                                        "Air_out": {"type": "CPF"}, "HTWater_out": {"type": "IPF"}}  # Charge air
             # cooler, HT stage
-            structure[idx]["CAC_LT"] = {"Air_in": {"type": "CPF"}, "LTwater_in": {"type": "IPF"},
-                                        "Air_out": {"type": "CPF"}, "LTwater_out": {"type": "IPF"}}  # Charge air
+            structure[idx]["CAC_LT"] = {"Air_in": {"type": "CPF"}, "LTWater_in": {"type": "IPF"},
+                                        "Air_out": {"type": "CPF"}, "LTWater_out": {"type": "IPF"}}  # Charge air
             # cooler, LT stage
-            structure[idx]["LOC"] = {"LubOil_in": {"type": "IPF"}, "LTwater_in": {"type": "IPF"},
-                                     "LubOil_out": {"type": "IPF"}, "LTwater_out": {"type": "IPF"}}  # Lubricating oil
+            structure[idx]["LOC"] = {"LubOil_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+                                     "LubOil_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}  # Lubricating oil
             # cooler
-            structure[idx]["JWC"] = {"QdotJW_in": {"type": "Qdot"}, "HTwater_in": {"type": "IPF"},
-                                                                    "HTwater_out": {"type": "IPF"}}  # Jacket water
+            structure[idx]["JWC"] = {"QdotJW_in": {"type": "Qdot"}, "HTWater_in": {"type": "IPF"},
+                                                                    "HTWater_out": {"type": "IPF"}}  # Jacket water
             # cooler Cylinders
             structure[idx]["Cyl"] = {"Air_in": {"type": "CPF"},  "FuelPh_in": {"type": "IPF"}, "EG_out": {"type":"CPF"},
                                      "Power_out": {"type": "Wdot"}, "FuelCh_in": {"type": "Wdot"}, "QdotJW_out": {"type":"Qdot"},

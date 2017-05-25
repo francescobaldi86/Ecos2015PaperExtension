@@ -54,20 +54,16 @@ filenames = input.filenames() # Note: this is just a test
 import datareading as dr
 
 data_path = 'C:\\Users\\FrancescoBaldi\\switchdrive\Work in progress\\Paper 0\\Ecos2015PaperExtension\\data_import\\'
-dataset_raw = pd.read_hdf(data_path + 'selected_data_1year_comp.h5' ,'table')
+translate_filename = data_path + 'headers_dict_FB.xlsx'
 
-#N_POINTS = 319* 4 * 24
-#temp = CONSTANTS.monthLimits(N_POINTS)
-#MONTH_LIMIT_IDX = temp[0]
-#DAY_LIMIT_IDX = temp[1]
-#dataset_raw = dr.keysRenaming(dataset_raw)
+dataset_raw = pd.read_hdf(data_path + 'selected_data_1year_comp.h5' ,'table')
+header_names = dr.keysRenaming(dataset_raw, translate_filename)
 
 ######################################
 ## DATA CLEANING			##
 ######################################
 
 # Responsible: FA
-
 
 ######################################
 ## DATA PROCESSING		##
@@ -82,16 +78,16 @@ import constants as kk
 CONSTANTS = kk.constantsSetting()
 
 dataset_processed = us.flowStructure()  # Here we initiate the structure fields
-dataset_processed = us.flowPreparation(dataset_processed,dataset_raw.index)  # Here we create the appropriate empty data series for each field
+dataset_processed = us.flowPreparation(dataset_processed, dataset_raw.index)  # Here we create the appropriate empty data series for each field
 dataset_status = us.generalStatus() # Here we simply initiate the "status" structure
 
 # Running the pre-processing required for filling in the data structures:
 import preprocessing as pp
 # First updating the "CONSTANTS" dictionary with the some additional information
-CONSTANTS = pp.assumptions(dataset_raw,CONSTANTS)
+CONSTANTS = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
-(dataset_processed, dataset_status) = pp.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status)
-(dataset_processed, dataset_status) = pp.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status)
+(dataset_processed, dataset_status) = pp.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
+(dataset_processed, dataset_status) = pp.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
 
 
 

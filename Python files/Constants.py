@@ -54,6 +54,7 @@ def mainEngines(CONSTANTS):
     output["RPM_DES"] = 500  # Main engine design speed, in [rpm]
     output["MFR_FUEL_DES_ISO"] = 1165 / 3600 * 186.1 / 197.6   # Fuel flow at 100# load at ISO conditions, in [kg/s]
 # output["POLY_FUEL_RACK_2_MFR_FUEL"] = polyfit([24 31 38 42 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
+    output["POLY_FRP_2_MFR"] = [-159.612, 28.282788]  # Gives the mass flow rate at fixed rpm for different values of the fuel rack position
     output["POLY_FUEL_LOAD_2_BSFC_ISO"] = numpy.polyfit(numpy.array([336.3, 587.8, 836.6, 953.1, 1141])/1141,
                                                         numpy.array([216.9, 187.1, 178.5, 179.2, 181.4]), 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
 # output["POLY_RPM_2_POWER"] = polyfit([315 397 454 474 500 516], [1463 2925 4388 4973 5890 6435], 3)  
@@ -90,6 +91,7 @@ def mainEngines(CONSTANTS):
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
+    output["FRP_DES"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}  # Value of the fuel rack position at 100% load
     return output
     
     
