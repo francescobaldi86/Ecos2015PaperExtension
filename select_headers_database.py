@@ -13,9 +13,9 @@ headers = pd.read_excel(project_path + 'General/headers_dict.xlsx')
 
 #%%
 
-# Choose only the one which are marked with x in C-column
+# Choose only the one which are marked with x in FB-column
 
-df_headers_chosen = headers.loc[headers['C'] == 'x']
+df_headers_chosen = headers.loc[headers['FB'] == 'x']
 
 # Make a standard list of the headers, which can be used later on for selection.
 
@@ -23,6 +23,7 @@ headers_name = df_headers_chosen['ORIGINAL_HEADER'].tolist()
 
 #%%
 
+all_data = pd.DataFrame()
 # The csv-files which are already pre-processed.
 
 csvfiles = glob.glob(csv_data_path + '*.csv')
@@ -39,7 +40,11 @@ for i in range(len(csvfiles)):
     # I really need to check that up...
     for n in headers_name:
         if n in list(df):
-            all_data[n] = df[n]
+            if n in list(all_data):
+                # If the header is already existing it needs to be merged rather than overwrite the existing.
+                all_data = pd.concat([all_data, df[n]])
+            else:
+                all_data[n] = df[n]
 
     del df # Clean up memory
     print(str(i+1) + ' done of ' + str(len(csvfiles)))
