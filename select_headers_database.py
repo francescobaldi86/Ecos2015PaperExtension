@@ -2,7 +2,7 @@ import pandas as pd
 import glob as glob
 import csv
 
-database_path = '/Users/fredde/Database/'
+database_path = '/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Database/'
 csv_data_path = '/Users/fredde/Database/csv-1year/'
 project_path = '/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/'
 
@@ -40,11 +40,14 @@ for i in range(len(csvfiles)):
     # I really need to check that up...
     for n in headers_name:
         if n in list(df):
-            if n in list(all_data):
+            all_data[n] = df[n]
+
+
+            #if n in list(all_data):
                 # If the header is already existing it needs to be merged rather than overwrite the existing.
-                all_data = pd.concat([all_data, df[n]])
-            else:
-                all_data[n] = df[n]
+            #    all_data = pd.concat([all_data, df[n]])
+            #else:
+            #    all_data[n] = df[n]
 
     del df # Clean up memory
     print(str(i+1) + ' done of ' + str(len(csvfiles)))
