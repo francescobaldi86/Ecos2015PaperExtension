@@ -32,8 +32,8 @@ for i in list(selected_df):
     s1 = selected_df[i]
     s1 = s1.dropna()
     s2 = s1[~s1.index.duplicated(keep='first')]
+    s2.index = pd.to_datetime(s2.index)
     df_out[i] = s2
-
 
 df_out.to_hdf(database_path + 'selected_df.h5','table',complevel=9,complib='blosc')
 
