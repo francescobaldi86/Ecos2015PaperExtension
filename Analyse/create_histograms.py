@@ -1,18 +1,21 @@
 import pandas as pd
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
-import numpy as np
-%pylab # This is for inline plotting
+import os
+%pylab
+# This is for inline plotting
 
-database_path = 'Database/'
-graph_path = 'Analyse/Graph/'
+project_path = os.path.realpath('')
+
+database_path = project_path + os.sep + 'Database' + os.sep
+graph_path = project_path + os.sep + 'Analyse' + os.sep + 'Graph' + os.sep
 
 df = pd.read_hdf(database_path + 'selected_df.h5','table')
 
 
 #%%
 # Create dictonary translation from original to new! (not the other way around)
-headers = pd.read_excel('General/headers_dict.xlsx')
+headers = pd.read_excel(project_path + os.sep + 'General' + os.sep + 'headers_dict.xlsx')
 # Load the data from the Excel-file with headers. Please not the project_path
 # Create a list of each column, then a dictonary which is acting as the translotor.
 old = headers['ORIGINAL_HEADER']
