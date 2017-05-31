@@ -8,13 +8,15 @@ headers = pd.read_excel(project_path + 'General/headers_dict.xlsx')
 
 #%%
 
-# Create a list of each column, then a dictonary which is acting as the translotor.
+# Create a list of each column, then a dictonary which is acting as the translator.
+# The dictonary acts two-ways
 
 old = headers['ORIGINAL_HEADER']
 new = headers['NEW_HEADER']
 d = {}
 for n in range(len(old)):
     d[new[n]] = old[n]
+    d[old[n]] = new[n] # So it can act two ways, bi-directional.
 
 #%%
 

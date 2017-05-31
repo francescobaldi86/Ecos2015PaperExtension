@@ -4,6 +4,9 @@ import numpy as np
 data_path = '/Users/fredde/Database/'
 
 df_load = pd.read_hdf(data_path + 'all_data_1year_comp.h5','table')
+a = list(df_load)
+
+#%%
 
 df_load.head()
 import ftfy
@@ -13,9 +16,12 @@ for i in range(len(a)):
 
 print(a)
 
+#%%
+
 df_load[list(df_load)[1]].plot()
 
+#%%
 
 headers = open(data_path + 'headers.csv','w')
 for item in a:
-    headers.write('\n'+str(item.encode('utf-8')))
+    headers.write('\n'+item)

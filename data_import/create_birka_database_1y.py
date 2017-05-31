@@ -29,6 +29,14 @@ df = pd.DataFrame()
 all_data = pd.DataFrame()
 
 
+# As there are non uni-code characters in the original headers file it needs be fixed..
+# The following function was found here:
+# http://stackoverflow.com/questions/20078816/replace-non-ascii-characters-with-a-single-space
+# And replaces all non unicode chars with a space
+
+def remove_non_ascii(text):
+    return ''.join([i if ord(i) < 128 else ' ' for i in text])
+
 # Clean up csv
 
 # In[3]:
@@ -61,7 +69,8 @@ for i in range(len(xlsfiles)):
 
     for n in range(len(headers_new)):
         series = df[headers[n]].ix[13:]
-        df2[headers_new[n]] = series
+        df2[remove_non_ascii(headers_new[n])] = series
+
 
     # Save in .csv format.
     df2.to_csv(csv_data_path + xlsfiles[i].split('/')[-1].split('.')[0] + '.csv')
