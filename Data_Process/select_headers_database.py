@@ -3,14 +3,14 @@ import glob as glob
 import csv
 
 original_database_path = '/Users/fredde/Database/'
-database_path = '../Database/'
+database_path = 'Database/'
 
 df = pd.read_hdf(original_database_path + 'all_data_1year_comp.h5','table')
 
 
 # Load the data from the Excel-file with headers.
 
-headers = pd.read_excel('../General/headers_dict.xlsx')
+headers = pd.read_excel('General/headers_dict.xlsx')
 
 #%%
 
