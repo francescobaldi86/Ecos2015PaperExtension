@@ -24,15 +24,15 @@ def ME_CW_Pump(rpm,pressure):
 def AE_CW_Pump(rpm,pressure):
     "Engine driven cooling water pump HT/LT for AE. Inputs engine-rpm and gauge-pressure [bar] CW."
     # The equation was derived from the pump diagram in the engine project manual at 750 rpm
-    # H = -0.0226 Q^2 - 0.0491 Q + 34.783
+    # H = -0.0017 Q^2 - 0.0136 Q + 34.783
     # pq-formula: ax^2 + bx + c = 0
     # Affinity laws
     # The pump formula is for 750 rpm. So the pressure input must be scaled so
     # it "fits" the right rpm using the affinity laws
     H = ((pressure * 1.e5) / (9.81 * 1000) - 10) * (750./rpm)**2
 
-    a = -0.0266
-    b = -0.0491
+    a = -0.0017
+    b = -0.0136
     c = 34.783 - H
     # pq-formula, only the positive
     Q = -b/(2*a) + sqrt( (b**2) / ((2*a)**2) - (c / a) )

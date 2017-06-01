@@ -46,6 +46,32 @@ for i in list(df):
 
 #%%
 
+
+# creating histograms for all Datapoints filtering only engine ON and saving
+
+nr_bin=60
+
+i
+d[i][:3]
+i
+
+for i in list(df):
+    if (d[i][:2] == 'AE') | (d[i][:2] == 'ME'):
+        series1 = df[i][df[d[d[i][:3]+'-TC__RPM_']] > 5000]
+    else:
+        series1 = df[i]
+
+    plt.hist(series1,bins=nr_bin)
+    plt.title((d[i]) + 'filtered TC > 5000')
+    plt.xlabel('Datapoints: ' + str(len(series1)) + ', bins: ' + str(nr_bin))
+    plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
+    plt.savefig(graph_path + '/eng_on/' + d[i])
+    fig = matplotlib.pyplot.gcf() # higher res
+    fig.set_size_inches(10,5) #higher res
+    plt.clf()
+
+
+#%%
 # full year time series plotting for ship speed. resampling to one hour.
 
 i1='SHIP_SPEED_KNOT_'
@@ -290,6 +316,52 @@ plt.show()
 
 #%%
 
+
+
+
+#%%
+
+
+i1='AE1-TC_EG_T_IN1'
+i2='AE1-TC_EG_T_IN2'
+
+series1=df[d[i1]]['2014-01-10']
+series2=df[d[i2]]['2014-01-10']
+series2= series2[series2 > 40]
+series1= series1[series1 > 40]
+
+plot(series1)
+plot(series2)
+
+#plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
+#plt.hist(series2,bins=nr_bin,alpha=0.5)
+
+plt.title(i1 +' and ' + i2)
+plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
+plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+plt.figure()
+
+i3='AE1-TC__RPM_'
+series3=df[d[i3]]['2014-01-10']
+plot(series3)
+
+#plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
+#plt.hist(series2,bins=nr_bin,alpha=0.5)
+
+plt.title(i1 +' and ' + i2)
+plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
+plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
 
 
 
