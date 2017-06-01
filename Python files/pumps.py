@@ -51,7 +51,7 @@ AE_CW_Pump(750,3)
 #%%
 
 %pylab
-p = linspace(2,4,50)
+p = linspace(2,4,500)
 q = ME_CW_Pump(500,p)
 
 plot(q,p)

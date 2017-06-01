@@ -313,3 +313,34 @@ plt.show()
 
 
 #%%
+
+
+i1='AE2-LT-CAC_FW_T_IN'
+i2='AE1-LT-CAC_FW_T_IN'
+i1='AE2-LT-CAC_FW_T_IN'
+i2='AE1-LT-CAC_FW_T_IN'
+
+series1=df[d[i1]]
+series2=df[d[i2]]
+series1=df[d[i1]]
+series2=df[d[i2]]
+
+
+series2= series2[series2 > 40]
+series1= series1[series1 > 40]
+series2= series2[series2 > 40]
+series1= series1[series1 > 40]
+
+
+
+plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
+plt.hist(series2,bins=nr_bin,alpha=0.5)
+
+plt.title((d[i]))
+plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
+plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0,0.66,series2.describe(),alpha=0.8,fontsize=8)
+#plt.savefig(graph_path + d[i])
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
