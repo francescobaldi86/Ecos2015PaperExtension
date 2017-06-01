@@ -33,12 +33,11 @@ for n in range(len(old)):
 nr_bin=60
 
 for i in list(df):
-    series1 = df[i].dropna()
-    series2 = series1[~series1.index.duplicated(keep='first')]
-    plt.hist(series2,bins=nr_bin)
+    series1 = df[i]
+    plt.hist(series1,bins=nr_bin)
     plt.title((d[i]))
-    plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
-    plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
+    plt.xlabel('Datapoints: ' + str(len(series1)) + ', bins: ' + str(nr_bin))
+    plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
     plt.savefig(graph_path + d[i])
     fig = matplotlib.pyplot.gcf() # higher res
     fig.set_size_inches(10,5) #higher res
@@ -155,11 +154,10 @@ series2_mean[month].plot(marker='x',label=i2)
 series3_mean[month].plot(marker='x',label=i3)
 series4_mean[month].plot(marker='x',label=i4)
 
-series1_max[month].plot(linewidth=0,marker='_',label=i1+' max')
-series2_max[month].plot(linewidth=0,marker='_',label=i2+' max')
-series3_max[month].plot(linewidth=0,marker='_',label=i3+' max')
-series4_max[month].plot(linewidth=0,marker='_',label=i4+' max')
-
+series1_max[month].plot(linewidth=0,marker='o',label=i1+' max')
+series2_max[month].plot(linewidth=0,marker='o',label=i2+' max')
+series3_max[month].plot(linewidth=0,marker='o',label=i3+' max')
+series4_max[month].plot(linewidth=0,marker='o',label=i4+' max')
 
 plt.legend(bbox_to_anchor=(0, 1), loc=2, borderaxespad=0.)
 
@@ -169,10 +167,8 @@ fig.set_size_inches(10,5) #higher res
 plt.show()
 
 
-
-
-
 #%%
+nr_bin=50
 i='AE1-TC_EG_T_OUT'
 
 series2=df[d[i]]
