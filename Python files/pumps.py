@@ -8,7 +8,8 @@ def ME_CW_Pump(rpm,pressure):
     #    print('Out of domain, P')
     # The pump formula is for 500 rpm. So the pressure input must be scaled so
     # it "fits" the right rpm using the affinity laws
-    H = ((pressure * 1.e5) / (9.81 * 1000) - 10) * (500./rpm)**2
+    static_head = 10
+    H = ((pressure * 1.e5) / (9.81 * 1000) - static_head) * (500./rpm)**2
 
     a = -0.0004
     b = 0.0317
@@ -29,7 +30,8 @@ def AE_CW_Pump(rpm,pressure):
     # Affinity laws
     # The pump formula is for 750 rpm. So the pressure input must be scaled so
     # it "fits" the right rpm using the affinity laws
-    H = ((pressure * 1.e5) / (9.81 * 1000) - 10) * (750./rpm)**2
+    static_head = 10
+    H = ((pressure * 1.e5) / (9.81 * 1000) - static_head) * (750./rpm)**2
 
     a = -0.0017
     b = -0.0136
@@ -51,7 +53,9 @@ AE_CW_Pump(750,3)
 #%%
 
 %pylab
-p = linspace(2,4,500)
-q = ME_CW_Pump(500,p)
+p = linspace(0,6,10000)
+q = ME_CW_Pump(400,p+1)
+p
+q
 
 plot(q,p)

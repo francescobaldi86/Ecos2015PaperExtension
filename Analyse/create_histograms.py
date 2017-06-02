@@ -295,21 +295,33 @@ plt.show()
 #%%
 
 
-i1='ER13-HT_FW_T_1'
-i2='AE2-HT_FW_T_IN'
+nr_bin=100
+i1='AE1-HT_FW_P_IN'
+i2='AE2-HT_FW_P_IN'
+i3='AE3-HT_FW_P_IN'
+i4='AE4-HT_FW_P_IN'
 
-series1=df[d[i1]]
-series2=df[d[i2]]
-series2= series2[series2 > 40]
-series1= series1[series1 > 40]
+series1=df[d[i1]][df[d['AE1-TC__RPM_']] < 5000.]
+series2=df[d[i2]][df[d['AE2-TC__RPM_']] < 5000.]
+series3=df[d[i3]][df[d['AE3-TC__RPM_']] < 5000.]
+series4=df[d[i4]][df[d['AE4-TC__RPM_']] < 5000.]
+
+series1= series1[(series1 >0.8) & (series1 < 1.2)]
+series2= series2[(series2 >0.8) & (series2 < 1.2)]
+series3= series3[(series3 >0.8) & (series3 < 1.2)]
+series4= series4[(series4 >0.8) & (series4 < 1.2)]
 
 plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
 plt.hist(series2,bins=nr_bin,alpha=0.5)
+plt.hist(series3,bins=nr_bin,alpha=0.5,color='b')
+plt.hist(series4,bins=nr_bin,alpha=0.5)
 
 plt.title(i1 +' and ' + i2)
 plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
-plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
 plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.65,0.66,series3.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.65,0.42,series4.describe(),alpha=0.8,fontsize=8)
 fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
 plt.show()
@@ -355,8 +367,8 @@ plot(series3)
 
 plt.title(i1 +' and ' + i2)
 plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
-plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
-plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.13,0.66,series3.describe(),alpha=0.8,fontsize=8)
+#plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
 fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
 plt.show()
