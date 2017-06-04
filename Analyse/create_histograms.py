@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import os
+import unicodedata
+import re
 %pylab
 # This is for inline plotting
 
@@ -13,8 +15,18 @@ graph_path = project_path + os.sep + 'Analyse' + os.sep + 'Graph' + os.sep
 
 df = pd.read_hdf(database_path + 'selected_df.h5','table')
 
+def slugify(value):
+    """
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces to hyphens.
+    Remove characters that aren't alphanumerics, underscores, or hyphens.
+    Convert to lowercase. Also strip leading and trailing whitespace.
+    """
+    value = str(value)
 
-#%%
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    return re.sub(r'[-\s]+', '-', value)
+
 # Create dictonary translation from original to new! (not the other way around)
 headers = pd.read_excel(project_path + os.sep + 'General' + os.sep + 'headers_dict.xlsx')
 # Load the data from the Excel-file with headers. Please not the project_path
@@ -38,7 +50,7 @@ for i in list(df):
     plt.title((d[i]))
     plt.xlabel('Datapoints: ' + str(len(series1)) + ', bins: ' + str(nr_bin))
     plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
-    plt.savefig(graph_path + d[i])
+    plt.savefig(graph_path + slugify(d[i]))
     fig = matplotlib.pyplot.gcf() # higher res
     fig.set_size_inches(10,5) #higher res
     plt.clf()
@@ -51,10 +63,6 @@ for i in list(df):
 
 nr_bin=60
 
-i
-d[i][:3]
-i
-
 for i in list(df):
     if (d[i][:2] == 'AE') | (d[i][:2] == 'ME'):
         series1 = df[i][df[d[d[i][:3]+'-TC__RPM_']] > 5000]
@@ -65,7 +73,7 @@ for i in list(df):
     plt.title((d[i]) + 'filtered TC > 5000')
     plt.xlabel('Datapoints: ' + str(len(series1)) + ', bins: ' + str(nr_bin))
     plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
-    plt.savefig(graph_path + '/eng_on/' + d[i])
+    plt.savefig(graph_path + '/eng_on/' + slugify(d[i]))
     fig = matplotlib.pyplot.gcf() # higher res
     fig.set_size_inches(10,5) #higher res
     plt.clf()
@@ -396,10 +404,29 @@ fig.set_size_inches(10,5) #higher res
 plt.show()
 
 
-
-
 #%%
 
+i1='AE2-LT-LOC_FW_T_OUT'
+i2='AE2-LOC_OIL_T_OUT'
+
+
+#series1=df[d[i1]]['2014-06-01']
+#series2=df[d[i2]]['2014-06-01']
+
+
+series1=df[d[i1]].resample('D')
+series2=df[d[i2]].resample('D')
+#series2= series2[series1 > 0]
+#series1= series1[series1 > 0]
+series1.plot()
+series2.plot()
+#plt.plot(series1,linewidth=0,marker='x')
+plt.title((d[i1]))
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
 
 i1='AE2-LT-CAC_FW_T_IN'
 i2='AE1-LT-CAC_FW_T_IN'
@@ -463,31 +490,144 @@ print(diff_2)
 
 #%%
 
+# Checking the difference between Landsort sea water temperature and the temperature readings
+# from MS Birka air-temp.
+#
+
+air_T_smhi = pd.read_excel(database_path + '/smhi-open-data/air_T_sv_hogarna_smhi-opendata_1_99270_20170604_094558.xlsx',index_col=0)
+air_T_smhi.index = pd.to_datetime(air_T_smhi.index)
+#%%
+
+lufttemp=air_T_smhi['Lufttemperatur']['2014-01-01':'2014-12-15'].resample('D').mean()
+lufttemp=lufttemp.interpolate()
+lufttemp.plot()
+i1='ER_AIR_T_'
+
+
+series1=df[d[i1]]['2014-01-01':'2014-12-15'].resample('D').mean()
+series1.plot()
+plt.title((d[i1])+' RMS: '+str( ((((lufttemp - series1)**2).sum())/len(lufttemp))**0.5 ) )
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+# The RMS difference
+#diff_sq = ((((lufttemp - series1)**2).sum())/len(lufttemp)**0.5
+#print(diff_sq)
+
+# The absolute difference
+#diff_2 = abs(lufttemp-series1).mean()
+#print(diff_2)
+
 
 #%%
 
-# Time series of LO Temp
+
+# Checking the difference between Landsort sea water temperature and the temperature readings
+# from MS Birka outside air-temp which are missing for the half year
+#
+
+air_T_smhi = pd.read_excel(database_path + '/smhi-open-data/air_T_sv_hogarna_smhi-opendata_1_99270_20170604_094558.xlsx',index_col=0)
+air_T_smhi.index = pd.to_datetime(air_T_smhi.index)
+#%%
+
+lufttemp=air_T_smhi['Lufttemperatur']['2014-06-01':'2014-12-15'].resample('15min').mean().interpolate(method='linear')
+#lufttemp = lufttemp['2014-06-01':'2014-12-15']
+
+lufttemp.plot(marker='x')
+i1='OUTSIDE_AIR_T_'
+
+
+series1=df[d[i1]]['2014-06-01':'2014-12-15'].resample('15min').mean()
+series1.plot()
+plt.title((d[i1])+' RMS: '+str( ((((lufttemp - series1)**2).sum())/len(lufttemp))**0.5 ) )
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+# The RMS difference
+RMS = ((((lufttemp - series1)**2).sum())/len(lufttemp))**0.5
+print(RMS)
+
+# The absolute difference
+diff_2 = abs(lufttemp-series1).mean()
+print(diff_2)
+
+
+#%%
 
 
 
-#i1='AE1-LT-LOC_FW_T_OUT'
-#i2='AE1-LOC_OIL_T_OUT'
 
-i1='AE2-LT-LOC_FW_T_OUT'
-i2='AE2-LOC_OIL_T_OUT'
+
+# Both time series of outside air and sea water temp seems to be missing
+# in the first part of the year. This is why we need to use the smhi-open data
+#
+
+i1='OUTSIDE_AIR_T_'
+i2='SEA_SW_T_'
 
 
 #series1=df[d[i1]]['2014-06-01']
 #series2=df[d[i2]]['2014-06-01']
 
 
-series1=df[d[i1]].resample('D')
-series2=df[d[i2]].resample('D')
+series1=df[d[i1]].resample('D').mean()
+series2=df[d[i2]].resample('D').mean()
 #series2= series2[series1 > 0]
 #series1= series1[series1 > 0]
 series1.plot()
 series2.plot()
 #plt.plot(series1,linewidth=0,marker='x')
+plt.title((d[i1]))
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
+
+# Check time series of hot water heater temperature
+
+i1='__T_'
+
+series1=df[d[i1]].resample('D').mean()
+series1.plot()
+plt.title((d[i1]))
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+#%%
+
+#%%
+
+#
+#
+#
+
+rho_do = 800
+i1='DO DAY TANK T32C:6111:m3:Average:900'
+i2='DO STORAGE TK T22P:6112:m3:Average:900'
+
+series1=df[d[i1]].resample('H').mean()
+series2=df[d[i2]].resample('H').mean()
+
+
+mass_flow_tank = (series1.diff()-series2.diff())*rho_do
+mass_flow_tank
+mass_flow_tank.plot()
+
+#series1.plot()
+plt.title((d[i1]))
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+#%%
+
+i1='FO BOOST 1 CONSUMPT:6165:m3:Average:900'
+
+series1=df[d[i1]]#.resample('H').mean()
+
+series1.plot()
 plt.title((d[i1]))
 fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
