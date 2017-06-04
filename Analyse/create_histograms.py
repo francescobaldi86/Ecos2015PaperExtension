@@ -46,6 +46,32 @@ for i in list(df):
 
 #%%
 
+
+# creating histograms for all Datapoints filtering only engine ON and saving
+
+nr_bin=60
+
+i
+d[i][:3]
+i
+
+for i in list(df):
+    if (d[i][:2] == 'AE') | (d[i][:2] == 'ME'):
+        series1 = df[i][df[d[d[i][:3]+'-TC__RPM_']] > 5000]
+    else:
+        series1 = df[i]
+
+    plt.hist(series1,bins=nr_bin)
+    plt.title((d[i]) + 'filtered TC > 5000')
+    plt.xlabel('Datapoints: ' + str(len(series1)) + ', bins: ' + str(nr_bin))
+    plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
+    plt.savefig(graph_path + '/eng_on/' + d[i])
+    fig = matplotlib.pyplot.gcf() # higher res
+    fig.set_size_inches(10,5) #higher res
+    plt.clf()
+
+
+#%%
 # full year time series plotting for ship speed. resampling to one hour.
 
 i1='SHIP_SPEED_KNOT_'
@@ -269,16 +295,60 @@ plt.show()
 #%%
 
 
-i1='ER13-HT_FW_T_1'
-i2='AE2-HT_FW_T_IN'
+#comparing static head
 
-series1=df[d[i1]]
-series2=df[d[i2]]
-series2= series2[series2 > 40]
-series1= series1[series1 > 40]
+nr_bin=100
+i1='AE1-HT_FW_P_IN'
+i2='AE2-HT_FW_P_IN'
+i3='AE3-HT_FW_P_IN'
+i4='AE4-HT_FW_P_IN'
+
+series1=df[d[i1]][df[d['AE1-TC__RPM_']] < 5000.]
+series2=df[d[i2]][df[d['AE2-TC__RPM_']] < 5000.]
+series3=df[d[i3]][df[d['AE3-TC__RPM_']] < 5000.]
+series4=df[d[i4]][df[d['AE4-TC__RPM_']] < 5000.]
+
+series1= series1[(series1 >0.8) & (series1 < 1.2)]
+series2= series2[(series2 >0.8) & (series2 < 1.2)]
+series3= series3[(series3 >0.8) & (series3 < 1.2)]
+series4= series4[(series4 >0.8) & (series4 < 1.2)]
 
 plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
 plt.hist(series2,bins=nr_bin,alpha=0.5)
+plt.hist(series3,bins=nr_bin,alpha=0.5,color='b')
+plt.hist(series4,bins=nr_bin,alpha=0.5)
+
+plt.title(i1 +' and ' + i2)
+plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
+plt.figtext(0.13,0.66,series1.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.65,0.66,series3.describe(),alpha=0.8,fontsize=8)
+plt.figtext(0.65,0.42,series4.describe(),alpha=0.8,fontsize=8)
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
+
+
+
+
+#%%
+
+
+i1='AE1-TC_EG_T_IN1'
+i2='AE1-TC_EG_T_IN2'
+
+series1=df[d[i1]]['2014-01-10']
+series2=df[d[i2]]['2014-01-10']
+series2= series2[series2 > 40]
+series1= series1[series1 > 40]
+
+plot(series1)
+plot(series2)
+
+#plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
+#plt.hist(series2,bins=nr_bin,alpha=0.5)
 
 plt.title(i1 +' and ' + i2)
 plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
@@ -288,8 +358,24 @@ fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
 plt.show()
 
-#%%
+plt.figure()
 
+i3='AE1-TC__RPM_'
+series3=df[d[i3]]['2014-01-10']
+plot(series3)
+
+#plt.hist(series1,bins=nr_bin,alpha=0.5,color='r')
+#plt.hist(series2,bins=nr_bin,alpha=0.5)
+
+plt.title(i1 +' and ' + i2)
+plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
+plt.figtext(0.13,0.66,series3.describe(),alpha=0.8,fontsize=8)
+#plt.figtext(0.13,0.42,series2.describe(),alpha=0.8,fontsize=8)
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
 
 
 
@@ -341,6 +427,68 @@ plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
 plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
 plt.figtext(0,0.66,series2.describe(),alpha=0.8,fontsize=8)
 #plt.savefig(graph_path + d[i])
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
+
+# Checking the difference between Landsort sea water temperature and the temperature readings
+# from MS Birka SW-temp. We have missing data on this point for the first half year.
+#
+
+sw_smhi_landsort = pd.read_excel(database_path + '/smhi-open-data/water_T_landsort_smhi-opendata_5_2507_20170602_084638.xlsx',index_col=0)
+sw_smhi_landsort.index = pd.to_datetime(sw_smhi_landsort.index)
+havstemp=sw_smhi_landsort['Havstemperatur']['2014-06-01':'2014-12-15'].resample('15min').mean()
+havstemp=havstemp.interpolate()
+havstemp.plot()
+i1='SEA_SW_T_'
+
+
+series1=df[d[i1]]['2014-06-01':'2014-12-15'].resample('15min').mean()
+series1.plot()
+plt.title((d[i1])+' RMS: '+str( ((((havstemp - series1)**2).sum())/len(havstemp))**0.5 ) )
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+# The RMS difference
+diff_sq = ((((havstemp - series1)**2).sum())/len(havstemp))**0.5
+print(diff_sq)
+
+# The absolute difference
+diff_2 = abs(havstemp-series1).mean()
+print(diff_2)
+
+
+#%%
+
+
+#%%
+
+# Time series of LO Temp
+
+
+
+#i1='AE1-LT-LOC_FW_T_OUT'
+#i2='AE1-LOC_OIL_T_OUT'
+
+i1='AE2-LT-LOC_FW_T_OUT'
+i2='AE2-LOC_OIL_T_OUT'
+
+
+#series1=df[d[i1]]['2014-06-01']
+#series2=df[d[i2]]['2014-06-01']
+
+
+series1=df[d[i1]].resample('D')
+series2=df[d[i2]].resample('D')
+#series2= series2[series1 > 0]
+#series1= series1[series1 > 0]
+series1.plot()
+series2.plot()
+#plt.plot(series1,linewidth=0,marker='x')
+plt.title((d[i1]))
 fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
 plt.show()
