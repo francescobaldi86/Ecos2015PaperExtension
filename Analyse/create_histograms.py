@@ -295,6 +295,8 @@ plt.show()
 #%%
 
 
+#comparing static head
+
 nr_bin=100
 i1='AE1-HT_FW_P_IN'
 i2='AE2-HT_FW_P_IN'
@@ -425,6 +427,68 @@ plt.xlabel('Datapoints: ' + str(len(series2)) + ', bins: ' + str(nr_bin))
 plt.figtext(0.13,0.66,series2.describe(),alpha=0.8,fontsize=8)
 plt.figtext(0,0.66,series2.describe(),alpha=0.8,fontsize=8)
 #plt.savefig(graph_path + d[i])
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+#%%
+
+# Checking the difference between Landsort sea water temperature and the temperature readings
+# from MS Birka SW-temp. We have missing data on this point for the first half year.
+#
+
+sw_smhi_landsort = pd.read_excel(database_path + '/smhi-open-data/water_T_landsort_smhi-opendata_5_2507_20170602_084638.xlsx',index_col=0)
+sw_smhi_landsort.index = pd.to_datetime(sw_smhi_landsort.index)
+havstemp=sw_smhi_landsort['Havstemperatur']['2014-06-01':'2014-12-15'].resample('15min').mean()
+havstemp=havstemp.interpolate()
+havstemp.plot()
+i1='SEA_SW_T_'
+
+
+series1=df[d[i1]]['2014-06-01':'2014-12-15'].resample('15min').mean()
+series1.plot()
+plt.title((d[i1])+' RMS: '+str( ((((havstemp - series1)**2).sum())/len(havstemp))**0.5 ) )
+fig = matplotlib.pyplot.gcf() # higher res
+fig.set_size_inches(10,5) #higher res
+plt.show()
+
+# The RMS difference
+diff_sq = ((((havstemp - series1)**2).sum())/len(havstemp))**0.5
+print(diff_sq)
+
+# The absolute difference
+diff_2 = abs(havstemp-series1).mean()
+print(diff_2)
+
+
+#%%
+
+
+#%%
+
+# Time series of LO Temp
+
+
+
+#i1='AE1-LT-LOC_FW_T_OUT'
+#i2='AE1-LOC_OIL_T_OUT'
+
+i1='AE2-LT-LOC_FW_T_OUT'
+i2='AE2-LOC_OIL_T_OUT'
+
+
+#series1=df[d[i1]]['2014-06-01']
+#series2=df[d[i2]]['2014-06-01']
+
+
+series1=df[d[i1]].resample('D')
+series2=df[d[i2]].resample('D')
+#series2= series2[series1 > 0]
+#series1= series1[series1 > 0]
+series1.plot()
+series2.plot()
+#plt.plot(series1,linewidth=0,marker='x')
+plt.title((d[i1]))
 fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
 plt.show()
