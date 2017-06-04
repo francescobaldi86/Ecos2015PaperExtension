@@ -34,7 +34,33 @@ s2 = s2.interpolate()
 s0[s0<0.1]
 s0['2013-12-21'].plot()
 ss0 = df[d['AE1-TC__RPM_']][df[d['AE1-TC__RPM_']]>5000.]
-plt.fig()
+
+df[list(df)[0]][(df[list(df)[0]]>1.3) & (df[list(df)[0]]<1.5)]
+
+a = 'max()'
+
+
+#%%
+
+name = d['AE1-CAC_AIR_P_OUT']
+name1 = d['AE1-TC__RPM_']
+name1
+
+df[name][df[name1] > 5000].quantile(q=0.01)
+
+
+
+
+
+
+eval('s1.'+a)
+s1.max()
+
+df[list(df)[0]][(df[list(df)[0]]>1.3) & ()]
+
+
+(1 > 0) & (1 > 0)
+
 ss0['2013-12-21'].plot()
 sum(s1-s2)
 s1.describe()
