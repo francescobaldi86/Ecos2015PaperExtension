@@ -158,7 +158,7 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * bsfc / bsfc_iso
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
         processed[name]["Cyl"]["Power_out"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / bsfc * 1000 * 3600
-        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]
+        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECTT WITH THE CORRECT LHV
 
     return processed
 
@@ -383,7 +383,7 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
     if fuel_type == "HFO":
         LHV = CONSTANTS["General"]["LHV_HFO"]
     elif fuel_type == "MDO":
-        LHV = CONSTANTS["General"]["LHV_HFO"]
+        LHV = CONSTANTS["General"]["LHV_MDO"]
     else:
         print("Error. The type of fuel provided is not in the list!")
     # Converting existing data (expected in the form of dataSeries
@@ -400,7 +400,7 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
     alpha = k - 0.7 * (1 - k) * (1/CONSTANTS["General"]["ISO"]["ETA_MECH"] - 1)
     beta = k / alpha
     # Final calculation of the BSFC
-    bsfc = bsfc_ISO * CONSTANTS["General"]["ISO"]["LHV"] / CONSTANTS["General"]["ISO"]["LHV"] * beta
+    bsfc = bsfc_ISO * CONSTANTS["General"]["ISO"]["LHV"] / LHV * beta
     return bsfc
 
 
