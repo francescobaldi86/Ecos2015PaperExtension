@@ -29,7 +29,7 @@ datareading_run = "yes"
 
 
 
-
+#%%
 ######################################
 ## INPUT			##
 ######################################
@@ -45,7 +45,7 @@ filenames = input.filenames() # Note: this is just a test
 
 
 
-
+#%%
 ######################################
 ## DATA READING			##
 ######################################
@@ -64,7 +64,7 @@ dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_df.h5' ,'table')
 dataset_raw = pd.read_hdf(data_path + 'selected_df.h5' ,'table')
 >>>>>>> f176084a280d987a5e8b1ed6375e6c5223f256ef
 header_names = dr.keysRenaming(dataset_raw, translate_filename)
-
+#%%
 ######################################
 ## DATA CLEANING			##
 ######################################
@@ -75,7 +75,7 @@ header_names = dr.keysRenaming(dataset_raw, translate_filename)
 ## DATA PROCESSING		##
 ######################################
 # Responsible: FB
-
+#%%
 # Preparing the data structures
 import unitstructures as us
 import constants as kk
@@ -96,7 +96,7 @@ dataset_processed = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, he
 (dataset_processed, dataset_status) = pp.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
 
 
-
+#%%
 ######################################
 ## EXPLORATORY DATA ANALYSIS	##
 ######################################
@@ -105,6 +105,7 @@ dataset_processed = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, he
 
 
 
+#%%
 ######################################
 ## ENERGY ANALYSIS		##
 ######################################
@@ -114,6 +115,7 @@ import energyanalysis as ea
 dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
 
 
+#%%
 ######################################
 ## EXERGY ANALYSIS		##
 ######################################
@@ -123,3 +125,4 @@ dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
 
 
 ## PLAYGROUND ##
+#%%
