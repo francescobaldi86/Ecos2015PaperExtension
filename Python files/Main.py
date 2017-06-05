@@ -7,7 +7,7 @@
 
 # This is the main script of the project "Energy and Exergy analysis of a cruise ship"
 
-# The main objective of this project is to analyze the energy and exergy flows of the cruise ship "MS Birka", selected as case study. 
+# The main objective of this project is to analyze the energy and exergy flows of the cruise ship "MS Birka", selected as case study.
 
 # The main objective of this library of Python scripts is, therefore;
 # - Load the data
@@ -56,7 +56,7 @@ import datareading as dr
 data_path = 'C:\\Users\\FrancescoBaldi\\switchdrive\Work in progress\\Paper 0\\Ecos2015PaperExtension\\data_import\\'
 translate_filename = data_path + 'headers_dict_FB.xlsx'
 
-dataset_raw = pd.read_hdf(data_path + 'selected_data_1year_comp.h5' ,'table')
+dataset_raw = pd.read_hdf(data_path + 'selected_df.h5' ,'table')
 header_names = dr.keysRenaming(dataset_raw, translate_filename)
 
 ######################################
