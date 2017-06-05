@@ -57,12 +57,9 @@ import datareading as dr
 project_path = os.path.realpath('..')
 translate_filename = project_path + '\\General\\headers_dict.xlsx'
 
-<<<<<<< HEAD
 #dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_data_1year_comp.h5' ,'table')
 dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_df.h5' ,'table')
-=======
-dataset_raw = pd.read_hdf(data_path + 'selected_df.h5' ,'table')
->>>>>>> f176084a280d987a5e8b1ed6375e6c5223f256ef
+
 header_names = dr.keysRenaming(dataset_raw, translate_filename)
 #%%
 ######################################
