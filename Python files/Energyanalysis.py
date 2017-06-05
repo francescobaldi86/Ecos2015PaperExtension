@@ -21,18 +21,22 @@ def eYergyAnalzsis(structure,T0):
                     # Calculating the energy flows
                     structure[system][unit][flow]["Edot"] = structure[system][unit][flow]["mdot"] * (
                         structure[system][unit][flow]["h"] - structure[system][unit][flow]["h0"])
+                    # Calculating the specific exergy
+                    structure[system][unit][flow]["b"] = (
+                        structure[system][unit][flow]["h"] - structure[system][unit][flow]["h0"]) - T0 * (
+                        structure[system][unit][flow]["s"] - structure[system][unit][flow]["s0"])
                     # Calculating the exergy flows
-                    structure[system][unit][flow]["Bdot"] = structure[system][unit][flow]["mdot"] * (
-                        (structure[system][unit][flow]["h"] - structure[system][unit][flow]["h0"]) - T0 *
-                        (structure[system][unit][flow]["s"] - structure[system][unit][flow]["s0"]))
+                    structure[system][unit][flow]["Bdot"] = structure[system][unit][flow]["mdot"] * (structure[system][unit][flow]["b"])
                 elif structure[system][unit][flow]["Type"] == "IPF":
+                    # Calculating the specific exergy
+                    structure[system][unit][flow]["b"] = structure[system][unit][flow]["cp"] * (
+                        (structure[system][unit][flow]["T"] - T0) - T0 * (
+                        np.log(structure[system][unit][flow]["T"] / T0)) )
                     # Calculating the energy flows
                     structure[system][unit][flow]["Edot"] = structure[system][unit][flow]["mdot"] * structure[system][unit][flow]["cp"] * (
                         structure[system][unit][flow]["T"] - T0)
                     # Calculating the exergy flows
-                    structure[system][unit][flow]["Bdot"] = structure[system][unit][flow]["mdot"] * structure[system][unit][flow]["cp"] * (
-                        (structure[system][unit][flow]["T"] - T0) - T0 *
-                        np.log(structure[system][unit][flow]["T"] / T0))
+                    structure[system][unit][flow]["Bdot"] = structure[system][unit][flow]["mdot"] * structure[system][unit][flow]["b"]
                 elif structure[system][unit][flow]["Type"] == "Qdot":
                     structure[system][unit][flow]["Edot"] = structure[system][unit][flow]["Qdot"]
                     structure[system][unit][flow]["Bdot"] = structure[system][unit][flow]["Qdot"] / structure[system][unit][flow]["T"]

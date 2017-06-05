@@ -1,4 +1,3 @@
-
 ###########################################################################
 #
 ###########		ENERGY AND EXERGY ANALYSIS OF A CRUISE SHIP		###########
@@ -15,8 +14,6 @@
 # - Process data so to generate the variables of interest: in particular, energy and exergy flows
 # - Statistically analyze the data so to produce appropriate results
 
-
-
 # The main.py script calls other scripts and functions. It is divided in the following sections:
 # - INPUT
 # - DATA READING
@@ -26,6 +23,9 @@
 # - ENERGY ANALYSIS
 # - EXERGY ANALYSIS
 
+
+input_run = "yes"
+datareading_run = "yes"
 
 
 
@@ -37,10 +37,11 @@
 # Loading appropriate modules
 import pandas as pd
 import input
+import os
+import plotting as plot
+
 
 filenames = input.filenames() # Note: this is just a test
-
-
 
 
 
@@ -53,10 +54,11 @@ filenames = input.filenames() # Note: this is just a test
 
 import datareading as dr
 
-data_path = 'C:\\Users\\FrancescoBaldi\\switchdrive\Work in progress\\Paper 0\\Ecos2015PaperExtension\\data_import\\'
-translate_filename = data_path + 'headers_dict_FB.xlsx'
+project_path = os.path.realpath('..')
+translate_filename = project_path + '\\General\\headers_dict.xlsx'
 
-dataset_raw = pd.read_hdf(data_path + 'selected_data_1year_comp.h5' ,'table')
+#dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_data_1year_comp.h5' ,'table')
+dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_df.h5' ,'table')
 header_names = dr.keysRenaming(dataset_raw, translate_filename)
 
 ######################################
@@ -84,7 +86,7 @@ dataset_status = us.generalStatus() # Here we simply initiate the "status" struc
 # Running the pre-processing required for filling in the data structures:
 import preprocessing as pp
 # First updating the "CONSTANTS" dictionary with the some additional information
-CONSTANTS = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
+dataset_processed = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
 (dataset_processed, dataset_status) = pp.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
 (dataset_processed, dataset_status) = pp.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
@@ -104,7 +106,8 @@ CONSTANTS = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_nam
 ######################################
 
 # Responsible: FB
-
+import energyanalysis as ea
+dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
 
 
 ######################################
@@ -112,3 +115,7 @@ CONSTANTS = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_nam
 ######################################
 
 # Responsible: FB
+
+
+
+## PLAYGROUND ##

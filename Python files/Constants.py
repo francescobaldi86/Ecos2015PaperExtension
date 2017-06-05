@@ -31,7 +31,7 @@ def general():
     output["RHO_HFO"] = numpy.mean([890, 919, 924, 926, 925, 921, 924, 918, 920, 919, 933])  # HFO density, in [kg/m^3]
     output["AIR_STOIC"] = 14.7  # Stoichiometric ratio fuel/air for Diesel-type fuels
     output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency
-    output["P_ATM"] = 1.10325 # Assumption on atmospheric pressure
+    output["P_ATM"] = 1.01325 # Assumption on atmospheric pressure
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
     output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
     return output
@@ -92,6 +92,7 @@ def mainEngines(CONSTANTS):
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
     output["FRP_DES"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}  # Value of the fuel rack position at 100% load
+    output["BYPASS_FLOW"] = 1.1
     return output
     
     
@@ -125,6 +126,7 @@ def auxiliaryEngines(CONSTANTS):
     output["MFR_HT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of HT cooling water, in [kg/s]
     output["ETA_CORR"] = 1.15  # Used because one of the engines need correction, to be checked
     output["ETA_SG"] = 0.97
+    output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     return output
 
 

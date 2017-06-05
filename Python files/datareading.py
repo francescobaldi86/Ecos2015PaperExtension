@@ -12,6 +12,7 @@ def keysRenaming(raw,translate_xls):
     for old_title in old_selected:
         idx = pd.Index(old).get_loc(old_title)
         output[new[idx]] = old_title
+        output[old_title] = new[idx]
     return output
 
 
