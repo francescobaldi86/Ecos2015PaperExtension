@@ -632,3 +632,5 @@ plt.title((d[i1]))
 fig = matplotlib.pyplot.gcf() # higher res
 fig.set_size_inches(10,5) #higher res
 plt.show()
+
+#%%

@@ -1,0 +1,479 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     15812,        471]
+NotebookOptionsPosition[     14319,        413]
+NotebookOutlinePosition[     14731,        431]
+CellTagsIndexPosition[     14688,        428]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.705652787410364*^9, 3.705652794234004*^9}, 
+   3.705653002901313*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"mAirComp", " ", "=", 
+  RowBox[{"(", 
+   RowBox[{"mAirCyl", " ", "+", "mAirBypass"}], ")"}]}]], "Input",
+ CellChangeTimes->{{3.705641858296338*^9, 3.705641858746715*^9}}],
+
+Cell[BoxData[
+ RowBox[{"mAirBypass", "+", "mAirCyl"}]], "Output",
+ CellChangeTimes->{3.705641860085047*^9, 3.705652684751561*^9, 
+  3.705652796443112*^9, 3.7056528411501827`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"mEgTurbo", " ", "=", 
+  RowBox[{"(", 
+   RowBox[{"mAirBypass", "+", "mEgCyl"}], ")"}]}]], "Input",
+ CellChangeTimes->{{3.70564186776651*^9, 3.705641868444289*^9}}],
+
+Cell[BoxData[
+ RowBox[{"mAirBypass", "+", "mEgCyl"}]], "Output",
+ CellChangeTimes->{3.705641869224435*^9, 3.705652686237207*^9, 
+  3.705652798706037*^9, 3.705652843877891*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"mEgCyl", " ", "=", 
+  RowBox[{"(", 
+   RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}]}]], "Input",
+ CellChangeTimes->{{3.70564187768401*^9, 3.705641878112713*^9}}],
+
+Cell[BoxData[
+ RowBox[{"mAirCyl", "-", "mFuelCyl"}]], "Output",
+ CellChangeTimes->{3.705641878980098*^9, 3.7056526889394293`*^9, 
+  3.7056528003186617`*^9, 3.7056528453639917`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"cpMix", " ", "=", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"cpAir", " ", "*", " ", "mAirBypass"}], "+", 
+      RowBox[{"cpEg", "*", "mEgCyl"}]}], ")"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"mAirBypass", "+", "mEgCyl"}], ")"}]}], ")"}]}]], "Input",
+ CellChangeTimes->{{3.7056418919970407`*^9, 3.705641892708499*^9}}],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"cpAir", " ", "mAirBypass"}], "+", 
+   RowBox[{"cpEg", " ", 
+    RowBox[{"(", 
+     RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}]}]}], 
+  RowBox[{"mAirBypass", "+", "mAirCyl", "-", "mFuelCyl"}]]], "Output",
+ CellChangeTimes->{3.705641893544961*^9, 3.705652702886423*^9, 
+  3.705652804633463*^9, 3.705652847675324*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"hComp", " ", "=", 
+  RowBox[{"(", 
+   RowBox[{"cpAir", "*", 
+    RowBox[{"(", 
+     RowBox[{"TcompIN", "-", "TcompOUT"}], ")"}]}], ")"}]}]], "Input",
+ CellChangeTimes->{{3.705641905629006*^9, 3.705641906010062*^9}}],
+
+Cell[BoxData[
+ RowBox[{"cpAir", " ", 
+  RowBox[{"(", 
+   RowBox[{"TcompIN", "-", "TcompOUT"}], ")"}]}]], "Output",
+ CellChangeTimes->{
+  3.7056419066338587`*^9, {3.705652690991832*^9, 3.7056527049866047`*^9}, 
+   3.705652806860807*^9, 3.7056528506928473`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"f", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"mAirComp", "*", " ", "hComp"}], "-", 
+   RowBox[{"(", " ", 
+    RowBox[{"(", 
+     RowBox[{"mEgTurbo", "*", "cpMix", " ", "*", " ", 
+      RowBox[{"(", 
+       RowBox[{"TturbIN", " ", "-", "TturbOUT"}], ")"}], "*", "etaTurbo"}], 
+     ")"}], ")"}]}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cpAir", " ", 
+   RowBox[{"(", 
+    RowBox[{"mAirBypass", "+", "mAirCyl"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"TcompIN", "-", "TcompOUT"}], ")"}]}], "-", 
+  RowBox[{"etaTurbo", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"cpAir", " ", "mAirBypass"}], "+", 
+     RowBox[{"cpEg", " ", 
+      RowBox[{"(", 
+       RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}]}]}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{"TturbIN", "-", "TturbOUT"}], ")"}]}]}]], "Output",
+ CellChangeTimes->{3.7056419220526857`*^9, 3.70565270834242*^9, 
+  3.705652809301943*^9, 3.705652855952691*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"g", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"mAirBypass", " ", "*", "cpAir", "*", 
+    RowBox[{"(", 
+     RowBox[{"TcompOUT", " ", "-", " ", "T0"}], ")"}]}], " ", "+", 
+   RowBox[{"mEgCyl", "*", "cpEg", "*", 
+    RowBox[{"(", 
+     RowBox[{"TcylOUT", "-", "T0"}], ")"}]}], "-", 
+   RowBox[{"(", 
+    RowBox[{"mEgTurbo", "*", "cpMix", "*", 
+     RowBox[{"(", 
+      RowBox[{"TturbIN", "-", "T0"}], ")"}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.705641924888213*^9, 3.7056419320703697`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cpAir", " ", "mAirBypass", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "T0"}], "+", "TcompOUT"}], ")"}]}], "+", 
+  RowBox[{"cpEg", " ", 
+   RowBox[{"(", 
+    RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "T0"}], "+", "TcylOUT"}], ")"}]}], "-", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"cpAir", " ", "mAirBypass"}], "+", 
+     RowBox[{"cpEg", " ", 
+      RowBox[{"(", 
+       RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}]}]}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"-", "T0"}], "+", "TturbIN"}], ")"}]}]}]], "Output",
+ CellChangeTimes->{3.705641933907359*^9, 3.7056527107246637`*^9, 
+  3.7056528119313307`*^9, 3.705652859398159*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"g", " ", "\[Equal]", "0"}], "&&", 
+    RowBox[{"f", "\[Equal]", "0"}]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"mAirBypass", ",", "TturbIN"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.7056419375689173`*^9, 3.705641969787196*^9}, {
+   3.7056420475976553`*^9, 3.705642066575185*^9}, {3.7056421841754427`*^9, 
+   3.705642218541024*^9}, {3.7056526675423603`*^9, 3.705652668918333*^9}, {
+   3.705652717141852*^9, 3.705652724769888*^9}, {3.705652815979001*^9, 
+   3.7056528245694847`*^9}, 3.7056528639018993`*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"mAirBypass", "\[Rule]", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "cpAir"}], " ", "mAirCyl", " ", "TcompIN"}], "+", 
+        RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT"}], 
+        "-", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT"}], 
+        "-", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TturbOUT"}], 
+        "+", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TturbOUT"}]}],
+        ")"}], "/", 
+      RowBox[{"(", 
+       RowBox[{"cpAir", " ", 
+        RowBox[{"(", 
+         RowBox[{"TcompIN", "-", "TcompOUT", "-", 
+          RowBox[{"etaTurbo", " ", "TcompOUT"}], "+", 
+          RowBox[{"etaTurbo", " ", "TturbOUT"}]}], ")"}]}], ")"}]}]}], ",", 
+    RowBox[{"TturbIN", "\[Rule]", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompIN", " ", "TcompOUT"}], 
+        "-", 
+        RowBox[{"cpAir", " ", "mAirCyl", " ", 
+         SuperscriptBox["TcompOUT", "2"]}], "-", 
+        RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompIN", " ", "TcylOUT"}], "+", 
+        RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompIN", " ", "TcylOUT"}], 
+        "+", 
+        RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompOUT", " ", "TcylOUT"}], 
+        "-", 
+        RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompOUT", " ", "TcylOUT"}], 
+        "+", 
+        RowBox[{
+        "cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcompOUT", " ", 
+         "TturbOUT"}], "-", 
+        RowBox[{
+        "cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcompOUT", " ", 
+         "TturbOUT"}], "-", 
+        RowBox[{
+        "cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT", " ", 
+         "TturbOUT"}], "+", 
+        RowBox[{
+        "cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT", " ", 
+         "TturbOUT"}]}], ")"}], "/", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompIN"}], "-", 
+        RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompIN"}], "+", 
+        RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompIN"}], "-", 
+        RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+        RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcompOUT"}], 
+        "-", 
+        RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompOUT"}], "-", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcompOUT"}], 
+        "-", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT"}], 
+        "+", 
+        RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT"}]}], 
+       ")"}]}]}]}], "}"}], "}"}]], "Output",
+ CellChangeTimes->{{3.705641952149357*^9, 3.705641970361553*^9}, {
+   3.705642052668023*^9, 3.705642066947792*^9}, {3.705642197769751*^9, 
+   3.705642220017915*^9}, 3.7056526732831697`*^9, {3.7056527149936323`*^9, 
+   3.705652725645133*^9}, {3.705652818471479*^9, 3.705652836243712*^9}, 
+   3.7056528667826014`*^9, 3.705652920399054*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"TturbinIN", " ", ":=", 
+  RowBox[{"Simplify", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompIN", " ", "TcompOUT"}], "-", 
+      RowBox[{"cpAir", " ", "mAirCyl", " ", 
+       SuperscriptBox["TcompOUT", "2"]}], "-", 
+      RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompIN", " ", "TcylOUT"}], "+", 
+      RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompIN", " ", "TcylOUT"}], "+", 
+      
+      RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompOUT", " ", "TcylOUT"}], "-", 
+      
+      RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompOUT", " ", "TcylOUT"}], "+", 
+      RowBox[{
+      "cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcompOUT", " ", 
+       "TturbOUT"}], "-", 
+      RowBox[{
+      "cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcompOUT", " ", 
+       "TturbOUT"}], "-", 
+      RowBox[{
+      "cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT", " ", 
+       "TturbOUT"}], "+", 
+      RowBox[{
+      "cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT", " ", 
+       "TturbOUT"}]}], ")"}], "/", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompIN"}], "-", 
+      RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompIN"}], "+", 
+      RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompIN"}], "-", 
+      RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+      RowBox[{"cpEg", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcompOUT"}], "-", 
+      RowBox[{"cpEg", " ", "mFuelCyl", " ", "TcompOUT"}], "-", 
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcompOUT"}], 
+      "-", 
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT"}], "+", 
+      
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT"}]}], 
+     ")"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.705653080043277*^9, 3.705653121200243*^9}}],
+
+Cell[BoxData[
+ RowBox[{"mAirBypass", ":=", 
+  RowBox[{"Simplify", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "cpAir"}], " ", "mAirCyl", " ", "TcompIN"}], "+", 
+      RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT"}], "-", 
+      
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT"}], "-", 
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TturbOUT"}], "+", 
+      RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TturbOUT"}]}], 
+     ")"}], "/", 
+    RowBox[{"(", 
+     RowBox[{"cpAir", " ", 
+      RowBox[{"(", 
+       RowBox[{"TcompIN", "-", "TcompOUT", "-", 
+        RowBox[{"etaTurbo", " ", "TcompOUT"}], "+", 
+        RowBox[{"etaTurbo", " ", "TturbOUT"}]}], ")"}]}], ")"}]}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.705653130139773*^9, 3.705653160964033*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["mAirBypass"], "Input",
+ CellChangeTimes->{{3.705653165601791*^9, 3.705653168024085*^9}, {
+  3.7056537589693737`*^9, 3.705653759598566*^9}}],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"cpAir", " ", "mAirCyl", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"-", "TcompIN"}], "+", "TcompOUT"}], ")"}]}], "+", 
+   RowBox[{"cpEg", " ", "etaTurbo", " ", 
+    RowBox[{"(", 
+     RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}], " ", 
+    RowBox[{"(", 
+     RowBox[{"TcylOUT", "-", "TturbOUT"}], ")"}]}]}], 
+  RowBox[{"cpAir", " ", 
+   RowBox[{"(", 
+    RowBox[{"TcompIN", "-", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"1", "+", "etaTurbo"}], ")"}], " ", "TcompOUT"}], "+", 
+     RowBox[{"etaTurbo", " ", "TturbOUT"}]}], ")"}]}]]], "Output",
+ CellChangeTimes->{3.705653168965933*^9, 3.705653761183977*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["TturbinIN"], "Input",
+ CellChangeTimes->{{3.705653172609037*^9, 3.705653178739163*^9}}],
+
+Cell[BoxData[
+ FractionBox[
+  RowBox[{
+   RowBox[{"cpAir", " ", "mAirCyl", " ", 
+    RowBox[{"(", 
+     RowBox[{"TcompIN", "-", "TcompOUT"}], ")"}], " ", "TcompOUT"}], "-", 
+   RowBox[{"cpEg", " ", 
+    RowBox[{"(", 
+     RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}], " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"TcompIN", " ", "TcylOUT"}], "+", 
+      RowBox[{"etaTurbo", " ", "TcylOUT", " ", "TturbOUT"}], "-", 
+      RowBox[{"TcompOUT", " ", 
+       RowBox[{"(", 
+        RowBox[{"TcylOUT", "+", 
+         RowBox[{"etaTurbo", " ", "TturbOUT"}]}], ")"}]}]}], ")"}]}]}], 
+  RowBox[{
+   RowBox[{"cpAir", " ", "mAirCyl", " ", 
+    RowBox[{"(", 
+     RowBox[{"TcompIN", "-", "TcompOUT"}], ")"}]}], "-", 
+   RowBox[{"cpEg", " ", 
+    RowBox[{"(", 
+     RowBox[{"mAirCyl", "-", "mFuelCyl"}], ")"}], " ", 
+    RowBox[{"(", 
+     RowBox[{"TcompIN", "-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "+", "etaTurbo"}], ")"}], " ", "TcompOUT"}], "+", 
+      RowBox[{"etaTurbo", " ", "TcylOUT"}]}], ")"}]}]}]]], "Output",
+ CellChangeTimes->{3.705653749433084*^9}]
+}, Open  ]]
+},
+WindowSize->{1440, 766},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+PrintingCopies->1,
+PrintingPageRange->{1, Automatic},
+FrontEndVersion->"11.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+21, 2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 168, 3, 32, "Input"],
+Cell[CellGroupData[{
+Cell[751, 27, 194, 4, 32, "Input"],
+Cell[948, 33, 178, 3, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1163, 41, 187, 4, 32, "Input"],
+Cell[1353, 47, 175, 3, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1565, 55, 184, 4, 32, "Input"],
+Cell[1752, 61, 180, 3, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1969, 69, 374, 10, 32, "Input"],
+Cell[2346, 81, 365, 9, 48, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2748, 95, 239, 6, 32, "Input"],
+Cell[2990, 103, 259, 6, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3286, 114, 329, 9, 32, "Input"],
+Cell[3618, 125, 612, 17, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4267, 147, 516, 13, 32, "Input"],
+Cell[4786, 162, 759, 23, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5582, 190, 585, 12, 32, "Input"],
+Cell[6170, 204, 3194, 72, 168, "Output"]
+}, Open  ]],
+Cell[9379, 279, 1920, 42, 167, "Input"],
+Cell[11302, 323, 931, 22, 96, "Input"],
+Cell[CellGroupData[{
+Cell[12258, 349, 153, 2, 32, "Input"],
+Cell[12414, 353, 674, 19, 48, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13125, 377, 101, 1, 32, "Input"],
+Cell[13229, 380, 1074, 30, 106, "Output"]
+}, Open  ]]
+}
+]
+*)
+
