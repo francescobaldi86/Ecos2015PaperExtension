@@ -157,7 +157,9 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         # Calculates the real fuel flow using the ISO conversion
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * bsfc / bsfc_iso
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
+        # Shaft energy out
         processed[name]["Cyl"]["Power_out"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / bsfc * 1000 * 3600
+         # Chemical energy
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]
 
     return processed
@@ -409,9 +411,3 @@ def polyvalHelperFunction(x,p):
     # instead of being the first. So we use this function to invert the two, waiting to find a better way
     output = np.polyval(p,x)
     return output
-
-
-
-
-
-
