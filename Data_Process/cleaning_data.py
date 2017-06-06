@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import os
 
 project_path = os.path.realpath('.')
@@ -27,113 +28,161 @@ for n in range(len(old)):
 
 index_selected = headers_dict.loc[headers_dict['FB'] == 'x']
 
-for i in range(len(index_selected)):
+# Function for checking if the value is a NaN or not.
+# Needed to be sure that the script works if not all fields
+# in the excel-file are filled.
 
+def isNaN(num):
+    return num != num
+
+# Duplicate the original dataset so it can be used for comparison
+df_filtered = df.copy()
+
+for i in list(index_selected.index):
     # In the headers_dict file there are values and relations stored for
     # each data-point. Most of them does not contain anything but those that
     # are needs to be put back in to the data-set.
 
-    headers_dict.loc[i]['VALUE']
-    headers_dict.loc[i]['REL']
-    headers_dict.loc[i]['VAR']
-    headers_dict.loc[i]['HIGH_BOUND']
-    headers_dict.loc[i]['LOW_BOUND']
+    name = headers_dict.loc[i]['ORIGINAL_HEADER']
+
+    # If a relation is used the following code is executed...
+
+    if ( headers_dict.loc[i]['REL'] == "<") | ( headers_dict.loc[i]['REL'] == ">" ) & \
+    ( (isinstance(headers_dict.loc[i]['VALUE'],float)) | (isinstance(headers_dict.loc[i]['VALUE'],int)) ) & \
+    ( (isinstance(headers_dict.loc[i]['HIGH_BOUND'],float)) | (isinstance(headers_dict.loc[i]['HIGH_BOUND'],int)) ) & \
+    ( (isinstance(headers_dict.loc[i]['LOW_BOUND'],float)) | (isinstance(headers_dict.loc[i]['LOW_BOUND'],int)) ) & \
+    (isNaN(headers_dict.loc[i]['VAR']) == False):
+
+        value = headers_dict.loc[i]['VALUE']
+        rel = headers_dict.loc[i]['REL']
+        var = headers_dict.loc[i]['VAR']
+        high_bound = headers_dict.loc[i]['HIGH_BOUND']
+        low_bound =headers_dict.loc[i]['LOW_BOUND']
+
+        # For debugging ....
+        print(str(i) + ' rel: '+ rel + ' value: '+ str(value) + ' var: '+ var +' high: ' + str(high_bound) +' low: ' + str(low_bound) +  ' ... 1st if')
+
+        exec("df_filtered[name][(df_filtered[hd[var]] "+ rel +" value) & (df_filtered[name] > high_bound)] = np.nan")
+        exec("df_filtered[name][(df_filtered[hd[var]] "+ rel +" value) & (df_filtered[name] < low_bound)] = np.nan")
+
+        values_removed = len(df_filtered[name])-df_filtered[name].count()
+        print(hd[name] + ' values filtered: ' + str(values_removed))
+        df_filtered[name] = df_filtered[name].interpolate()
+        diff_abs = abs( (df_filtered[name] - df[name]) ).sum()
+        print(str(diff_abs) + ' absolute sum, average/point: '+ str(diff_abs/values_removed) +"\n" )
+
+# If no relation is used...
+    if ( (isinstance(headers_dict.loc[i]['HIGH_BOUND'],float)) | (isinstance(headers_dict.loc[i]['HIGH_BOUND'],int)) ) & \
+        ( (isinstance(headers_dict.loc[i]['LOW_BOUND'],float)) | (isinstance(headers_dict.loc[i]['LOW_BOUND'],int)) ) & \
+        (isNaN(headers_dict.loc[i]['HIGH_BOUND']) == False) & \
+        (isNaN(headers_dict.loc[i]['LOW_BOUND']) == False) & \
+        (isNaN(headers_dict.loc[i]['VAR']) == True):
+
+        high_bound = headers_dict.loc[i]['HIGH_BOUND']
+        low_bound = headers_dict.loc[i]['LOW_BOUND']
+
+        # For debugging...
+        print(str(i) +' high: ' + str(high_bound) +' low: ' + str(low_bound) +  ' ... 2nd if')
+
+        df_filtered[name][df_filtered[name] > high_bound] = np.nan
+        df_filtered[name][df_filtered[name] < low_bound] = np.nan
+
+        values_removed = len(df_filtered[name])-df_filtered[name].count()
+        print('if2... '+ hd[name] + ' values filtered: ' + str(values_removed))
+        df_filtered[name] = df_filtered[name].interpolate()
+        diff_abs = abs( (df_filtered[name] - df[name]) ).sum()
+        print(str(diff_abs) + ' absolute sum, average/point: '+ str(diff_abs/values_removed) +"\n" )
 
 
+
+    #df_filtered[name] = df_filtered[name].interpolate()
 
 
 
 
 #%%
 
+#df_filtered = df_filtered.interpolate()
 
-# Testing grounds...
-i = 14
-
-name = headers_dict.loc[i]['ORIGINAL_HEADER']
-value = headers_dict.loc[i]['VALUE']
-rel = headers_dict.loc[i]['REL']
-var = hd[headers_dict.loc[i]['VAR']]
-high_bound = headers_dict.loc[i]['HIGH_BOUND']
-low_bound =headers_dict.loc[i]['LOW_BOUND']
-
-var
-eval('df[name]')
-
-df[hd[var]]
+df_filtered[hd['AE1-CAC_AIR_P_OUT']].count()-df_filtered[hd['AE1-CAC_AIR_P_OUT']].count()
 
 
-eval("df[name][df[var] "+ rel +" value][df[name] > high_bound]")
-eval("df[name][df[var] "+ rel +" value][df[name] < low_bound]")
+name=hd['SHIP_SPEED_KNOT_']
+name
 
+df[name]
+
+df_filtered[name][df_filtered[name]==0]
+
+df_filtered[name][df_filtered[name]>-1e-6]
+
+df_filtered[hd['AE1-CAC_AIR_P_OUT']] = 0
+len(df_filtered[hd['AE1-CAC_AIR_P_OUT']])
+
+len(df[hd['AE1-CAC_AIR_P_OUT']])
 
 
 
+df[hd['SHIP_SPEED_KNOT_']][df[hd['SHIP_SPEED_KNOT_']]>0]
 
-df[name][(df[var] > value) & (df[name] < low_bound)] = 0
 
-df[name][(df[var] > value) & (df[name] < low_bound)]
 
-[df[name] < low_bound] = 0
-
-df[name][df[var] > value][df[name] < low_bound] = s1
-
-s1[]=0
-
-s1
-
-df[name][df[var] > value][df[name] < low_bound]
-
+[df[hd['SHIP_SPEED_KNOT_']<0]]
 
 #%%
-header = list(df)[0]
-print(header)
-s0 = df[header][df[d['AE1-TC__RPM_']] > 5000.]
-s1 = df[header][df[d['AE1-TC__RPM_']] > 5000.]
-s2 = df[header][df[d['AE1-TC__RPM_']] > 5000.]
-
-s1[s1<s1.quantile(q=0.01)]=s1.quantile(q=0.01)
-s2[s2<s2.quantile(q=0.01)]=NaN
-s2 = s2.interpolate()
-s0[s0<0.1]
-s0['2013-12-21'].plot()
-ss0 = df[d['AE1-TC__RPM_']][df[d['AE1-TC__RPM_']]>5000.]
-
-df[list(df)[0]][(df[list(df)[0]]>1.3) & (df[list(df)[0]]<1.5)]
-
-a = 'max()'
+#################################################################
+#################################################################
+#################################################################
 
 
-#%%
+# Testing if everything works
 
-name = d['AE1-CAC_AIR_P_OUT']
-name1 = d['AE1-TC__RPM_']
-name1
+df = pd.read_hdf(database_path + 'selected_df.h5','table')
 
-df[name][df[name1] > 5000].quantile(q=0.01)
+df[name][(df[hd[var]] > value) & (df[name] > 3.7)]
 
 
 
+df[name].count()-len(df[name])
+
+# Here we have some datapoints which are high
+
+df[name]['2014-07-10 18' : '2014-07-10 23']
+
+# I will put in NaN in those places which are higher than 3.4
+
+df[name][(df[hd[var]] > value) & (df[name] > 3.4)] = np.nan
+
+# Now it looks a bit different with NaN for everything above 3.4
+
+df[name]['2014-07-10 18' : '2014-07-10 23']
+
+# Do an interpolate which should fill in the NaN.
+df[name] = df[name].interpolate()
+df[name]['2014-07-10 18' : '2014-07-10 23']
+
+
+# Load the original dataset and compare with the interpolated one for the same time period
+
+df2 = pd.read_hdf(database_path + 'selected_df.h5','table')
+df[name]['2014-07-10 18' : '2014-07-10 23']-df2[name]['2014-07-10 18' : '2014-07-10 23']
+
+# Tot total difference is:
+
+(df[name]-df2[name]).sum()
 
 
 
-eval('s1.'+a)
-s1.max()
-
-df[list(df)[0]][(df[list(df)[0]]>1.3) & ()]
 
 
-(1 > 0) & (1 > 0)
+# Testing if it works ...
+# Loading the original DF again for comparison..
 
-ss0['2013-12-21'].plot()
-sum(s1-s2)
-s1.describe()
 
-s2.describe()
-s1.describe()
-s1[s1<0]=NaN
-s1
-s2=s1.interpolate()
-s2
-df[header]
-sum(s2 - df[header])
+
+
+
+
+
+
+df_original = pd.read_hdf(database_path + 'selected_df.h5','table')
