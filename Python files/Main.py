@@ -37,7 +37,6 @@ datareading_run = "yes"
 # Loading appropriate modules
 import pandas as pd
 import input
-import os
 import plotting as plot
 
 
@@ -54,13 +53,11 @@ filenames = input.filenames() # Note: this is just a test
 
 import datareading as dr
 
-project_path = os.path.realpath('..')
-translate_filename = project_path + '\\General\\headers_dict.xlsx'
 
-#dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_data_1year_comp.h5' ,'table')
-dataset_raw = pd.read_hdf(project_path + '\\Database\\selected_df.h5' ,'table')
 
-header_names = dr.keysRenaming(dataset_raw, translate_filename)
+dataset_raw = pd.read_hdf(filenames["dataset_raw"] ,'table')
+
+header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
 #%%
 ######################################
 ## DATA CLEANING			##
@@ -76,6 +73,7 @@ header_names = dr.keysRenaming(dataset_raw, translate_filename)
 # Preparing the data structures
 import unitstructures as us
 import constants as kk
+import consistencycheck as cc
 
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
@@ -92,6 +90,10 @@ dataset_processed = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, he
 (dataset_processed, dataset_status) = pp.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
 (dataset_processed, dataset_status) = pp.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
 
+# Checking the consistency of the data
+cc.enginesCheck(dataset_processed, dataset_status, CONSTANTS)
+
+# Assigning defined values to all flows for engines off
 
 #%%
 ######################################
