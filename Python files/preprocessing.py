@@ -159,7 +159,7 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
         # Shaft energy out
         processed[name]["Cyl"]["Power_out"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / bsfc * 1000 * 3600
-        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECTT WITH THE CORRECT LHV
+        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECT WITH THE CORRECT LHV
          # Chemical energy
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]
 

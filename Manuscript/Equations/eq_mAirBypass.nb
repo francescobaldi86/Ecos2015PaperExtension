@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     15812,        471]
-NotebookOptionsPosition[     14319,        413]
-NotebookOutlinePosition[     14731,        431]
-CellTagsIndexPosition[     14688,        428]
+NotebookDataLength[     18971,        551]
+NotebookOptionsPosition[     17325,        488]
+NotebookOutlinePosition[     17737,        506]
+CellTagsIndexPosition[     17694,        503]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -323,27 +323,27 @@ Cell[BoxData[
 
 Cell[BoxData[
  RowBox[{"mAirBypass", ":=", 
-  RowBox[{"Simplify", "[", 
-   RowBox[{
-    RowBox[{"(", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
      RowBox[{
-      RowBox[{
-       RowBox[{"-", "cpAir"}], " ", "mAirCyl", " ", "TcompIN"}], "+", 
-      RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
-      RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT"}], "-", 
-      
-      RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT"}], "-", 
-      RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TturbOUT"}], "+", 
-      RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TturbOUT"}]}], 
-     ")"}], "/", 
-    RowBox[{"(", 
-     RowBox[{"cpAir", " ", 
-      RowBox[{"(", 
-       RowBox[{"TcompIN", "-", "TcompOUT", "-", 
-        RowBox[{"etaTurbo", " ", "TcompOUT"}], "+", 
-        RowBox[{"etaTurbo", " ", "TturbOUT"}]}], ")"}]}], ")"}]}], 
-   "]"}]}]], "Input",
- CellChangeTimes->{{3.705653130139773*^9, 3.705653160964033*^9}}],
+      RowBox[{"-", "cpAir"}], " ", "mAirCyl", " ", "TcompIN"}], "+", 
+     RowBox[{"cpAir", " ", "mAirCyl", " ", "TcompOUT"}], "+", 
+     RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TcylOUT"}], "-", 
+     RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TcylOUT"}], "-", 
+     
+     RowBox[{"cpEg", " ", "etaTurbo", " ", "mAirCyl", " ", "TturbOUT"}], "+", 
+     
+     RowBox[{"cpEg", " ", "etaTurbo", " ", "mFuelCyl", " ", "TturbOUT"}]}], 
+    ")"}], "/", 
+   RowBox[{"(", 
+    RowBox[{"cpAir", " ", 
+     RowBox[{"(", 
+      RowBox[{"TcompIN", "-", "TcompOUT", "-", 
+       RowBox[{"etaTurbo", " ", "TcompOUT"}], "+", 
+       RowBox[{"etaTurbo", " ", "TturbOUT"}]}], ")"}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.705653130139773*^9, 3.705653160964033*^9}, {
+  3.7056540227194138`*^9, 3.705654028179615*^9}}],
 
 Cell[CellGroupData[{
 
@@ -409,6 +409,81 @@ Cell[BoxData[
         RowBox[{"1", "+", "etaTurbo"}], ")"}], " ", "TcompOUT"}], "+", 
       RowBox[{"etaTurbo", " ", "TcylOUT"}]}], ")"}]}]}]]], "Output",
  CellChangeTimes->{3.705653749433084*^9}]
+}, Open  ]],
+
+Cell["\<\
+Function for the isentropic efficiency for the compressor on ME\
+\>", "Text",
+ CellChangeTimes->{{3.705718929106703*^9, 3.705718967681533*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"a", "*", 
+       RowBox[{"x", "^", "2"}]}], "+", 
+      RowBox[{"b", "*", "x"}], "+", "c"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "min", ",", "max"}], "}"}]}], "]"}], ",", 
+   RowBox[{"{", "a", "}"}], ",", 
+   RowBox[{"{", "b", "}"}], ",", 
+   RowBox[{"{", "c", "}"}], ",", 
+   RowBox[{"{", "min", "}"}], ",", 
+   RowBox[{"{", "max", "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.70566173738104*^9, 3.705661795536326*^9}, {
+  3.705662003869639*^9, 3.705662053317478*^9}, {3.705662121828079*^9, 
+  3.705662172059038*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`a$$ = -0.118, $CellContext`b$$ = 
+    0.874, $CellContext`c$$ = 0.681, $CellContext`max$$ = 
+    4, $CellContext`min$$ = 1, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`a$$]}, {
+      Hold[$CellContext`b$$]}, {
+      Hold[$CellContext`c$$]}, {
+      Hold[$CellContext`min$$]}, {
+      Hold[$CellContext`max$$]}}, Typeset`size$$ = {360., {109., 113.}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = True}, 
+    
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`a$$ = Null, $CellContext`b$$ = 
+        Null, $CellContext`c$$ = Null, $CellContext`max$$ = 
+        Null, $CellContext`min$$ = Null}, "ControllerVariables" :> {}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, "Body" :> 
+      Plot[$CellContext`a$$ $CellContext`x^2 + $CellContext`b$$ \
+$CellContext`x + $CellContext`c$$, {$CellContext`x, $CellContext`min$$, \
+$CellContext`max$$}], 
+      "Specifications" :> {{$CellContext`a$$}, {$CellContext`b$$}, \
+{$CellContext`c$$}, {$CellContext`min$$}, {$CellContext`max$$}}, 
+      "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{405., {197., 203.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.7056617959577427`*^9, {3.7056620319358187`*^9, 3.705662056637429*^9}, {
+   3.705662151317596*^9, 3.705662173054262*^9}}]
 }, Open  ]]
 },
 WindowSize->{1440, 766},
@@ -464,14 +539,19 @@ Cell[5582, 190, 585, 12, 32, "Input"],
 Cell[6170, 204, 3194, 72, 168, "Output"]
 }, Open  ]],
 Cell[9379, 279, 1920, 42, 167, "Input"],
-Cell[11302, 323, 931, 22, 96, "Input"],
+Cell[11302, 323, 931, 22, 75, "Input"],
 Cell[CellGroupData[{
 Cell[12258, 349, 153, 2, 32, "Input"],
 Cell[12414, 353, 674, 19, 48, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
 Cell[13125, 377, 101, 1, 32, "Input"],
-Cell[13229, 380, 1074, 30, 106, "Output"]
+Cell[13229, 380, 1074, 30, 48, "Output"]
+}, Open  ]],
+Cell[14318, 413, 153, 3, 30, "Text"],
+Cell[CellGroupData[{
+Cell[14496, 420, 655, 18, 32, "Input"],
+Cell[15154, 440, 2155, 45, 417, "Output"]
 }, Open  ]]
 }
 ]
