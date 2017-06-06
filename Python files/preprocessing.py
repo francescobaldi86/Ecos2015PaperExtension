@@ -29,7 +29,7 @@ def mainEngineProcessing(raw, processed, CONSTANTS, status, hd):
     # Calculating the main engines power output
     processed = mainEnginePowerCalculation(processed, CONSTANTS)
     # Calculating engine load, that is used many times later on
-    status = mainEngineStatusCalculation(raw, processed, CONSTANTS, status, hd)
+    status = engineStatusCalculation("MainEngines", raw, processed, CONSTANTS, status, hd)
     # Calculating air and exhaust gas flows in the main engines
     processed = mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS)
     # Calculating cooling flows
@@ -42,7 +42,7 @@ def auxEngineProcessing(raw, processed, CONSTANTS, status, hd):
     # Reading existing values
     processed = readAuxEnginesExistingValues(raw, processed, CONSTANTS, hd)
     # Calculating engine load, that is used many times later on
-    status = auxEngineStatusCalculation(raw, processed, CONSTANTS, hd, status)
+    status = engineStatusCalculation("AuxEngines", raw, processed, CONSTANTS, status, hd)
     # Calculating the auxiliary engines fuel flows
     processed = auxEngineFuelFlowCalculation(raw, processed, CONSTANTS, status)
     # Calculate air and exhaust gas flows in the main engines
@@ -61,14 +61,14 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         processed[name]["TC"]["EG_out"]["T"] = raw[hd[name + "-TC_EG_T_OUT"]] + 273.15  # Measured after mixer with waste gate
         # Reading main engines exhaust gas temperature, after HRSG. Only two of the four main engines have the HRSG
         if name=="ME2" or name=="ME3":
-            processed[name]["HRSG"]["EG_out"]["T"] = raw[hd[name + "_EGB_EG_T_OUT"]] + 273.15
+            processed[name]["HRSG"]["EG_out"]["T"] = raw[hd[name + "-EGB_EG_T_OUT"]] + 273.15
             processed[name]["HRSG"]["EG_in"]["T"] = raw[hd[name + "-TC_EG_T_OUT"]] + 273.15
         # Temperature in the engine room, i.e. inlet to the compressor of the TC
         processed[name]["TC"]["Air_in"]["T"] = raw[hd["ER-FWD_AIR_T_"]] + 273.15
         processed[name]["Comp"]["Air_in"]["T"] = processed[name]["TC"]["Air_in"]["T"]
         # Pressure of the charge air, at the compressor outlet (and, hence, at the cylinder inlet)
         processed[name]["TC"]["Air_out"]["p"] = raw[hd[name+"-CAC_AIR_P_OUT"]] + 1
-        processed[name]["Cyl"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"] + 1
+        processed[name]["Cyl"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"]
         processed[name]["BPvalve"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"]
         # Reading the HT temperature before and after the main engine
         # processed[name]["CAC_HT"]["Water_out"]["T"] = raw[name + "_HT_water_T_out"] # Note: this might be inconsistent
@@ -85,7 +85,7 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         processed[name]["Cyl"]["Air_in"]["T"] = processed[name]["CAC_LT"]["Air_out"]["T"]
         # Reading Engine rpm
         processed[name]["Cyl"]["Power_out"]["omega"] = raw[hd[name + "__RPM_"]]
-        return processed
+    return processed
 
 
 
@@ -112,7 +112,7 @@ def readAuxEnginesExistingValues(raw, processed,CONSTANTS,hd):
         processed[name]["CAC_LT"]["Air_out"]["T"] = raw[hd[name + "-CAC_AIR_T_OUT"]] + 273.15
         processed[name]["CAC_LT"]["Air_out"]["p"] = raw[hd[name + "-CAC_AIR_P_OUT"]] + 1
         processed[name]["Cyl"]["Power_out"]["Wdot"] = raw[hd[name + "_POWER_Wdot_OUT"]]
-        return processed
+    return processed
 
 
 def readOtherExistingValues(raw, processed):
@@ -146,35 +146,29 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
     for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
         # Calculate fuel flow-based engine load
         fuel_based_load = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / CONSTANTS["MainEngines"]["MFR_FUEL_DES_ISO"]
-        # Calculate ISO fuel mass flow rate
-        mfr_fuel_iso = fuel_based_load * CONSTANTS["MainEngines"]["MFR_FUEL_DES_ISO"]
         # Calculate ISO bsfc (break specific fuel consumption)
-        bsfc_iso = fuel_based_load.apply(polyvalHelperFunction, args=(CONSTANTS["MainEngines"][
-                                                                          "POLY_FUEL_LOAD_2_BSFC_ISO"],))
+        bsfc_iso = fuel_based_load.apply(polyvalHelperFunction, args=(CONSTANTS["MainEngines"][                                                                  "POLY_FUEL_LOAD_2_BSFC_ISO"],))
         # Corrects the bsfc from ISO conditions to "real" conditions
-        bsfc = bsfcISOCorrection(bsfc_iso,processed[name]["Cyl"]["Air_in"]["T"],processed[name]["CAC_LT"][
-            "LTWater_in"]["T"],"HFO",CONSTANTS)
+        (bsfc,LHV) = bsfcISOCorrection(bsfc_iso,processed[name]["Cyl"]["Air_in"]["T"],processed[name]["CAC_LT"]["LTWater_in"]["T"],processed[name]["Cyl"]["FuelPh_in"]["T"],CONSTANTS)
         # Calculates the real fuel flow using the ISO conversion
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * bsfc / bsfc_iso
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
         # Shaft energy out
         processed[name]["Cyl"]["Power_out"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / bsfc * 1000 * 3600
-<<<<<<< HEAD
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECT WITH THE CORRECT LHV
          # Chemical energy
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]
-=======
         # Chemical energy in the fuel
+        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * LHV
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECTT WITH THE CORRECT LHV
 
->>>>>>> 4fba12665d71d95fe39e8f7f0863d2712d60c0f6
 
     return processed
 
 
-def mainEngineStatusCalculation(raw, processed, CONSTANTS, status, hd):
-    for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
-        status[name]["Load"] = processed[name]["Cyl"]["Power_out"]["Wdot"] / CONSTANTS["MainEngines"]["MCR"]
+def engineStatusCalculation(type, raw, processed, CONSTANTS, status, hd):
+    for name in CONSTANTS["General"]["NAMES"][type]:
+        status[name]["Load"] = processed[name]["Cyl"]["Power_out"]["Wdot"] / CONSTANTS[type]["MCR"]
         # We consider that the engines are on if the RPM of the turbocharger is higher than 5000 RPM
         #status[name]["OnOff"] = (status[name]["Load"] > 0.05) & (processed[name]["Cyl"]["Power_out"]["omega"] > CONSTANTS["MainEngines"]["RPM_DES"] * 0.1)
         status[name]["OnOff"] = raw[hd[name+"-TC__RPM_"]] > 5000
@@ -228,14 +222,16 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
         #    CONSTANTS["General"]["CP_AIR"] * (
         #        processed[name]["Comp"]["Air_in"]["T"]+ CONSTANTS["MainEngines"]["ETA_MECH_TC"] * processed[name]["TC"]["EG_out"]["T"] -
         #        (1 + CONSTANTS["MainEngines"]["ETA_MECH_TC"]) * processed[name]["Comp"]["Air_out"]["T"]))
+        # The new approximation is that the valve is only open for engine load below 50%, and when it is open it increases the flow by a fixed amount
         processed[name]["BPvalve"]["Air_in"]["mdot"][:] = 0
         processed[name]["BPvalve"]["Air_in"]["mdot"][status[name]["Load"]<0.5] = CONSTANTS["MainEngines"]["BYPASS_FLOW"]
         processed[name]["BPvalve"]["Air_out"]["mdot"] = processed[name]["BPvalve"]["Air_in"]["mdot"]
         # Calculating the temperature of the mixture after the merge between bypass and exhaust gas from the cylinders
-        processed[name]["TC"]["EG_in"]["T"] = processed[name]["Cyl"]["EG_out"]["T"] - (
-            processed[name]["BPvalve"]["Air_in"]["mdot"] + processed[name]["Cyl"]["Air_in"]["mdot"] *
-            CONSTANTS["General"]["CP_AIR"] * (processed[name]["Comp"]["Air_out"]["T"] -
-            processed[name]["Comp"]["Air_in"]["T"])) / CONSTANTS["MainEngines"]["ETA_MECH_TC"] / processed[name]["Cyl"]["EG_out"]["mdot"]
+        processed[name]["TC"]["EG_in"]["T"] = (
+            processed[name]["BPvalve"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"] * processed[name]["Comp"]["Air_out"]["T"] +
+            processed[name]["Cyl"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_EG"] * processed[name]["Cyl"]["EG_out"]["T"]) / (
+            processed[name]["Cyl"]["EG_out"]["mdot"] * CONSTANTS["General"]["CP_EG"] +
+            processed[name]["BPvalve"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"])
         # The air mass flow going through the compressor is equal to the sum of the air flow through the bypass valve and
         # to the cylinders
         processed[name]["TC"]["Air_in"]["mdot"] = processed[name]["BPvalve"]["Air_in"]["mdot"] + processed[name]["Cyl"]["Air_in"]["mdot"]
@@ -307,15 +303,10 @@ def auxEngineFuelFlowCalculation(raw, processed, CONSTANTS, status):
     for name in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         bsfc_iso = status[name]["Load"].apply(polyvalHelperFunction, args=(CONSTANTS["AuxEngines"][
                                                                           "POLY_LOAD_2_ISO_BSFC"],))
-        if name == "AE3":
-            fuel_type = "HFO"
-        else:
-            fuel_type = "MDO"
-        bsfc = bsfcISOCorrection(bsfc_iso, processed[name]["Cyl"]["Air_in"]["T"], processed[name]["CAC_LT"][
-                "LTWater_in"]["T"], fuel_type, CONSTANTS)
+        (bsfc, LHV) = bsfcISOCorrection(bsfc_iso, processed[name]["Cyl"]["Air_in"]["T"], processed[name]["CAC_LT"][
+                "LTWater_in"]["T"], processed[name]["Cyl"]["FuelPh_in"]["T"], CONSTANTS)
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = bsfc * processed[name]["Cyl"]["Power_out"]["Wdot"] * 3600 / 1000
-        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"][
-            "LHV_"+fuel_type]
+        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * LHV
     return processed
 
 
@@ -382,20 +373,17 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
 
 
 
-def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_type, CONSTANTS):
+def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_temp, CONSTANTS):
     # This function calculates the "real" BSFC starting from the ISO corrected one and from measurements of
     # - Charge air temperature [K]
     # - Charge air coolant temperature [K]
     # - Fuel LHV [MJ/kg]
     # - Mechanical efficiency (often assumed at 0.8)
 
-    # Assigning the value of the LHV depending on the fuel type
-    if fuel_type == "HFO":
-        LHV = CONSTANTS["General"]["LHV_HFO"]
-    elif fuel_type == "MDO":
-        LHV = CONSTANTS["General"]["LHV_MDO"]
-    else:
-        print("Error. The type of fuel provided is not in the list!")
+    # Assigning the value of the LHV depending on the fuel temperature
+    LHV = pd.Series(0,index=charge_air_temp.index)
+    LHV[fuel_temp < 70] = CONSTANTS["General"]["LHV_MDO"] # If T_fuel<70, it is Diesel
+    LHV[fuel_temp >= 70] = CONSTANTS["General"]["LHV_HFO"] # If T_fuel>70, it is HFO
     # Converting existing data (expected in the form of dataSeries
     if isinstance(charge_air_temp,pd.Series):
         T_ca = charge_air_temp.values
@@ -411,7 +399,7 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
     beta = k / alpha
     # Final calculation of the BSFC
     bsfc = bsfc_ISO * CONSTANTS["General"]["ISO"]["LHV"] / LHV * beta
-    return bsfc
+    return (bsfc, LHV)
 
 
 def polyvalHelperFunction(x,p):
