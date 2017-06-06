@@ -29,7 +29,7 @@ def mainEngineProcessing(raw, processed, CONSTANTS, status, hd):
     # Calculating the main engines power output
     processed = mainEnginePowerCalculation(processed, CONSTANTS)
     # Calculating engine load, that is used many times later on
-    status = mainEngineStatusCalculation(processed, CONSTANTS, status)
+    status = mainEngineStatusCalculation(raw, processed, CONSTANTS, status, hd)
     # Calculating air and exhaust gas flows in the main engines
     processed = mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS)
     # Calculating cooling flows
@@ -159,18 +159,25 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
         # Shaft energy out
         processed[name]["Cyl"]["Power_out"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / bsfc * 1000 * 3600
+<<<<<<< HEAD
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECT WITH THE CORRECT LHV
          # Chemical energy
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]
+=======
+        # Chemical energy in the fuel
+        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECTT WITH THE CORRECT LHV
+
+>>>>>>> 4fba12665d71d95fe39e8f7f0863d2712d60c0f6
 
     return processed
 
 
-def mainEngineStatusCalculation(processed, CONSTANTS, status):
+def mainEngineStatusCalculation(raw, processed, CONSTANTS, status, hd):
     for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
         status[name]["Load"] = processed[name]["Cyl"]["Power_out"]["Wdot"] / CONSTANTS["MainEngines"]["MCR"]
-        # We consider the engines are on only if the load is above 5% and if the speed is above 10% of the nominal value
-        status[name]["OnOff"] = (status[name]["Load"] > 0.05) & (processed[name]["Cyl"]["Power_out"]["omega"] > CONSTANTS["MainEngines"]["RPM_DES"] * 0.1)
+        # We consider that the engines are on if the RPM of the turbocharger is higher than 5000 RPM
+        #status[name]["OnOff"] = (status[name]["Load"] > 0.05) & (processed[name]["Cyl"]["Power_out"]["omega"] > CONSTANTS["MainEngines"]["RPM_DES"] * 0.1)
+        status[name]["OnOff"] = raw[hd[name+"-TC__RPM_"]] > 5000
     return status
 
 
