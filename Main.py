@@ -38,7 +38,7 @@ datareading_run = "yes"
 import sys
 import os
 import pandas as pd
-project_path = os.path.dirname(os.path.realpath(__file__))
+project_path = os.getcwd()
 path_files = project_path + os.sep + 'Python files' + os.sep
 sys.path.append(path_files)
 
