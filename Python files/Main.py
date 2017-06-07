@@ -35,13 +35,15 @@ datareading_run = "yes"
 ######################################
 
 # Loading appropriate modules
+import sys
+path_files = 'Python files' + os.sep
+sys.path.append(path_files)
 import pandas as pd
 import input
 import plotting as plot
 
 
 filenames = input.filenames() # Note: this is just a test
-
 
 
 #%%
