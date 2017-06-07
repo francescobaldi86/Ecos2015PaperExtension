@@ -130,6 +130,15 @@ log_file.close()
 
 df_filtered.to_hdf(database_path + 'filtered_df.h5','table',complevel=9,complib='blosc')
 
+log_file = open(log_path + 'log_file.txt','w')
+
+log_file.write(str(datetime.datetime.now()) + '\n')
+for item in run_log:
+    log_file.write('\n'+item)
+log_file.close()
+
+df_filtered.to_hdf(database_path + 'filtered_df.h5','table',complevel=9,complib='blosc')
+
 #%%
 
 #df_filtered = df_filtered.interpolate()
