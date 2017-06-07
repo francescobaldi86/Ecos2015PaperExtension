@@ -146,18 +146,26 @@ AE2_FO = dataset_processed['AE2']['Cyl']['FuelPh_in']['mdot']
 AE3_FO = dataset_processed['AE3']['Cyl']['FuelPh_in']['mdot']
 AE4_FO = dataset_processed['AE4']['Cyl']['FuelPh_in']['mdot']
 
+
+dataset_processed['AE1']['Cyl']['FuelPh_in']['mdot'].describe()
+
+
 FO1_flow = dataset_raw['FO BOOST 1 CONSUMPT:6165:m3/h:Average:900']/3600*k_1_3
 FO2_flow = dataset_raw['FO BOOST 2 CONSUMPT:6166:m3/h:Average:900']/3600*k_2_4
 
 
-tot_ME13 = ME1_FO + ME3_FO
-tot_1_3 = FO1_flow - tot_ME13
-tot_2_4 = (ME2_FO + ME4_FO + AE2_FO + AE4_FO) / FO2_flow
+tot_ME13 = ME1_FO + ME3_FO + AE1_FO
+tot_ME24 = ME2_FO + ME4_FO + AE2_FO + AE4_FO
 
-tot_1_3
+#tot_ME13_sel = tot_ME13[(dataset_status['ME1']['OnOff'] == 0) & (dataset_status['ME3']['OnOff'] == 0)]
+#FO1_flow_sel = FO1_flow[(dataset_status['ME1']['OnOff'] == 0) & (dataset_status['ME3']['OnOff'] == 0)]
+tot_ME13_sel = tot_ME13[(dataset_status['AE1']['OnOff'] == 0)]
+FO1_flow_sel = FO1_flow[(dataset_status['AE1']['OnOff'] == 0)]
+tot_ME13_sel.plot()
+FO1_flow_sel.plot(alpha=0.4)
 
+#tot_ME13.plot()
+#FO1_flow.plot(alpha=0.4)
 
-FO1_flow/ME1_FO
-
-tot_ME13.plot(linewidth=0,marker='x')
-FO1_flow.plot(alpha=0.4)
+tot_ME24.plot()
+FO2_flow.plot(alpha=0.4)
