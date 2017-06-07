@@ -115,7 +115,7 @@ cc.enginesCheck(dataset_processed, dataset_status, CONSTANTS)
 
 # Responsible: FB
 import energyanalysis as ea
-dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
+# dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
 
 
 #%%

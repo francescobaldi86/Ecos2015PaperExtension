@@ -113,6 +113,8 @@ def auxiliaryEngines(CONSTANTS):
     output["QDOT_2_CAC_LT_DES"] = 433.0  # Heat flow to the charge air cooler, Low temperature stage,  at the engine design point, in [kW]
     output["QDOT_2_JWC_DES"] = 414.0  # Heat flow to the jacket water cooler at the engine design point, in [kW]
     output["QDOT_2_LOC_DES"] = 331.0  # Heat flow to the lubricating oil cooler at the engine design point, in [kW]
+    output["QDOT_HT_DES"] = output["QDOT_2_CAC_HT_DES"] + output["QDOT_2_JWC_DES"]
+    output["QDOT_LT_DES"] = output["QDOT_2_CAC_LT_DES"] + output["QDOT_2_LOC_DES"]
 # Assuming that the amount of heat from the engine to the HT cooling systems behaves in the same way as that of the main engines.
     output["POLY_LOAD_2_QDOT_HT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_HT"]
     output["POLY_LOAD_2_QDOT_LT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_LT"]
