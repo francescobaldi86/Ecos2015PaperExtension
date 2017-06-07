@@ -1,0 +1,55 @@
+
+Iteration:14 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 2.87 ;Low: 0.1324
+Iteration:15 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 65 ;Low: 40
+Iteration:57 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 800 ;Low: 100
+Iteration:60 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 550 ;Low: 150
+Iteration:61 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 550 ;Low: 150
+Iteration:62 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 450 ;Low: 150
+Iteration:75 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 120 ;Low: 20
+Iteration:78 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 47 ;Low: 0
+Iteration:81 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 4.5 ;Low: 0.8
+Iteration:82 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 95 ;Low: 60
+Iteration:89 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 5.5 ;Low: 1.4
+Iteration:96 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 60 ;Low: 30
+Iteration:97 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 4.5 ;Low: 1
+Iteration:98 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 60 ;Low: 30
+Iteration:99 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 65 ;Low: 35
+Iteration:100 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 3000 ;Low: 0
+Iteration:122 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 27400 ;Low: 5000
+Iteration:441 ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 450 ;Low: 70
+Iteration:442 ;Relation: > ;Value: 5000.0 ;Var: AE2-TC__RPM_ ;High: 450 ;Low: 70
+Iteration:443 ;Relation: > ;Value: 5000.0 ;Var: AE3-TC__RPM_ ;High: 450 ;Low: 70
+Iteration:444 ;Relation: > ;Value: 5000.0 ;Var: AE4-TC__RPM_ ;High: 450 ;Low: 70
+Iteration:445 ;Relation: > ;Value: 5000.0 ;Var: ME2-TC__RPM_ ;High: 450 ;Low: 70
+Iteration:446 ;Relation: > ;Value: 5000.0 ;Var: ME3-TC__RPM_ ;High: 450 ;Low: 70
+477 high: 100 low: 5 ... 2nd if
+479 high: 100 low: 5 ... 2nd if
+497 high: 70 low: 5 ... 2nd if
+499 high: 70 low: 5 ... 2nd if
+501 high: 70 low: 5 ... 2nd if
+517 high: 45 low: 10 ... 2nd if
+518 high: 45 low: 10 ... 2nd if
+519 high: 35 low: -10 ... 2nd if
+520 high: 90 low: 60 ... 2nd if
+525 high: 45 low: 25 ... 2nd if
+527 high: 90 low: 60 ... 2nd if
+532 high: 45 low: 25 ... 2nd if
+534 high: 3.5 low: 0.1 ... 2nd if
+535 high: 65 low: 30 ... 2nd if
+536 high: 65 low: 30 ... 2nd if
+569 high: 530 low: 150 ... 2nd if
+577 high: 120 low: 20 ... 2nd if
+579 high: 100 low: 0 ... 2nd if
+581 high: 4 low: 0.8 ... 2nd if
+583 high: 95 low: 70 ... 2nd if
+586 high: 95 low: 70 ... 2nd if
+589 high: 5.5 low: 1.4 ... 2nd if
+591 high: 70 low: 40 ... 2nd if
+594 high: 5.5 low: 1.4 ... 2nd if
+595 high: 100 low: 40 ... 2nd if
+596 high: 3.5 low: 1 ... 2nd if
+597 high: 45 low: 30 ... 2nd if
+615 high: 23000 low: 5000 ... 2nd if
+621 high: 600 low: 200 ... 2nd if
+624 high: 450 low: 150 ... 2nd if
+919 high: 23 low: 0 ... 2nd if

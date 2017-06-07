@@ -54,30 +54,27 @@ s2[( s2 > s2.quantile(q_high) ) | ( s2 < s2.quantile(q_low) )] = np.nan
 s1_missing_after = len(s1)-s1.count()
 s2_missing_after = len(s2)-s2.count()
 
-# This is if we want to normalize around the mean which can
-# give an indication in percent of how much it varies
-
-#s1 = s1 / s1.mean()
-#s2 = s2 / s2.mean()
-
 
 print('Removed points 1/3: ' + str(s1_missing_after-s1_missing_before) + ' of: '+str(len(s1)))
 print('Removed points 2/4: ' + str(s2_missing_after-s2_missing_before) + ' of: '+str(len(s2)))
 #print(removed_s1)
 #print(removed_s2)
 
-print('Standard deviation 1/3 :'+str(s1.std()))
-print('Standard deviation 2/4 :'+str(s2.std()))
-
 print('Constant 1/3 :'+str((1/s1.mean())))
 print('Constant 2/4 :'+str((1/s2.mean())))
 
+# This is if we want to normalize around the mean which can
+# give an indication in percent of how much it varies
 
-s1.mean()
+s1 = s1 / s1.mean()
+s2 = s2 / s2.mean()
 
-s1.describe()
+print('Standard deviation 1/3 :'+str(s1.std()))
+print('Standard deviation 2/4 :'+str(s2.std()))
+
 s1.plot(linewidth=0,marker='x')
 s2.plot(linewidth=0,marker='x')
+plt.ylim([s1.max()*1.1,s1.min()*0.9])
 
 removed_index
 #####

@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
 import os
+import datetime
 
 project_path = os.path.realpath('.')
 database_path = project_path + os.sep + 'Database' + os.sep
+log_path = project_path + os.sep + 'Log' + os.sep
 df = pd.read_hdf(database_path + 'selected_df.h5','table')
 
 # Create dictonary translation from original to new! (not the other way around)
@@ -38,6 +40,8 @@ def isNaN(num):
 # Duplicate the original dataset so it can be used for comparison
 df_filtered = df.copy()
 
+run_log = list()
+
 for i in list(index_selected.index):
     # In the headers_dict file there are values and relations stored for
     # each data-point. Most of them does not contain anything but those that
@@ -60,16 +64,27 @@ for i in list(index_selected.index):
         low_bound =headers_dict.loc[i]['LOW_BOUND']
 
         # For debugging ....
-        print(str(i) + ' rel: '+ rel + ' value: '+ str(value) + ' var: '+ var +' high: ' + str(high_bound) +' low: ' + str(low_bound) +  ' ... 1st if')
 
         exec("df_filtered[name][(df_filtered[hd[var]] "+ rel +" value) & (df_filtered[name] > high_bound)] = np.nan")
         exec("df_filtered[name][(df_filtered[hd[var]] "+ rel +" value) & (df_filtered[name] < low_bound)] = np.nan")
 
         values_removed = len(df_filtered[name])-df_filtered[name].count()
-        print(hd[name] + ' values filtered: ' + str(values_removed))
         df_filtered[name] = df_filtered[name].interpolate()
         diff_abs = abs( (df_filtered[name] - df[name]) ).sum()
-        print(str(diff_abs) + ' absolute sum, average/point: '+ str(diff_abs/values_removed) +"\n" )
+
+        a = ('Index:' + str(i) +\
+        ' ;Relation: '+ rel + \
+        ' ;Value: '+ str(value) +\
+        ' ;Var: '+ var +\
+        ' ;High: '+ str(high_bound) +\
+        ' ;Low: '+ str(low_bound) +\
+        ' ;Values filtered: '+ str(values_removed) +\
+        ' ;Absolute sum: '+ str(diff_abs) +\
+        ' ;Average/point: '+ str(diff_abs/values_removed))
+
+        run_log.append(a)
+
+
 
 # If no relation is used...
     if ( (isinstance(headers_dict.loc[i]['HIGH_BOUND'],float)) | (isinstance(headers_dict.loc[i]['HIGH_BOUND'],int)) ) & \
@@ -81,23 +96,35 @@ for i in list(index_selected.index):
         high_bound = headers_dict.loc[i]['HIGH_BOUND']
         low_bound = headers_dict.loc[i]['LOW_BOUND']
 
-        # For debugging...
-        print(str(i) +' high: ' + str(high_bound) +' low: ' + str(low_bound) +  ' ... 2nd if')
-
         df_filtered[name][df_filtered[name] > high_bound] = np.nan
         df_filtered[name][df_filtered[name] < low_bound] = np.nan
 
         values_removed = len(df_filtered[name])-df_filtered[name].count()
-        print('if2... '+ hd[name] + ' values filtered: ' + str(values_removed))
         df_filtered[name] = df_filtered[name].interpolate()
         diff_abs = abs( (df_filtered[name] - df[name]) ).sum()
-        print(str(diff_abs) + ' absolute sum, average/point: '+ str(diff_abs/values_removed) +"\n" )
+
+        a = ('Index:' + str(i) +\
+        ' ;Relation: NONE'+\
+        ' ;Value: NONE' +\
+        ' ;Var: NONE' +\
+        ' ;High: '+ str(high_bound) +\
+        ' ;Low: '+ str(low_bound) +\
+        ' ;Values filtered: '+ str(values_removed) +\
+        ' ;Absolute sum: '+ str(diff_abs) +\
+        ' ;Average/point: '+ str(diff_abs/values_removed))
+
+        run_log.append(a)
 
 
 
     #df_filtered[name] = df_filtered[name].interpolate()
 
 
+
+log_file = open(log_path + 'log_file_' +str(datetime.datetime.now())+ '.txt','w')
+for item in run_log:
+    log_file.write('\n'+item)
+log_file.close()
 
 
 #%%
