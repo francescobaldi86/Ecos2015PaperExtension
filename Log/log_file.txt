@@ -1,4 +1,4 @@
-2017-06-07 11:33:26.703617
+2017-06-07 11:35:41.025247
 
 Index:14 ;Name: AE1-CAC_AIR_P_OUT ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 2.87 ;Low: 0.1324 ;Values filtered: 199 ;Absolute sum: 30.215110430576736 ;Average/point: 0.151834725782
 Index:15 ;Name: AE1-CAC_AIR_T_OUT ;Relation: > ;Value: 5000.0 ;Var: AE1-TC__RPM_ ;High: 65 ;Low: 40 ;Values filtered: 0 ;Absolute sum: 0.0 ;Average/point: nan
