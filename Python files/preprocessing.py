@@ -112,6 +112,8 @@ def readAuxEnginesExistingValues(raw, processed,CONSTANTS,hd):
         processed[name]["CAC_LT"]["Air_out"]["T"] = raw[hd[name + "-CAC_AIR_T_OUT"]] + 273.15
         processed[name]["CAC_LT"]["Air_out"]["p"] = raw[hd[name + "-CAC_AIR_P_OUT"]] + 1
         processed[name]["Cyl"]["Power_out"]["Wdot"] = raw[hd[name + "_POWER_Wdot_OUT"]]
+        processed[name]["Cyl"]["Air_in"]["T"] = processed[name]["CAC_LT"]["Air_out"]["T"]
+        processed[name]["Cyl"]["Air_in"]["p"] = processed[name]["CAC_LT"]["Air_out"]["p"]
     return processed
 
 
@@ -313,7 +315,7 @@ def auxEngineFuelFlowCalculation(raw, processed, CONSTANTS, status):
                                                                           "POLY_LOAD_2_ISO_BSFC"],))
         (bsfc, LHV) = bsfcISOCorrection(bsfc_iso, processed[name]["Cyl"]["Air_in"]["T"], processed[name]["CAC_LT"][
                 "LTWater_in"]["T"], processed[name]["Cyl"]["FuelPh_in"]["T"], CONSTANTS)
-        processed[name]["Cyl"]["FuelPh_in"]["mdot"] = bsfc * processed[name]["Cyl"]["Power_out"]["Wdot"] * 3600 / 1000
+        processed[name]["Cyl"]["FuelPh_in"]["mdot"] = bsfc * processed[name]["Cyl"]["Power_out"]["Wdot"] / 3600 / 1000
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * LHV
     return processed
 

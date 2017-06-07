@@ -1,5 +1,5 @@
 # Temporarily empty
-import CoolProp.CoolProp as cp
+import CoolProp as cp
 import numpy as np
 import pandas as pd
 
