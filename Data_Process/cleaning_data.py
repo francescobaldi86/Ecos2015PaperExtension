@@ -73,6 +73,7 @@ for i in list(index_selected.index):
         diff_abs = abs( (df_filtered[name] - df[name]) ).sum()
 
         a = ('Index:' + str(i) +\
+        ' ;Name: '+ hd[name]+\
         ' ;Relation: '+ rel + \
         ' ;Value: '+ str(value) +\
         ' ;Var: '+ var +\
@@ -104,6 +105,7 @@ for i in list(index_selected.index):
         diff_abs = abs( (df_filtered[name] - df[name]) ).sum()
 
         a = ('Index:' + str(i) +\
+        ' ;Name: '+ hd[name]+\
         ' ;Relation: NONE'+\
         ' ;Value: NONE' +\
         ' ;Var: NONE' +\
@@ -126,6 +128,7 @@ for item in run_log:
     log_file.write('\n'+item)
 log_file.close()
 
+df_filtered.to_hdf(database_path + 'filtered_df.h5','table',complevel=9,complib='blosc')
 
 #%%
 

@@ -17,11 +17,11 @@ df_flow_meters = pd.read_excel(project_path + os.sep + 'Analyse' + os.sep + 'Mas
 df_flow_meters.index = pd.to_datetime(df_flow_meters.index)
 
 FO1_flow = df['FO BOOST 1 CONSUMPT:6165:m3/h:Average:900']/3600*15*60
-FO1_flow = FO1_flow.resample('D').sum()
+FO1_flow = FO1_flow.resample('W').sum()
 FO2_flow = df['FO BOOST 2 CONSUMPT:6166:m3/h:Average:900']/3600*15*60
-FO2_flow = FO2_flow.resample('D').sum()
-s1 = (FO1_flow/df_flow_meters['FO_engine_1_3'])
-s2 = (FO2_flow/df_flow_meters['FO_engine_2_4'])
+FO2_flow = FO2_flow.resample('W').sum()
+s1 = (FO1_flow/df_flow_meters['FO_engine_1_3'].resample('W').sum())
+s2 = (FO2_flow/df_flow_meters['FO_engine_2_4'].resample('W').sum())
 
 # This counts the length and the nr of floats. As there are some missing data
 # already at the beginning it is essential that we save this variable.
@@ -78,10 +78,33 @@ plt.ylim([s1.max()*1.1,s1.min()*0.9])
 
 removed_index
 #####
+#%%
+
+
+FO1_flow = df['FO BOOST 1 CONSUMPT:6165:m3/h:Average:900']['2014-08-06']#/3600*15*60
+FO2_flow = df['FO BOOST 2 CONSUMPT:6166:m3/h:Average:900']['2014-08-06']#/3600*15*60
+
+FO1_flow.plot()
+FO2_flow.plot()
+plt.legend(["Booster 1/3" , "Booster 2/4"])
+
+
+
+
+
+
+
+
+
+
+
+
+
 #####
 #####
 #%%
 # Using the counters to see if that is better..
+
 
 
 FO1_counter = df['FO BOOST 1 CONSUMPT:6165:m3:Average:900']
