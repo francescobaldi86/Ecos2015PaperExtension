@@ -123,7 +123,10 @@ for i in list(index_selected.index):
 
 
 
-log_file = open(log_path + 'log_file_' +str(datetime.datetime.now())+ '.txt','w')
+
+log_file = open(log_path + 'log_file.txt','w')
+
+log_file.write(str(datetime.datetime.now()) + '\n')
 for item in run_log:
     log_file.write('\n'+item)
 log_file.close()
