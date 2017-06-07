@@ -16,7 +16,7 @@ def assumptions(raw, processed, CONSTANTS, hd):
     for name in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         # The pressure at the turbocharger inlet is equal to the atmospheric pressure
         processed[name]["TC"]["Air_in"]["p"] = CONSTANTS["General"]["P_ATM"]
-    CONSTANTS["General"]["T_0"] = raw[hd["ER13_SW_T_IN"]]
+    processed["T_0"] = raw[hd["ER13_SW_T_IN"]] + 273.15
     return processed
 
 
@@ -131,12 +131,17 @@ def mainEngineFuelFlowCalculation(raw, processed, CONSTANTS, hd):
         # In the case of the main engines, the fuel flow of an engine is calculated given its fuel
         # rack position and its rotating speed.
         fuel_rack_position = raw[hd[name+"__FRP_"]]
+        if name == "ME1":
+            FRP_K = CONSTANTS["MainEngines"]["POLY_FRP_2_MFR_ME1"]
+        else:
+            FRP_K = CONSTANTS["MainEngines"]["POLY_FRP_2_MFR"]
         # Temporarily, only the ISO fuel flow is calculated
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = CONSTANTS["MainEngines"]["MFR_FUEL_DES_ISO"] * (
-            (CONSTANTS["MainEngines"]["POLY_FRP_2_MFR"][0] + CONSTANTS["MainEngines"]["POLY_FRP_2_MFR"][1] *
-            fuel_rack_position/100*CONSTANTS["MainEngines"]["FRP_DES"][name]) / (CONSTANTS["MainEngines"]["POLY_FRP_2_MFR"][0] + CONSTANTS["MainEngines"][
-            "POLY_FRP_2_MFR"][1] * CONSTANTS["MainEngines"]["FRP_DES"][name])) * (
+            (CONSTANTS["MainEngines"]["POLY_FRP_2_MFR"][0] + FRP_K[1] *
+            fuel_rack_position/100*CONSTANTS["MainEngines"]["FRP_DES"][name]) /
+            (FRP_K[0] + FRP_K[1] * CONSTANTS["MainEngines"]["FRP_DES"][name])) * (
             processed[name]["Cyl"]["Power_out"]["omega"] / CONSTANTS["MainEngines"]["RPM_DES"])
+        aaa = 0
     return processed
 
 
@@ -155,14 +160,8 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
         # Shaft energy out
         processed[name]["Cyl"]["Power_out"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] / bsfc * 1000 * 3600
-        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECT WITH THE CORRECT LHV
-         # Chemical energy
-        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]
         # Chemical energy in the fuel
         processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * LHV
-        processed[name]["Cyl"]["FuelCh_in"]["Wdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * CONSTANTS["General"]["LHV_HFO"]  # CORRECTT WITH THE CORRECT LHV
-
-
     return processed
 
 
@@ -196,7 +195,7 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
         processed[name]["CAC_HT"]["Air_in"]["T"] = processed[name]["TC"]["Air_out"]["T"]
         # Calculating the air inflow aspired by the cylinder: calculated as inlet air density times the maximum volume,
         # times the engine speed
-        processed[name]["Cyl"]["Air_in"]["mdot"] = CONSTANTS["MainEngines"]["V_MAX"] * (
+        processed[name]["Cyl"]["Air_in"]["mdot"] = CONSTANTS["MainEngines"]["V_SW"] * (
             processed[name]["Cyl"]["Air_in"]["p"] * 1e5) / (
             CONSTANTS["General"]["R_AIR"] * processed[name]["Cyl"]["Air_in"]["T"]) * (
             processed[name]["Cyl"]["Power_out"]["omega"] / 60 / 2 * CONSTANTS["General"]["ETA_VOL"]) * (
@@ -224,7 +223,7 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
         #        (1 + CONSTANTS["MainEngines"]["ETA_MECH_TC"]) * processed[name]["Comp"]["Air_out"]["T"]))
         # The new approximation is that the valve is only open for engine load below 50%, and when it is open it increases the flow by a fixed amount
         processed[name]["BPvalve"]["Air_in"]["mdot"][:] = 0
-        processed[name]["BPvalve"]["Air_in"]["mdot"][status[name]["Load"]<0.5] = CONSTANTS["MainEngines"]["BYPASS_FLOW"]
+        processed[name]["BPvalve"]["Air_in"]["mdot"][(status[name]["Load"]<0.5) | ((status[name]["Load"]<0.6) & (processed[name]["TC"]["EG_out"]["T"]<620))] = CONSTANTS["MainEngines"]["BYPASS_FLOW"]
         processed[name]["BPvalve"]["Air_out"]["mdot"] = processed[name]["BPvalve"]["Air_in"]["mdot"]
         # Calculating the temperature of the mixture after the merge between bypass and exhaust gas from the cylinders
         processed[name]["TC"]["EG_in"]["T"] = (
@@ -239,6 +238,7 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
         processed[name]["TC"]["Air_out"]["mdot"] = processed[name]["TC"]["Air_in"]["mdot"]
         # The flow through the turbine is equal to the sum of the bypass flow and the exhaust coming from the cylinders
         processed[name]["TC"]["EG_in"]["mdot"] = processed[name]["BPvalve"]["Air_in"]["mdot"] + processed[name]["Cyl"]["EG_out"]["mdot"]
+        processed[name]["TC"]["EG_out"]["mdot"] = processed[name]["TC"]["EG_in"]["mdot"]
     return processed
 
 
@@ -246,15 +246,19 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type):
     # This function calculates the different flows related to the cooling systems of the main engines.
     for name in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
-        energy_2_cooling = processed[name]["Cyl"]["FuelCh_in"]["Wdot"] - processed[name]["Cyl"]["Power_out"]["Wdot"] + (
-            CONSTANTS["General"]["CP_HFO"] * processed[name]["Cyl"]["FuelPh_in"]["mdot"] * (processed[name]["Cyl"]["FuelPh_in"]["T"] - CONSTANTS["General"]["T_0"])) - (
-            CONSTANTS["General"]["CP_EG"] * processed[name]["TC"]["EG_out"]["mdot"] * (processed[name]["TC"]["EG_out"]["T"] - CONSTANTS["General"]["T_0"])) + (
-            CONSTANTS["General"]["CP_AIR"] * processed[name]["TC"]["Air_in"]["mdot"] * (processed[name]["TC"]["Air_in"]["T"] - CONSTANTS["General"]["T_0"]))
+        energy_2_cooling = (processed[name]["Cyl"]["FuelCh_in"]["Wdot"] -
+            processed[name]["Cyl"]["Power_out"]["Wdot"] +
+            CONSTANTS["General"]["CP_HFO"] * processed[name]["Cyl"]["FuelPh_in"]["mdot"] *
+                (processed[name]["Cyl"]["FuelPh_in"]["T"] - processed["T_0"]) -
+            CONSTANTS["General"]["CP_EG"] * processed[name]["TC"]["EG_out"]["mdot"] *
+                (processed[name]["TC"]["EG_out"]["T"] - processed["T_0"]) +
+            CONSTANTS["General"]["CP_AIR"] * processed[name]["TC"]["Air_in"]["mdot"] *
+                (processed[name]["TC"]["Air_in"]["T"] - processed["T_0"]))
         # Calculating the energy going to the charge air cooler, based on the estimated temperatures on the air line
         energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["TC"]["Air_out"]["T"] - processed[name]["Cyl"]["Air_in"]["T"])
         # Calculating the energy going to the HT cooling systems, based on interpolation from the project guide
-        energy_2_ht_theoric = status[name]["Load"].apply(polyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],))
-        energy_2_lt_theoric = status[name]["Load"].apply(polyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],))
+        energy_2_ht_theoric = status[name]["Load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],)) * CONSTANTS[engine_type]["QDOT_HT_DES"]
+        energy_2_lt_theoric = status[name]["Load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],)) * CONSTANTS[engine_type]["QDOT_LT_DES"]
         # The values calculated based on the project guide are reconciled based on the energy balance
         energy_2_ht = energy_2_cooling * energy_2_ht_theoric / (energy_2_ht_theoric + energy_2_lt_theoric)
         energy_2_lt = energy_2_cooling - energy_2_ht
@@ -286,6 +290,10 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type):
         processed[name]["JWC"]["HTWater_out"]["T"] = processed[name]["JWC"]["HTWater_in"]["T"] + energy_2_jwc / processed[name]["JWC"]["HTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
         processed[name]["CAC_HT"]["HTWater_in"]["T"] = processed[name]["JWC"]["HTWater_out"]["T"]
         processed[name]["CAC_HT"]["HTWater_out"]["T"] = processed[name]["CAC_HT"]["HTWater_in"]["T"] + energy_2_cac_ht / processed[name]["CAC_HT"]["HTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
+        # For the LOC, we know the outlet (lower) temperature, we calculate the inlet temperature
+        processed[name]["LOC"]["LubOil_out"]["mdot"][:] = CONSTANTS[engine_type]["MFR_LO"]
+        processed[name]["LOC"]["LubOil_in"]["mdot"][:] = CONSTANTS[engine_type]["MFR_LO"]
+        processed[name]["LOC"]["LubOil_in"]["T"] = processed[name]["LOC"]["LubOil_out"]["T"] + energy_2_loc / processed[name]["LOC"]["LubOil_out"]["mdot"] / CONSTANTS["General"]["CP_LO"]
     return processed
 
 
@@ -406,4 +414,10 @@ def polyvalHelperFunction(x,p):
     # The problem with applying "polyval" to data series is that the "x" is the second argument of the function
     # instead of being the first. So we use this function to invert the two, waiting to find a better way
     output = np.polyval(p,x)
+    return output
+
+def piecewisePolyvalHelperFunction(x,p):
+    # The problem with applying "polyval" to data series is that the "x" is the second argument of the function
+    # instead of being the first. So we use this function to invert the two, waiting to find a better way
+    output = np.piecewise(x, [x < 0.5 , x >= 0.5], [np.polyval(p[1],x) , np.polyval(p[0],x)])
     return output

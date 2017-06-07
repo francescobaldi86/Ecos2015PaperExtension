@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import pdb
 
 
@@ -28,7 +28,7 @@ def general():
     output["LHV_MDO"] = 42230.0 # Marine Diesel Oil lower heating value, in [kJ/kg]
     output["HHV_MDO"] = output["LHV_MDO"] * (1.0406 + 0.0144 * 0.1185 / 0.8794 * 12) * 1.01  # Calculated Higher heating value
     output["CP_HFO"] = 1.8   # Fuel specific heat, [kJ/kg]
-    output["RHO_HFO"] = numpy.mean([890, 919, 924, 926, 925, 921, 924, 918, 920, 919, 933])  # HFO density, in [kg/m^3]
+    output["RHO_HFO"] = np.mean([890, 919, 924, 926, 925, 921, 924, 918, 920, 919, 933])  # HFO density, in [kg/m^3]
     output["AIR_STOIC"] = 14.7  # Stoichiometric ratio fuel/air for Diesel-type fuels
     output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency
     output["P_ATM"] = 1.01325 # Assumption on atmospheric pressure
@@ -55,30 +55,30 @@ def mainEngines(CONSTANTS):
     output["MFR_FUEL_DES_ISO"] = 1165 / 3600 * 186.1 / 197.6   # Fuel flow at 100# load at ISO conditions, in [kg/s]
 # output["POLY_FUEL_RACK_2_MFR_FUEL"] = polyfit([24 31 38 42 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
     output["POLY_FRP_2_MFR"] = [-159.612, 28.282788]  # Gives the mass flow rate at fixed rpm for different values of the fuel rack position
-    output["POLY_FUEL_LOAD_2_BSFC_ISO"] = numpy.polyfit(numpy.array([336.3, 587.8, 836.6, 953.1, 1141])/1141,
-                                                        numpy.array([216.9, 187.1, 178.5, 179.2, 181.4]), 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
+    output["POLY_FRP_2_MFR_ME1"] = [-159.612, 24.23254]
+    output["POLY_FUEL_LOAD_2_BSFC_ISO"] = np.polyfit(np.array([336.3, 587.8, 836.6, 953.1, 1141])/1141, [216.9, 187.1, 178.5, 179.2, 181.4], 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
 # output["POLY_RPM_2_POWER"] = polyfit([315 397 454 474 500 516], [1463 2925 4388 4973 5890 6435], 3)  
-    output["POLY_RPM_2_ISO_BSFC"] = numpy.polyfit(numpy.array([315.0, 397.0, 454.0, 474.0, 500.0, 516.0]),
-                                                  numpy.array([numpy.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1]), 2)
+    output["POLY_RPM_2_ISO_BSFC"] = np.polyfit([315.0, 397.0, 454.0, 474.0, 500.0, 516.0], [np.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1], 2)
 # output["POLY_PCA_2_LOAD"] = [0.25/0.24, 0, 0.2577, 0.1438, 0.5, 0]  
-    output["POLY_LOAD_2_ISO_BSFC"] = numpy.polyfit(numpy.array([0.25, 0.5, 0.75, 0.85, 1.0, 1.1]),
-                                                   numpy.array([numpy.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1]), 2)
+    output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit([0.25, 0.5, 0.75, 0.85, 1.0, 1.1], [np.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1], 2)
     output["QDOT_HT_DES"] = 1650.0  # Heat flow to the HT cooling systems at design load, in [kW]
     output["QDOT_LT_DES"] = 1450.0  # Heat flow to the HT cooling systems at design load, in [kW]
-    output["POLY_LOAD_2_QDOT_HT"] = numpy.polyfit(numpy.array([0.5, 0.75, 0.85, 1]),
-                                                  numpy.array([500.0, 1000.0, 1250.0, output["QDOT_HT_DES"]]), 2)
-    output["POLY_LOAD_2_QDOT_LT"] = numpy.polyfit(numpy.array([0.5, 0.75, 0.85, 1]),
-                                                  numpy.array([800.0, 1050.0, 1200.0, output["QDOT_LT_DES"]]), 2)
-    output["POLY_LOAD_2_EPS_CACHT"] = numpy.polyfit(numpy.array([0.5, 0.75, 0.85, 1]),
-                                                    numpy.array([0.922, 0.902, 0.876, 0.871]), 1)
+    output["POLY_LOAD_2_QDOT_HT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
+                                        np.array([500.0, 1000.0, 1250.0, output["QDOT_HT_DES"]]) / output["QDOT_HT_DES"], 2)]
+    output["POLY_LOAD_2_QDOT_LT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
+                                        np.array([800.0, 1050.0, 1200.0, output["QDOT_LT_DES"]]) / output["QDOT_LT_DES"], 2)]
+    output["POLY_LOAD_2_QDOT_HT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_HT"][0],0.5)]), 1))
+    output["POLY_LOAD_2_QDOT_LT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_LT"][0], 0.5)]), 1))
+    output["POLY_LOAD_2_EPS_CACHT"] = np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
+                                                    np.array([0.922, 0.902, 0.876, 0.871]), 1)
 # output["POLY_FUEL_RACK_2_MASS_FUEL_CYCLE"] = polyfit([0.233333, 0.5, 0.7, 0.8, 1],[0.01726, 0.02435, 0.03081, 0.03397, 0.03869],1)  
-    output["BSFC_ISO_DES"] = numpy.polyval(output["POLY_LOAD_2_ISO_BSFC"], 1)
+    output["BSFC_ISO_DES"] = np.polyval(output["POLY_LOAD_2_ISO_BSFC"], 1)
 # Function handle that allows to calculate the fuel load
     output["BORE"] = 0.46   # Main engine bore
     output["STROKE"] = 0.58   # Main engine stroke
     output["N_CYL"] = 6   # Number of cylinders
     output["R_C"] = 14   # Assumption of compression ratio
-    output["V_SW"] = output["BORE"]**2 / 4 * numpy.pi * output["STROKE"]   # Swept volume, in [m^3]
+    output["V_SW"] = output["BORE"]**2 / 4 * np.pi * output["STROKE"]   # Swept volume, in [m^3]
     output["V_MAX"] = output["V_SW"] * output["R_C"] / (output["R_C"] - 1)   # Maximum volume, in [m^3]
     output["MFR_LO"] = 120.0 * CONSTANTS["General"]["RHO_LO"] / 3600.0   # Mass flow rate of oil in each main engine, in [kg/s]
     output["MFR_LT"] = 120.0 * CONSTANTS["General"]["RHO_W"] / 3600.0   # Mass flow rate of LT cooling water, in [kg/s]
@@ -100,12 +100,12 @@ def auxiliaryEngines(CONSTANTS):
     output = {"MCR": 2760.0}  # Auxiliary engines maximum power, in [kW]
     output["RPM_DES"] = 750.0  # Auxiliary engines design speed, in [rpm]
 # AE_POLY_FUEL_RACK_2_MFR_FUEL = polyfit([17 27 37 44.5 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2) # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
-    output["POLY_LOAD_2_ISO_BSFC"] = numpy.polyfit(numpy.array([0.5, 0.75, 1.0]), numpy.array([191.0, 184.0, 183.0])/183.0*190.6, 2)  # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
-    output["POLY_PIN_2_ETA_IS"] = numpy.array([-1.18e-2, 8.74e-2, 6.81e-1]) 
+    output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit(np.array([0.5, 0.75, 1.0]), np.array([191.0, 184.0, 183.0])/183.0*190.6, 2)  # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
+    output["POLY_PIN_2_ETA_IS"] = np.array([-1.18e-2, 8.74e-2, 6.81e-1]) 
     output["BORE"] = 0.32  # Main engine bore, in [m]
     output["STROKE"] = 0.40  # Main engine stroke, in [m]
     output["N_CYL"] = 6.0  # Number of cylinders
-    output["V_SW"] = output["BORE"]**2 / 4.0 * numpy.pi * output["STROKE"]  # Swept volume, in [m^3]
+    output["V_SW"] = output["BORE"]**2 / 4.0 * np.pi * output["STROKE"]  # Swept volume, in [m^3]
     output["R_C"] = 14.0  # Assumption of compression ratio
     output["V_MAX"] = output["V_SW"] * output["R_C"] / (output["R_C"] - 1)  # Maximum volume, in [m^3]
     output["MFR_LO"] = 70 * CONSTANTS["General"]["RHO_LO"] / 3600 # Mass flow rate of oil in each auxiliary engine, in [kg/s]
@@ -114,14 +114,10 @@ def auxiliaryEngines(CONSTANTS):
     output["QDOT_2_JWC_DES"] = 414.0  # Heat flow to the jacket water cooler at the engine design point, in [kW]
     output["QDOT_2_LOC_DES"] = 331.0  # Heat flow to the lubricating oil cooler at the engine design point, in [kW]
 # Assuming that the amount of heat from the engine to the HT cooling systems behaves in the same way as that of the main engines.
-    output["POLY_LOAD_2_QDOT_HT"] = (CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_HT"] *
-                                     (output["QDOT_2_CAC_HT_DES"] + output["QDOT_2_JWC_DES"]) /
-                                     CONSTANTS["MainEngines"]["QDOT_HT_DES"])
-    output["POLY_LOAD_2_QDOT_LT"] = (CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_LT"] *
-                                     (output["QDOT_2_CAC_LT_DES"] + output["QDOT_2_LOC_DES"]) /
-                                     CONSTANTS["MainEngines"]["QDOT_LT_DES"])
+    output["POLY_LOAD_2_QDOT_HT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_HT"]
+    output["POLY_LOAD_2_QDOT_LT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_LT"]
 # Assuming that the sare of the charge air cooling heat going to the HT stage is linearly increasing from 0 to its value at the engine design point.
-    output["POLY_LOAD_2_SHARE_CAC"] = numpy.polyfit([0, 1], [0, output["QDOT_2_CAC_HT_DES"]/(output["QDOT_2_CAC_HT_DES"]+output["QDOT_2_CAC_LT_DES"])], 1)
+    output["POLY_LOAD_2_SHARE_CAC"] = np.polyfit([0, 1], [0, output["QDOT_2_CAC_HT_DES"]/(output["QDOT_2_CAC_HT_DES"]+output["QDOT_2_CAC_LT_DES"])], 1)
     output["MFR_LT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of LT cooling water, in [kg/s]
     output["MFR_HT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of HT cooling water, in [kg/s]
     output["ETA_CORR"] = 1.15  # Used because one of the engines need correction, to be checked
