@@ -36,14 +36,16 @@ datareading_run = "yes"
 
 # Loading appropriate modules
 import sys
-path_files = 'Python files' + os.sep
-sys.path.append(path_files)
+import os
 import pandas as pd
+project_path = os.path.dirname(os.path.realpath(__file__))
+path_files = project_path + os.sep + 'Python files' + os.sep
+sys.path.append(path_files)
+
+# Loading local modules
 import input
 import plotting as plot
-
-
-filenames = input.filenames() # Note: this is just a test
+filenames = input.filenames(project_path) # Note: this is just a test
 
 
 #%%

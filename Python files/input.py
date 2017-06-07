@@ -1,7 +1,9 @@
 import os
 
-def filenames():
-    project_path = os.path.realpath('.')
+def filenames(project_path):
+    #project_path = os.path.realpath('..')
+    #project_path = os.path.dirname(os.path.realpath(__file__))
+    #project_path = project_path + os.sep + ".."
     output = {}
     # Input files
     output["dataset_raw"] = project_path + os.sep + 'Database' + os.sep +'selected_df.h5'
