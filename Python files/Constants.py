@@ -52,10 +52,13 @@ def steamProperties():
 def mainEngines(CONSTANTS):
     output = {"MCR": 5890}   # Main engines maximum power, in [kW]
     output["RPM_DES"] = 500  # Main engine design speed, in [rpm]
-    output["MFR_FUEL_DES_ISO"] = 1165 / 3600 * 186.1 / 197.6   # Fuel flow at 100# load at ISO conditions, in [kg/s]
+    output["MFR_FUEL_DES_ISO"] = 184 * output["MCR"] / 1000 / 3600 # Fuel flow at 100# load at ISO conditions, in [kg/s]. 184 is the ISO bsfc at 100% load (average for the 4 MEs)
 # output["POLY_FUEL_RACK_2_MFR_FUEL"] = polyfit([24 31 38 42 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
-    output["POLY_FRP_2_MFR"] = [-159.612, 28.282788]  # Gives the mass flow rate at fixed rpm for different values of the fuel rack position
-    output["POLY_FRP_2_MFR_ME1"] = [-159.612, 24.23254]
+    # Here we write all the required info for the fuel rack position to mass flow rate relation
+    output["FRP_2_MFR"] = {}
+    output["FRP_2_MFR"]["POLY"] = {"ME1": [-159.612, 24.23254], "ME2": [-159.612, 28.282788], "ME3": [-159.612, 28.282788], "ME4": [-159.612, 28.282788]}
+    output["FRP_2_MFR"]["FRP_MIN"] = {"ME1": 18.0, "ME2": 16.6, "ME3": 17.5, "ME4": 16.4}
+    output["FRP_2_MFR"]["FRP_MAX"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}
     output["POLY_FUEL_LOAD_2_BSFC_ISO"] = np.polyfit(np.array([336.3, 587.8, 836.6, 953.1, 1141])/1141, [216.9, 187.1, 178.5, 179.2, 181.4], 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
 # output["POLY_RPM_2_POWER"] = polyfit([315 397 454 474 500 516], [1463 2925 4388 4973 5890 6435], 3)  
     output["POLY_RPM_2_ISO_BSFC"] = np.polyfit([315.0, 397.0, 454.0, 474.0, 500.0, 516.0], [np.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1], 2)
@@ -100,7 +103,7 @@ def auxiliaryEngines(CONSTANTS):
     output = {"MCR": 2760.0}  # Auxiliary engines maximum power, in [kW]
     output["RPM_DES"] = 750.0  # Auxiliary engines design speed, in [rpm]
 # AE_POLY_FUEL_RACK_2_MFR_FUEL = polyfit([17 27 37 44.5 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2) # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
-    output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit(np.array([0.5, 0.75, 1.0]), np.array([191.0, 184.0, 183.0])/183.0*190.6, 2)  # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
+    output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit(np.array([0.5, 0.75, 0.85, 1.0]), np.array([193.0, 182.0, 181.0, 184.0])/184.0*190.0, 2)  # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
     output["POLY_PIN_2_ETA_IS"] = np.array([-1.18e-2, 8.74e-2, 6.81e-1]) 
     output["BORE"] = 0.32  # Main engine bore, in [m]
     output["STROKE"] = 0.40  # Main engine stroke, in [m]
@@ -123,7 +126,11 @@ def auxiliaryEngines(CONSTANTS):
     output["MFR_LT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of LT cooling water, in [kg/s]
     output["MFR_HT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of HT cooling water, in [kg/s]
     output["ETA_CORR"] = 1.15  # Used because one of the engines need correction, to be checked
-    output["ETA_SG"] = 0.97
+    # The efficiency is calculated at eta = eta_des - A exp(-k (x-x_ref)/x_ref)
+    output["AG"] = {}
+    output["AG"]["ETA_DES"] = 0.97
+    output["AG"]["A"] = 0.18
+    output["AG"]["k"] = 5
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     return output
 

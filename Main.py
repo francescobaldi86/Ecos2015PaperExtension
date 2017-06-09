@@ -78,6 +78,9 @@ header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
 import unitstructures as us
 import constants as kk
 import consistencycheck as cc
+import preprocessingAE as ppa
+import preprocessingME as ppm
+import preprocessingO as ppo
 
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
@@ -87,12 +90,12 @@ dataset_processed = us.flowPreparation(dataset_processed, dataset_raw.index)  # 
 dataset_status = us.generalStatus() # Here we simply initiate the "status" structure
 
 # Running the pre-processing required for filling in the data structures:
-import preprocessing as pp
+
 # First updating the "CONSTANTS" dictionary with the some additional information
-dataset_processed = pp.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
+dataset_processed = ppo.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
-(dataset_processed, dataset_status) = pp.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
-(dataset_processed, dataset_status) = pp.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
+(dataset_processed, dataset_status) = ppm.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
+(dataset_processed, dataset_status) = ppa.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
 
 # Checking the consistency of the data
 cc.enginesCheck(dataset_processed, dataset_status, CONSTANTS)
@@ -130,7 +133,8 @@ import energyanalysis as ea
 ## PLAYGROUND ##
 #%%
 
-%pylab
+import matplotlib
+matplotlib.style.use('ggplot')
 
 #%%
 
@@ -150,17 +154,17 @@ AE4_FO = dataset_processed['AE4']['Cyl']['FuelPh_in']['mdot']
 dataset_processed['AE1']['Cyl']['FuelPh_in']['mdot'].describe()
 
 
-FO1_flow = dataset_raw['FO BOOST 1 CONSUMPT:6165:m3/h:Average:900']/3600*k_1_3
-FO2_flow = dataset_raw['FO BOOST 2 CONSUMPT:6166:m3/h:Average:900']/3600*k_2_4
+FO1_flow = dataset_raw['FO BOOST 1 CONSUMPT:6165:m3/h:Average:900']/3.600*k_1_3
+FO2_flow = dataset_raw['FO BOOST 2 CONSUMPT:6166:m3/h:Average:900']/3.600*k_2_4
 
 
-tot_ME13 = ME1_FO + ME3_FO + AE1_FO
-tot_ME24 = ME2_FO + ME4_FO + AE2_FO + AE4_FO
+tot_ME13 = (ME1_FO + ME3_FO + AE1_FO) * 1000
+tot_ME24 = (ME2_FO + ME4_FO + AE2_FO + AE4_FO) * 1000
 
-#tot_ME13_sel = tot_ME13[(dataset_status['ME1']['OnOff'] == 0) & (dataset_status['ME3']['OnOff'] == 0)]
-#FO1_flow_sel = FO1_flow[(dataset_status['ME1']['OnOff'] == 0) & (dataset_status['ME3']['OnOff'] == 0)]
 tot_ME13_sel = tot_ME13[(dataset_status['AE1']['OnOff'] == 0)]
 FO1_flow_sel = FO1_flow[(dataset_status['AE1']['OnOff'] == 0)]
+#tot_ME13_sel = tot_ME13[(dataset_status['AE1']['OnOff'] == 0)]
+#FO1_flow_sel = FO1_flow[(dataset_status['AE1']['OnOff'] == 0)]
 tot_ME13_sel.plot()
 FO1_flow_sel.plot(alpha=0.4)
 
@@ -169,3 +173,16 @@ FO1_flow_sel.plot(alpha=0.4)
 
 tot_ME24.plot()
 FO2_flow.plot(alpha=0.4)
+
+import matplotlib.pylab as plt
+plt.figure()
+plt.plot(tot_ME24, label="Calculated consumption [kg/s]")
+plt.plot(FO2_flow, label="Measured consumption [kg/s]")
+plt.legend()
+
+plt.figure()
+plt.plot(tot_ME13_sel, label="Calculated consumption [kg/s]")
+plt.plot(FO1_flow_sel, label="Measured consumption [kg/s]")
+plt.legend()
+
+aaa = "end"

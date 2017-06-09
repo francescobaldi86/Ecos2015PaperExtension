@@ -63,6 +63,9 @@ def flowStructure():
                 # Heat recovery steam generator
                 structure[idx]["HRSG"] = {"EG_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
                                           "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
+            # Auxiliary engines also have electric generators connected
+            if idx[0] == "A":
+                structure[idx]["AG"] = {"Power_in": {"type": "Wdot"}, "Power_out": {"type": "Wdot"}, "Losses": {"type": "Qdot"}}
         elif idx == "Other":
             structure[idx] = {"Boiler": {}, "SWC": {}, "LTCS": {}, "SWCS": {}}
             structure[idx]["Boiler"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
