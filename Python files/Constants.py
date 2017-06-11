@@ -34,6 +34,11 @@ def general():
     output["P_ATM"] = 1.01325 # Assumption on atmospheric pressure
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
     output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
+    output["PROPERTY_LIST"] = {}
+    output["CPF"] =  ["mdot", "T", "p", "cp", "h", "h0", "s", "s0", "b", "Edot", "Bdot"]
+    output["IPF"] = ["mdot", "T", "p", "cp", "b", "Edot", "Bdot"]
+    output["Qdot"] = ["Qdot", "T", "Edot", "Bdot"]
+    output["Wdot"] = ["Wdot", "omega", "Edot", "Bdot"]
     return output
 
 def steamProperties():

@@ -81,12 +81,13 @@ import consistencycheck as cc
 import preprocessingAE as ppa
 import preprocessingME as ppm
 import preprocessingO as ppo
+import energyanalysis as ea
 
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
 
 dataset_processed = us.flowStructure()  # Here we initiate the structure fields
-dataset_processed = us.flowPreparation(dataset_processed, dataset_raw.index)  # Here we create the appropriate empty data series for each field
+dataset_processed = us.flowPreparation(dataset_processed, dataset_raw.index, CONSTANTS)  # Here we create the appropriate empty data series for each field
 dataset_status = us.generalStatus() # Here we simply initiate the "status" structure
 
 # Running the pre-processing required for filling in the data structures:
@@ -117,7 +118,6 @@ cc.enginesCheck(dataset_processed, dataset_status, CONSTANTS)
 ######################################
 
 # Responsible: FB
-import energyanalysis as ea
 # dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
 
 

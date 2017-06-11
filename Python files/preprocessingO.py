@@ -18,6 +18,25 @@ def assumptions(raw, processed, CONSTANTS, hd):
     return processed
 
 
+def trivialAssignment(processed, CONSTANTS):
+    for name in processed:
+        for unit in name:
+            for flow in unit:
+                connected_unit = flow["Connections"]
+                split_name = splistring(connected_unit)
+                name_c = split_name[0]
+                unit_c = split_name[1]
+                flow_c = split_name[2]
+                for property in CONSTANTS["General"]["PROPERTY_LIST"][flow["type"]]:
+                    if processed[name][unit][flow][property].isnan().sum() == 0:
+                        if processed[name_c][unit_c][flow_c][property].isnan().sum() != 0:
+                            processed[name_c][unit_c][flow_c][property] = processed[name][unit][flow][property]
+                        elif processed[name][unit][flow][property] != processed[name_c][unit_c][flow_c][property]:
+                            print("Something is wrong for %s_%s_%s_%s",name,unit,flow,property)
+
+
+
+
 def engineStatusCalculation(type, raw, processed, CONSTANTS, status, hd):
     for name in CONSTANTS["General"]["NAMES"][type]:
         status[name]["Load"] = processed[name]["Cyl"]["Power_out"]["Wdot"] / CONSTANTS[type]["MCR"]

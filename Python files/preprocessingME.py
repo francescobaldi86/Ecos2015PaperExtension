@@ -1,12 +1,16 @@
 import numpy as np
 import pandas as pd
 import preprocessingO as ppo
+import energyanalysis as ea
 
 
 def mainEngineProcessing(raw, processed, CONSTANTS, status, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readMainEnginesExistingValues(raw, processed, CONSTANTS, hd)
+    # Assigning those values that are trivial, such as input and output flows when they are the same
+    processed = trivialAssignemt(processed, CONSTANTS)
+    # Calculating advanced properties for the flows that are already fully defined
     # Calculating the main engines fuel flows
     processed = mainEngineFuelFlowCalculation(raw, processed, CONSTANTS, hd)
     # Calculating the main engines power output
@@ -32,11 +36,8 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
             processed[name]["HRSG"]["EG_in"]["T"] = raw[hd[name + "-TC_EG_T_OUT"]] + 273.15
         # Temperature in the engine room, i.e. inlet to the compressor of the TC
         processed[name]["TC"]["Air_in"]["T"] = raw[hd["ER-FWD_AIR_T_"]] + 273.15
-        processed[name]["Comp"]["Air_in"]["T"] = processed[name]["TC"]["Air_in"]["T"]
         # Pressure of the charge air, at the compressor outlet (and, hence, at the cylinder inlet)
         processed[name]["TC"]["Air_out"]["p"] = raw[hd[name+"-CAC_AIR_P_OUT"]] + 1
-        processed[name]["Cyl"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"]
-        processed[name]["BPvalve"]["Air_in"]["p"] = processed[name]["TC"]["Air_out"]["p"]
         # Reading the HT temperature before and after the main engine
         # processed[name]["CAC_HT"]["Water_out"]["T"] = raw[name + "_HT_water_T_out"] # Note: this might be inconsistent
         processed[name]["JWC"]["HTWater_in"]["T"] = raw[hd[name + "-HT_FW_T_IN"]] + 273.15
@@ -49,12 +50,9 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         processed[name]["Cyl"]["FuelPh_in"]["T"] = raw[hd[name + "-CYL_FUEL_T_IN"]] + 273.15
         # Reading charge air temperature, after the charge air cooler (or at cylinder inlet)
         processed[name]["CAC_LT"]["Air_out"]["T"] = raw[hd[name + "-CAC_AIR_T_OUT"]] + 273.15
-        processed[name]["Cyl"]["Air_in"]["T"] = processed[name]["CAC_LT"]["Air_out"]["T"]
         # Reading Engine rpm
         processed[name]["Cyl"]["Power_out"]["omega"] = raw[hd[name + "__RPM_"]]
     return processed
-
-
 
 
 
@@ -138,21 +136,21 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
         #  CONSTANTS["General"]["CP_EG"] * (
         #   processed[name]["TC"]["EG_out"]["T"] - processed[name]["Comp"]["Air_out"]["T"]) -
         #   dh_comp_on_eta)
-        #processed[name]["BPvalve"]["Air_in"]["mdot"] = (
-        #    CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["Comp"]["Air_out"]["T"] - processed[name]["Comp"]["Air_in"]["T"]) +
-        #    CONSTANTS["General"]["CP_EG"] * CONSTANTS["MainEngines"]["ETA_MECH_TC"] * (processed[name]["Cyl"]["Air_in"]["mdot"] - processed[name]["Cyl"]["FuelPh_in"]["mdot"]) *
-        #    (processed[name]["Cyl"]["EG_out"]["T"] - processed[name]["TC"]["EG_out"]["T"])) / (
-        #    CONSTANTS["General"]["CP_AIR"] * (
-        #        processed[name]["Comp"]["Air_in"]["T"]+ CONSTANTS["MainEngines"]["ETA_MECH_TC"] * processed[name]["TC"]["EG_out"]["T"] -
-        #        (1 + CONSTANTS["MainEngines"]["ETA_MECH_TC"]) * processed[name]["Comp"]["Air_out"]["T"]))
+        processed[name]["BPvalve"]["Air_in"]["mdot"] = (
+            CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["Comp"]["Air_out"]["T"] - processed[name]["Comp"]["Air_in"]["T"]) +
+            CONSTANTS["General"]["CP_EG"] * CONSTANTS["MainEngines"]["ETA_MECH_TC"] * (processed[name]["Cyl"]["Air_in"]["mdot"] + processed[name]["Cyl"]["FuelPh_in"]["mdot"]) *
+            (processed[name]["TC"]["EG_out"]["T"] - processed[name]["Cyl"]["EG_out"]["T"])) / (
+            CONSTANTS["General"]["CP_AIR"] * (
+                processed[name]["Comp"]["Air_in"]["T"] - CONSTANTS["MainEngines"]["ETA_MECH_TC"] * processed[name]["TC"]["EG_out"]["T"] -
+                (CONSTANTS["MainEngines"]["ETA_MECH_TC"] - 1) * processed[name]["Comp"]["Air_out"]["T"]))
         # The new approximation is that the valve is only open for engine load below 50%, and when it is open it increases the flow by a fixed amount
-        processed[name]["BPvalve"]["Air_in"]["mdot"][:] = 0
-        processed[name]["BPvalve"]["Air_in"]["mdot"][(status[name]["Load"]<0.5) | ((status[name]["Load"]<0.6) & (processed[name]["TC"]["EG_out"]["T"]<620))] = CONSTANTS["MainEngines"]["BYPASS_FLOW"]
-        processed[name]["BPvalve"]["Air_out"]["mdot"] = processed[name]["BPvalve"]["Air_in"]["mdot"]
+        #processed[name]["BPvalve"]["Air_in"]["mdot"][:] = 0
+        #processed[name]["BPvalve"]["Air_in"]["mdot"][(status[name]["Load"]<0.6) | ((status[name]["Load"]<0.75) & (processed[name]["TC"]["EG_out"]["T"]<620))] = CONSTANTS["MainEngines"]["BYPASS_FLOW"]
+        #processed[name]["BPvalve"]["Air_out"]["mdot"] = processed[name]["BPvalve"]["Air_in"]["mdot"]
         # Calculating the temperature of the mixture after the merge between bypass and exhaust gas from the cylinders
         processed[name]["TC"]["EG_in"]["T"] = (
             processed[name]["BPvalve"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"] * processed[name]["Comp"]["Air_out"]["T"] +
-            processed[name]["Cyl"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_EG"] * processed[name]["Cyl"]["EG_out"]["T"]) / (
+            processed[name]["Cyl"]["EG_out"]["mdot"] * CONSTANTS["General"]["CP_EG"] * processed[name]["Cyl"]["EG_out"]["T"]) / (
             processed[name]["Cyl"]["EG_out"]["mdot"] * CONSTANTS["General"]["CP_EG"] +
             processed[name]["BPvalve"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"])
         # The air mass flow going through the compressor is equal to the sum of the air flow through the bypass valve and
