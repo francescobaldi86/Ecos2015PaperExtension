@@ -6,33 +6,41 @@ def assumptions(raw, processed, CONSTANTS, hd):
     # This function includes generic assumed values in the main structure
     for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
         # The pressure at the turbocharger inlet is equal to the atmospheric pressure
-        processed[name]["TC"]["Air_in"]["p"] = CONSTANTS["General"]["P_ATM"]
+        processed[name]["Comp"]["Air_in"]["p"][:] = CONSTANTS["General"]["P_ATM"]
     for name in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         # The pressure at the turbocharger inlet is equal to the atmospheric pressure
-        processed[name]["TC"]["Air_in"]["p"] = CONSTANTS["General"]["P_ATM"]
-    processed["T_0"] = raw[hd["ER13_SW_T_IN"]] + 273.15
-    processed["Other"]["SWC13"]["SeaWater"]["T_out"] = raw["SWC13_SeaWater_Tout"]  # CHECK IF IT IS IN OR OUT
-    processed["Other"]["SWC24"]["SeaWater"]["T_out"] = raw["SWC24_SeaWater_Tout"]  # CHECK IF IT IS IN OR OUT
-    processed["Other"]["SWC24"]["SeaWater"]["T_in"] = raw["SeaWater_T"]
-    processed["Other"]["SWC24"]["SeaWater"]["T_in"] = raw["SeaWater_T"]
-    return processed
+        processed[name]["Comp"]["Air_in"]["p"][:] = CONSTANTS["General"]["P_ATM"]
+    T_0 = raw[hd["SEA_SW_T_"]] + 273.15
+    processed["Other"]["SWC13"]["SeaWater_out"]["T"] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    processed["Other"]["SWC24"]["SeaWater_out"]["T"] = raw[hd["SWC24_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    #processed["Other"]["SWC24"]["SeaWater"]["T_in"] = raw["SeaWater_T"]
+    #processed["Other"]["SWC24"]["SeaWater"]["T_in"] = raw["SeaWater_T"]
+    return (processed, T_0)
 
 
 def trivialAssignment(processed, CONSTANTS):
     for name in processed:
-        for unit in name:
-            for flow in unit:
-                connected_unit = flow["Connections"]
-                split_name = splistring(connected_unit)
-                name_c = split_name[0]
-                unit_c = split_name[1]
-                flow_c = split_name[2]
-                for property in CONSTANTS["General"]["PROPERTY_LIST"][flow["type"]]:
-                    if processed[name][unit][flow][property].isnan().sum() == 0:
-                        if processed[name_c][unit_c][flow_c][property].isnan().sum() != 0:
-                            processed[name_c][unit_c][flow_c][property] = processed[name][unit][flow][property]
-                        elif processed[name][unit][flow][property] != processed[name_c][unit_c][flow_c][property]:
-                            print("Something is wrong for %s_%s_%s_%s",name,unit,flow,property)
+        for unit in processed[name]:
+            for flow in processed[name][unit]:
+                if "Connections" in processed[name][unit][flow].keys():
+                    connected_unit = processed[name][unit][flow]["Connections"]
+                    split_name = connected_unit.split(":")
+                    name_c = split_name[0]
+                    unit_c = split_name[1]
+                    flow_c = split_name[2]
+                    for property in CONSTANTS["General"]["PROPERTY_LIST"][processed[name][unit][flow]["type"]]:
+                        if processed[name][unit][flow][property].isnull().sum() == 0:
+                            if processed[name_c][unit_c][flow_c][property].isnull().sum() != 0:
+                                processed[name_c][unit_c][flow_c][property] = processed[name][unit][flow][property]
+                            elif not (processed[name][unit][flow][property].equals(processed[name_c][unit_c][flow_c][property])):
+                                print("Something is wrong for {} {} {} {}".format(name,unit,flow,property))
+                    if ("EG" in flow or "Mix" in flow):
+                        if "N2" in processed[name][unit][flow]["Connections"]:
+                            if "N2" not in processed[name][unit][flow]["Connections"]:
+                                processed[name_c][unit_c][flow_c]["Connections"] = processed[name][unit][flow]["Connections"]
+                            elif not (processed[name][unit][flow]["Connections"]["N2"].equals(processed[name_c][unit_c][flow_c]["Connections"]["N2"])):
+                                print("Something is wrong for {} {} {} {}".format(name,unit,flow,property))
+    return processed
 
 
 
@@ -46,20 +54,20 @@ def engineStatusCalculation(type, raw, processed, CONSTANTS, status, hd):
     return status
 
 
-def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type):
+def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type, T_0):
     # This function calculates the different flows related to the cooling systems of the main engines.
     for name in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
         energy_2_cooling = (processed[name]["Cyl"]["FuelCh_in"]["Wdot"] -
             processed[name]["Cyl"]["Power_out"]["Wdot"] +
-            CONSTANTS["General"]["CP_HFO"] * processed[name]["Cyl"]["FuelPh_in"]["mdot"] *
-                (processed[name]["Cyl"]["FuelPh_in"]["T"] - processed["T_0"]) -
-            CONSTANTS["General"]["CP_EG"] * processed[name]["TC"]["EG_out"]["mdot"] *
-                (processed[name]["TC"]["EG_out"]["T"] - processed["T_0"]) +
-            CONSTANTS["General"]["CP_AIR"] * processed[name]["TC"]["Air_in"]["mdot"] *
-                (processed[name]["TC"]["Air_in"]["T"] - processed["T_0"]))
+            CONSTANTS["General"]["HFO"]["CP"] * processed[name]["Cyl"]["FuelPh_in"]["mdot"] *
+                (processed[name]["Cyl"]["FuelPh_in"]["T"] - T_0) -
+            CONSTANTS["General"]["CP_EG"] * processed[name]["Turbine"]["Mix_out"]["mdot"] *
+                (processed[name]["Turbine"]["Mix_out"]["T"] - T_0) +
+            CONSTANTS["General"]["CP_AIR"] * processed[name]["Comp"]["Air_in"]["mdot"] *
+                (processed[name]["Comp"]["Air_in"]["T"] - T_0))
         # Calculating the energy going to the charge air cooler, based on the estimated temperatures on the air line
-        energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["TC"]["Air_out"]["T"] - processed[name]["Cyl"]["Air_in"]["T"])
+        energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["Comp"]["Air_out"]["T"] - processed[name]["Cyl"]["Air_in"]["T"])
         # Calculating the energy going to the HT cooling systems, based on interpolation from the project guide
         energy_2_ht_theoric = status[name]["Load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],)) * CONSTANTS[engine_type]["QDOT_HT_DES"]
         energy_2_lt_theoric = status[name]["Load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],)) * CONSTANTS[engine_type]["QDOT_LT_DES"]
@@ -67,8 +75,8 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type):
         energy_2_ht = energy_2_cooling * energy_2_ht_theoric / (energy_2_ht_theoric + energy_2_lt_theoric)
         energy_2_lt = energy_2_cooling - energy_2_ht
         # The energy going to the CAC, HT stage is calculated assuming a 85% effectiveness of the heat exchanger
-        energy_2_cac_ht = CONSTANTS[engine_type]["EPS_CAC_HTSTAGE"] * processed[name]["TC"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"] * (
-            processed[name]["TC"]["Air_out"]["T"] - processed[name]["CAC_HT"]["HTWater_in"]["T"])
+        energy_2_cac_ht = CONSTANTS[engine_type]["EPS_CAC_HTSTAGE"] * processed[name]["Comp"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"] * (
+            processed[name]["Comp"]["Air_out"]["T"] - processed[name]["CAC_HT"]["HTWater_in"]["T"])
         # The energy going to the CAC, LT stage results as a consequence by thermal balance over the CAC
         energy_2_cac_lt = energy_2_cac - energy_2_cac_ht
         # The energy to the JWC results as a balance over the HT cooling systems
@@ -111,8 +119,8 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
 
     # Assigning the value of the LHV depending on the fuel temperature
     LHV = pd.Series(0,index=charge_air_temp.index)
-    LHV[fuel_temp < 70] = CONSTANTS["General"]["LHV_MDO"] # If T_fuel<70, it is Diesel
-    LHV[fuel_temp >= 70] = CONSTANTS["General"]["LHV_HFO"] # If T_fuel>70, it is HFO
+    LHV[fuel_temp < 70] = CONSTANTS["General"]["MDO"]["LHV"] # If T_fuel<70, it is Diesel
+    LHV[fuel_temp >= 70] = CONSTANTS["General"]["HFO"]["LHV"] # If T_fuel>70, it is HFO
     # Converting existing data (expected in the form of dataSeries
     if isinstance(charge_air_temp,pd.Series):
         T_ca = charge_air_temp.values
@@ -131,6 +139,38 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
     return (bsfc, LHV)
 
 
+def mixtureComposition(composition,mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
+    # This value takes as input the flow of air and fuel and calculates the resulting composition of the exhaust gas, assuming full combustion
+    # The composition is written in the code accepted by CoolProp, i.e. in the form:
+    # "HEOS::COMP_1[%]&COMP_2[%]..."
+    # Accepted components are: N2, O2, CO2, H2O (SO2?)
+    # The composition is a dataframe of 4 columns, in the order above
+    fuel_C_x = pd.Series(0,index=mdot_air.index)
+    fuel_H_x = pd.Series(0,index=mdot_air.index)
+    # Reading from the data the mass composition of the fuel, depending on its temperature
+    fuel_C_x[temp_fuel < 70] = CONSTANTS["General"]["MDO"]["C"] # If T_fuel<70, it is Diesel
+    fuel_C_x[temp_fuel >= 70] = CONSTANTS["General"]["HFO"]["C"] # If T_fuel>70, it is HFO
+    fuel_H_x[temp_fuel < 70] = CONSTANTS["General"]["MDO"]["H"]  # If T_fuel<70, it is Diesel
+    fuel_H_x[temp_fuel >= 70] = CONSTANTS["General"]["HFO"]["H"]  # If T_fuel>70, it is HFO
+    # Calculating the elemental molar flows
+    fuel_C_molfr = mdot_fuel * fuel_C_x / 12
+    fuel_H_molfr = mdot_fuel * fuel_H_x
+    air_N2_molfr = mdot_air * 0.77 / 28
+    air_O2_molfr = mdot_air * 0.23 / 32
+    output_CO2_molfr = fuel_C_molfr
+    output_H2O_molfr = fuel_H_molfr / 2
+    output_N2_molfr = air_N2_molfr
+    output_O2_molfr = air_O2_molfr - output_CO2_molfr - output_H2O_molfr / 2
+    # Finally, calculating the compositions
+    tot_molfr = output_CO2_molfr + output_H2O_molfr + output_N2_molfr + output_O2_molfr
+    tot_molfr[tot_molfr==0] = 1 # Just to avoid N2comp and so == NaN
+    composition["N2"] = output_N2_molfr / tot_molfr
+    composition["O2"] = output_O2_molfr / tot_molfr
+    composition["H2O"] = output_H2O_molfr / tot_molfr
+    composition["CO2"] = output_CO2_molfr / tot_molfr
+    return composition
+
+
 def polyvalHelperFunction(x,p):
     # The problem with applying "polyval" to data series is that the "x" is the second argument of the function
     # instead of being the first. So we use this function to invert the two, waiting to find a better way
@@ -145,13 +185,3 @@ def piecewisePolyvalHelperFunction(x,p):
 
 
 
-def assumptions(raw, processed, CONSTANTS, hd):
-    # This function includes generic assumed values in the main structure
-    for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
-        # The pressure at the turbocharger inlet is equal to the atmospheric pressure
-        processed[name]["TC"]["Air_in"]["p"] = CONSTANTS["General"]["P_ATM"]
-    for name in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
-        # The pressure at the turbocharger inlet is equal to the atmospheric pressure
-        processed[name]["TC"]["Air_in"]["p"] = CONSTANTS["General"]["P_ATM"]
-    processed["T_0"] = raw[hd["ER13_SW_T_IN"]] + 273.15
-    return processed

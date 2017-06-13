@@ -45,6 +45,17 @@ sys.path.append(path_files)
 # Loading local modules
 import input
 import plotting as plot
+import datareading as dr
+import unitstructures as us
+import constants as kk
+import consistencycheck as cc
+import preprocessingAE as ppa
+import preprocessingME as ppm
+import preprocessingO as ppo
+import energyanalysis as ea
+
+
+# Setting the filenames
 filenames = input.filenames(project_path) # Note: this is just a test
 
 
@@ -55,7 +66,7 @@ filenames = input.filenames(project_path) # Note: this is just a test
 
 # Responsible: FA
 
-import datareading as dr
+
 
 
 
@@ -74,29 +85,22 @@ header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
 ######################################
 # Responsible: FB
 #%%
-# Preparing the data structures
-import unitstructures as us
-import constants as kk
-import consistencycheck as cc
-import preprocessingAE as ppa
-import preprocessingME as ppm
-import preprocessingO as ppo
-import energyanalysis as ea
 
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
 
 dataset_processed = us.flowStructure()  # Here we initiate the structure fields
 dataset_processed = us.flowPreparation(dataset_processed, dataset_raw.index, CONSTANTS)  # Here we create the appropriate empty data series for each field
+dataset_processed = us.connectionAssignment(dataset_processed)
 dataset_status = us.generalStatus() # Here we simply initiate the "status" structure
 
 # Running the pre-processing required for filling in the data structures:
 
 # First updating the "CONSTANTS" dictionary with the some additional information
-dataset_processed = ppo.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
+(dataset_processed, T_0) = ppo.assumptions(dataset_raw, dataset_processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
-(dataset_processed, dataset_status) = ppm.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
-(dataset_processed, dataset_status) = ppa.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names)
+(dataset_processed, dataset_status) = ppm.mainEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names, T_0)
+(dataset_processed, dataset_status) = ppa.auxEngineProcessing(dataset_raw, dataset_processed, CONSTANTS, dataset_status, header_names, T_0)
 
 # Checking the consistency of the data
 cc.enginesCheck(dataset_processed, dataset_status, CONSTANTS)

@@ -33,13 +33,14 @@ import pandas as pd
 
 
 def flowStructure():
+    print("Started preparing the dataset_processed multi-level dictionary...")
     structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}
     for idx in structure.keys():
         if idx[1] == "E":  # This basically means that this operation is only done if the system is an engine
             structure[idx] = {"TC": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
             structure[idx]["Comp"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
-            structure[idx]["BPsplit"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "Air_BP_out": {"type": "CPF"}}  # Bypass valve
-            structure[idx]["BPmerge"] = {"EG_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "Air_BP_in": {"type": "CPF"}}
+            structure[idx]["BPsplit"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "BP_out": {"type": "CPF"}}  # Bypass valve
+            structure[idx]["BPmerge"] = {"EG_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "BP_in": {"type": "CPF"}}
             structure[idx]["Turbine"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}}  # Turbocharger turbine
             # structure[idx]["WasteGate"] = {"EG_in": {"type": "CPF"},"EG_out": {"type": "CPF"}}  # Waste gate
             structure[idx]["CAC_HT"] = {"Air_in": {"type": "CPF"}, "HTWater_in": {"type": "IPF"},
@@ -69,42 +70,50 @@ def flowStructure():
             structure[idx] = {"Boiler": {}, "SWC": {}, "LTCS": {}, "SWCS": {}}
             structure[idx]["Boiler"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
                                         "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
-            structure[idx]["SWC"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+            structure[idx]["SWC13"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                      "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+            structure[idx]["SWC24"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+                                       "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
             structure[idx]["HTLTMixer"] = {"HTWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                            "HTWater_out": {"type": "IPF"}}
             structure[idx]["HTLTSplitter"] = {"HTWater_in": {"type": "IPF"}, "LTWater_out": {"type": "IPF"},
                                               "HTWater_out": {"type": "IPF"}}
         else:
             print("Error! There is an unrecognized element in the unit name structure at system level")
+        print("...done!")
     return structure
 
 
 def flowPreparation(structure, database_index, CONSTANTS):
+    print("Start preparing the Pandas dataseries/dataframes for all entries...")
     for system in structure:
         for unit in structure[system]:
             for flow in structure[system][unit]:
                 structure[system][unit][flow]["ID"] = system + unit + flow
-                for property in CONSTANTS["General"]["PROPERTY_LIST"][flow["type"]]:
+                for property in CONSTANTS["General"]["PROPERTY_LIST"][structure[system][unit][flow]["type"]]:
                     structure[system][unit][flow][property] = pd.Series(index=database_index)
+                if ("EG" in flow or "Mix" in flow):
+                    structure[system][unit][flow]["Composition"] = pd.DataFrame(index=database_index, columns=["N2", "O2", "CO2", "H2O"])
+    print("...done!")
     return structure
 
 
 def connectionAssignment(structure):
+    print("Start assigning connections between components...")
     for name in structure.keys():
         if name[1] == "E":  # This basically means that this operation is only done if the system is an engine
             # The compressor is connected to the BP valve
             structure[name]["Comp"]["Air_out"]["Connections"] = name + ":" + "BPsplit" + ":" + "Air_in"
             structure[name]["BPsplit"]["Air_in"]["Connections"] = name + ":" + "Comp" + ":" + "Air_out"
             # The BP valve is connected to the CAC-HT cooler
-            structure[name]["CAC-HT"]["Air_in"]["Connections"] = name + ":" + "BPsplit" + ":" + "Air_out"
-            structure[name]["BPsplit"]["Air_out"]["Connections"] = name + ":" + "CAC-HT" + ":" + "Air_in"
+            structure[name]["CAC_HT"]["Air_in"]["Connections"] = name + ":" + "BPsplit" + ":" + "Air_out"
+            structure[name]["BPsplit"]["Air_out"]["Connections"] = name + ":" + "CAC_HT" + ":" + "Air_in"
             # The CAC-HT cooler is connected to the CAC-LT cooler
-            structure[name]["CAC-HT"]["Air_out"]["Connections"] = name + ":" + "CAC-LT" + ":" + "Air_in"
-            structure[name]["CAC-LT"]["Air_in"]["Connections"] = name + ":" + "CAC-HT" + ":" + "Air_out"
+            structure[name]["CAC_HT"]["Air_out"]["Connections"] = name + ":" + "CAC_LT" + ":" + "Air_in"
+            structure[name]["CAC_LT"]["Air_in"]["Connections"] = name + ":" + "CAC_HT" + ":" + "Air_out"
             # The CAC-LT cooler is connected to the Cylinder inlet manifold
-            structure[name]["Cyl"]["Air_in"]["Connections"] = name + ":" + "CAC-LT" + ":" + "Air_out"
-            structure[name]["CAC-LT"]["Air_out"]["Connections"] = name + ":" + "Cyl" + ":" + "Air_in"
+            structure[name]["Cyl"]["Air_in"]["Connections"] = name + ":" + "CAC_LT" + ":" + "Air_out"
+            structure[name]["CAC_LT"]["Air_out"]["Connections"] = name + ":" + "Cyl" + ":" + "Air_in"
             # The cylinder exhaust manifold is connected to the BP valve
             structure[name]["BPmerge"]["EG_in"]["Connections"] = name + ":" + "Cyl" + ":" + "EG_out"
             structure[name]["Cyl"]["EG_out"]["Connections"] = name + ":" + "BPmerge" + ":" + "EG_in"
@@ -112,26 +121,29 @@ def connectionAssignment(structure):
             structure[name]["Turbine"]["Mix_in"]["Connections"] = name + ":" + "BPmerge" + ":" + "Mix_out"
             structure[name]["BPmerge"]["Mix_out"]["Connections"] = name + ":" + "Turbine" + ":" + "Mix_in"
             # The CAC-LT cooler water is connected to the LOC
-            structure[name]["LOC"]["LTWater_in"]["Connections"] = name + ":" + "CAC-LT" + ":" + "LTWater_out"
-            structure[name]["CAC-LT"]["LTWater_out"]["Connections"] = name + ":" + "LOC" + ":" + "LTWater_in"
+            structure[name]["LOC"]["LTWater_in"]["Connections"] = name + ":" + "CAC_LT" + ":" + "LTWater_out"
+            structure[name]["CAC_LT"]["LTWater_out"]["Connections"] = name + ":" + "LOC" + ":" + "LTWater_in"
             # The CAC-HT cooler water is connected to the JWC
-            structure[name]["CAC-HT"]["HTWater_in"]["Connections"] = name + ":" + "JWC" + ":" + "HTWater_out"
-            structure[name]["JWC"]["HTWater_out"]["Connections"] = name + ":" + "CAC-HT" + ":" + "HTWater_in"
-            if idx[0] == "A" or idx[2] == "2" or idx[2] == "3":
+            structure[name]["CAC_HT"]["HTWater_in"]["Connections"] = name + ":" + "JWC" + ":" + "HTWater_out"
+            structure[name]["JWC"]["HTWater_out"]["Connections"] = name + ":" + "CAC_HT" + ":" + "HTWater_in"
+            if name[0] == "A" or name[2] == "2" or name[2] == "3":
                 # The HRSG inlet is connected to the engine turbine outlet
                 structure[name]["HRSG"]["Mix_in"]["Connections"] = name + ":" + "Turbine" + ":" + "Mix_out"
                 structure[name]["Turbine"]["Mix_out"]["Connections"] = name + ":" + "HRSG" + ":" + "Mix_in"
-            if idx[0] == "A":
+            if name[0] == "A":
                 structure[name]["AG"]["Power_in"]["Connections"] = name + ":" + "Cyl" + ":" + "Power_out"
                 structure[name]["Cyl"]["Power_out"]["Connections"] = name + ":" + "AG" + ":" + "Power_in"
+    print("...done!")
     return structure
 
 
 def generalStatus():
+    ("Started initializing the --status-- dataset...")
     structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Boiler": {}}
     for idx in structure.keys():
         # Adding the load and the "on/off"
         structure[idx] = {"Load": {}, "OnOff": {}}
+    print("...done!")
     return structure
 
 

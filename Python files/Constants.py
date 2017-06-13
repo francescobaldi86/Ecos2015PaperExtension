@@ -23,22 +23,22 @@ def general():
     output["CP_WATER"] = 4.187   # Water specifi heat, in [kW/kgK]
     output["RHO_W"] = 1000.0   # Water density, in [kg/m^3]
     output["RHO_LO"] = 850.0   # Lubricating oil density, in [kg/m^3]
-    output["LHV_HFO"] = 41170.0   # Heavy Fuel Oil lower heating value, in [kJ/kg]
-    output["HHV_HFO"] = output["LHV_HFO"] * (1.0406 + 0.0144 * 0.1185 / 0.8794 * 12)  # Calculated Higher heating value
-    output["LHV_MDO"] = 42230.0 # Marine Diesel Oil lower heating value, in [kJ/kg]
-    output["HHV_MDO"] = output["LHV_MDO"] * (1.0406 + 0.0144 * 0.1185 / 0.8794 * 12) * 1.01  # Calculated Higher heating value
-    output["CP_HFO"] = 1.8   # Fuel specific heat, [kJ/kg]
-    output["RHO_HFO"] = np.mean([890, 919, 924, 926, 925, 921, 924, 918, 920, 919, 933])  # HFO density, in [kg/m^3]
+    # output["RHO_HFO"] = np.mean([890, 919, 924, 926, 925, 921, 924, 918, 920, 919, 933])  # HFO density, in [kg/m^3]
     output["AIR_STOIC"] = 14.7  # Stoichiometric ratio fuel/air for Diesel-type fuels
     output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency
-    output["P_ATM"] = 1.01325 # Assumption on atmospheric pressure
+    output["P_ATM"] = 101325 # Assumption on atmospheric pressure
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
     output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
     output["PROPERTY_LIST"] = {}
-    output["CPF"] =  ["mdot", "T", "p", "cp", "h", "h0", "s", "s0", "b", "Edot", "Bdot"]
-    output["IPF"] = ["mdot", "T", "p", "cp", "b", "Edot", "Bdot"]
-    output["Qdot"] = ["Qdot", "T", "Edot", "Bdot"]
-    output["Wdot"] = ["Wdot", "omega", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["CPF"] =  ["mdot", "T", "p", "cp", "h", "h0", "s", "s0", "b", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["IPF"] = ["mdot", "T", "p", "cp", "b", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["Qdot"] = ["Qdot", "T", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["Wdot"] = ["Wdot", "omega", "Edot", "Bdot"]
+    output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
+    output["MDO"] = {"LHV": 42230.0, "CP": 1.8, "C": 0.87, "H": 0.13}
+    output["MDO"]["HHV"] = output["MDO"]["LHV"] * (1.0406 + 0.0144 * output["MDO"]["H"] / output["MDO"]["C"] * 12) * 1.01  # Calculated Higher heating value
+    output["HFO"] = {"LHV": 40360.0, "CP": 1.8, "C": 0.89, "H": 0.11}
+    output["HFO"]["HHV"] = output["HFO"]["LHV"] * (1.0406 + 0.0144 * output["HFO"]["H"] / output["HFO"]["C"] * 12) * 1.01  # Calculated Higher heating value
     return output
 
 def steamProperties():
