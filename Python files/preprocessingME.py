@@ -2,15 +2,13 @@ import numpy as np
 import pandas as pd
 import preprocessingO as ppo
 import energyanalysis as ea
+import CoolProp.CoolProp as cp
 
 
 def mainEngineProcessing(raw, processed, CONSTANTS, status, hd, T_0):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readMainEnginesExistingValues(raw, processed, CONSTANTS, hd)
-    # Assigning those values that are trivial, such as input and output flows when they are the same
-    processed = ppo.trivialAssignment(processed, CONSTANTS)
-    # Calculating advanced properties for the flows that are already fully defined
     # Calculating the main engines fuel flows
     processed = mainEngineFuelFlowCalculation(raw, processed, CONSTANTS, hd)
     # Calculating the main engines power output
@@ -18,15 +16,15 @@ def mainEngineProcessing(raw, processed, CONSTANTS, status, hd, T_0):
     # Calculating engine load, that is used many times later on
     status = ppo.engineStatusCalculation("MainEngines", raw, processed, CONSTANTS, status, hd)
     # Calculating air and exhaust gas flows in the main engines
+    processed = ppo.trivialAssignment(processed, CONSTANTS) # Assigning connected values
+    # processed = ea.propertyCalculator(processed, T_0) # First, let's calculate that we already know
     processed = mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS)
     # Calculating cooling flows
     processed = ppo.engineCoolingSystemsCalculation(processed, CONSTANTS, status, "MainEngines", T_0)
-    # Calculating the composition of the different exhaust flows
-
     # Doing the trivial assignments and the calculations
     processed = ppo.trivialAssignment(processed, CONSTANTS)
     # Calculating the properties of the flows that are already fully defined
-    processed = ea.propertyCalculator(processed, T_0)
+    # processed = ea.propertyCalculator(processed, T_0)
     return (processed, status)
 
 
@@ -59,6 +57,10 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         processed[name]["CAC_LT"]["Air_out"]["T"] = raw[hd[name + "-CAC_AIR_T_OUT"]] + 273.15
         # Reading Engine rpm
         processed[name]["Cyl"]["Power_out"]["omega"] = raw[hd[name + "__RPM_"]]
+
+        # Assuming that the pressure in the exhaust gas is 90% of the pressure in the inlet manifold. Somewhat reasonable
+        processed[name]["Cyl"]["EG_out"]["p"] = (0.9 * raw[hd[name+"-CAC_AIR_P_OUT"]] + 1.01325) * 100000
+        processed[name]["BPmerge"]["Mix_out"]["p"] = processed[name]["Cyl"]["EG_out"]["p"]
     print("...done!")
     return processed
 
@@ -93,7 +95,7 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         # Calculate ISO bsfc (break specific fuel consumption)
         bsfc_iso = fuel_based_load.apply(ppo.polyvalHelperFunction, args=(CONSTANTS["MainEngines"][                                                                  "POLY_FUEL_LOAD_2_BSFC_ISO"],))
         # Corrects the bsfc from ISO conditions to "real" conditions
-        (bsfc,LHV) = ppo.bsfcISOCorrection(bsfc_iso,processed[name]["Cyl"]["Air_in"]["T"],processed[name]["CAC_LT"]["LTWater_in"]["T"],processed[name]["Cyl"]["FuelPh_in"]["T"],CONSTANTS)
+        (bsfc,LHV) = ppo.bsfcISOCorrection(bsfc_iso,processed[name]["CAC_LT"]["Air_out"]["T"],processed[name]["CAC_LT"]["LTWater_in"]["T"],processed[name]["Cyl"]["FuelPh_in"]["T"],CONSTANTS)
         # Calculates the real fuel flow using the ISO conversion
         processed[name]["Cyl"]["FuelPh_in"]["mdot"] = processed[name]["Cyl"]["FuelPh_in"]["mdot"] * bsfc / bsfc_iso
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
@@ -113,15 +115,17 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
     # This function calculates the different air and exhaust gas flows in the main engines, taking into account the
     # presence of air bypass and exhaust wastegate valves
     for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
-        # Reading the pressure of the charge air after the compressor from the raw database
         # Calculating the compressor's compression ratio
         beta_comp = processed[name]["Comp"]["Air_out"]["p"] / processed[name]["Comp"]["Air_in"]["p"]
         #  Calculating the compressor isentropic efficiency
         comp_isentropic_efficiency = beta_comp.apply(ppo.polyvalHelperFunction,args=(CONSTANTS["MainEngines"][
                                                                                    "POLY_PIN_2_ETA_IS"],))
         # Calculating the temperature after the compressor, based on ideal gas assumption
-        processed[name]["Comp"]["Air_out"]["T"] = processed[name]["Comp"]["Air_in"]["T"] * beta_comp**((
-            CONSTANTS["General"]["K_AIR"]-1)/CONSTANTS["General"]["K_AIR"]) / comp_isentropic_efficiency
+        #processed[name]["Comp"]["Air_out"]["T"] = processed[name]["Comp"]["Air_in"]["T"] * beta_comp**((
+        #    CONSTANTS["General"]["K_AIR"]-1)/CONSTANTS["General"]["K_AIR"]) / comp_isentropic_efficiency
+        T_Comp_out_iso = processed[name]["Comp"]["Air_in"]["T"] * beta_comp**((CONSTANTS["General"]["K_AIR"]-1)/CONSTANTS["General"]["K_AIR"])
+        processed[name]["Comp"]["Air_out"]["T"] = processed[name]["Comp"]["Air_in"]["T"] + (
+            T_Comp_out_iso - processed[name]["Comp"]["Air_in"]["T"]) / comp_isentropic_efficiency
         # Calculating the air inflow aspired by the cylinder: calculated as inlet air density times the maximum volume,
         # times the engine speed
         processed[name]["Cyl"]["Air_in"]["mdot"] = CONSTANTS["MainEngines"]["V_SW"] * (
@@ -131,6 +135,11 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
             CONSTANTS["MainEngines"]["N_CYL"])
         processed[name]["Cyl"]["EG_out"]["mdot"] = processed[name]["Cyl"]["Air_in"]["mdot"] + processed[name]["Cyl"][
             "FuelPh_in"]["mdot"]
+        # Calculating an approximated value for the CP_EG and CP_AIR
+        processed[name]["Cyl"]["EG_out"]["Composition"] = ppo.mixtureComposition(
+            processed[name]["Cyl"]["EG_out"]["Composition"], processed[name]["Cyl"]["Air_in"]["mdot"],
+            processed[name]["Cyl"]["FuelPh_in"]["mdot"], processed[name]["Cyl"]["FuelPh_in"]["T"], CONSTANTS)
+        # Calculating the bypass flow
         processed[name]["BPsplit"]["BP_out"]["mdot"] = (
             CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["Comp"]["Air_out"]["T"] - processed[name]["Comp"]["Air_in"]["T"]) +
             CONSTANTS["General"]["CP_EG"] * CONSTANTS["MainEngines"]["ETA_MECH_TC"] * (processed[name]["Cyl"]["Air_in"]["mdot"] + processed[name]["Cyl"]["FuelPh_in"]["mdot"]) *
@@ -153,9 +162,9 @@ def mainEngineAirFlowCalculation(raw, processed, status, CONSTANTS):
         processed[name]["BPsplit"]["Air_in"]["mdot"] = processed[name]["BPsplit"]["BP_out"]["mdot"] + processed[name]["Cyl"]["Air_in"]["mdot"]
         # The flow through the turbine is equal to the sum of the bypass flow and the exhaust coming from the cylinders
         processed[name]["BPmerge"]["Mix_out"]["mdot"] = processed[name]["BPsplit"]["BP_out"]["mdot"] + processed[name]["Cyl"]["EG_out"]["mdot"]
-
-        processed[name]["Cyl"]["EG_out"]["Composition"] = ppo.mixtureComposition(processed[name]["Cyl"]["EG_out"]["Composition"],processed[name]["Cyl"]["Air_in"]["mdot"],processed[name]["Cyl"]["FuelPh_in"]["mdot"], processed[name]["Cyl"]["FuelPh_in"]["T"], CONSTANTS)
-        processed[name]["BPmerge"]["Mix_out"]["Composition"] = ppo.mixtureComposition(processed[name]["BPmerge"]["Mix_out"]["Composition"],processed[name]["BPsplit"]["Air_in"]["mdot"],processed[name]["Cyl"]["FuelPh_in"]["mdot"],processed[name]["Cyl"]["FuelPh_in"]["T"],CONSTANTS)
-        processed[name]["Turbine"]["Mix_out"]["Composition"] = processed[name]["BPmerge"]["Mix_out"]["Composition"]
+        processed[name]["Turbine"]["Mix_out"]["mdot"] = processed[name]["BPmerge"]["Mix_out"]["mdot"]
+        if "HRSG" in processed[name].keys():
+            processed[name]["HRSG"]["Mix_out"]["mdot"] = processed[name]["BPmerge"]["Mix_out"]["mdot"]
+        processed[name]["Comp"]["Air_in"]["mdot"] = processed[name]["BPsplit"]["Air_in"]["mdot"]
     print("...done!")
     return processed

@@ -104,6 +104,7 @@ dataset_status = us.generalStatus() # Here we simply initiate the "status" struc
 
 # Checking the consistency of the data
 cc.enginesCheck(dataset_processed, dataset_status, CONSTANTS)
+cc.missingValues(dataset_processed)
 
 # Assigning defined values to all flows for engines off
 

@@ -17,8 +17,8 @@ def general():
     output = {}
     output["R_AIR"] = 8314.0 / 29 # Air gas constant
     output["K_AIR"] = 1.4   # Air specific heat ratio
-    output["CP_AIR"] = 1.02   # Air specific heat, in [kJ/kgK] 
-    output["CP_EG"] = 1.08   # EG specific heat, in [kJ/kgK] 
+    output["CP_AIR"] = 1.01   # Air specific heat, in [kJ/kgK]
+    output["CP_EG"] = 1.10   # EG specific heat, in [kJ/kgK]
     output["CP_LO"] = 2.1   # Lubricating oil specific heat, in [kW/kgK]
     output["CP_WATER"] = 4.187   # Water specifi heat, in [kW/kgK]
     output["RHO_W"] = 1000.0   # Water density, in [kg/m^3]
@@ -91,11 +91,9 @@ def mainEngines(CONSTANTS):
     output["MFR_LO"] = 120.0 * CONSTANTS["General"]["RHO_LO"] / 3600.0   # Mass flow rate of oil in each main engine, in [kg/s]
     output["MFR_LT"] = 120.0 * CONSTANTS["General"]["RHO_W"] / 3600.0   # Mass flow rate of LT cooling water, in [kg/s]
     output["MFR_HT"] = 120.0 * CONSTANTS["General"]["RHO_W"] / 3600.0   # Mass flow rate of LT cooling water, in [kg/s]
-    output["POLY_PIN_2_ETA_IS"] = [-1.18e-2, 8.74e-2, 6.81e-1]   # Polynoimial regression for isentropic efficiency of the compressor
-    output["ETA_CORR"] = 1.05  
-    output["ETA_IS_TC_MAX"] = 0.85  # Maximum isetropic efficiency of the turbine of the turbocharger, in [-]
-    output["ETA_IS_TC"] = 0.8  # isentropic efficiency of the turbine of the turbocharger [-}
-    output["ETA_MECH_TC"] = 0.98   # Mechanical efficiency of the turbocharger [-]
+    output["POLY_PIN_2_ETA_IS"] = [-1.18e-2, 8.74e-2, 6.81e-1] # Polynoimial regression for isentropic efficiency of the compressor
+    output["ETA_CORR"] = 1.05
+    output["ETA_MECH_TC"] = 0.9   # Mechanical efficiency of the turbocharger [-]
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft

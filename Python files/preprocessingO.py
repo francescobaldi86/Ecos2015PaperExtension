@@ -19,6 +19,7 @@ def assumptions(raw, processed, CONSTANTS, hd):
 
 
 def trivialAssignment(processed, CONSTANTS):
+    print("Started calculating the known connected flows...")
     for name in processed:
         for unit in processed[name]:
             for flow in processed[name][unit]:
@@ -40,6 +41,7 @@ def trivialAssignment(processed, CONSTANTS):
                                 processed[name_c][unit_c][flow_c]["Connections"] = processed[name][unit][flow]["Connections"]
                             elif not (processed[name][unit][flow]["Connections"]["N2"].equals(processed[name_c][unit_c][flow_c]["Connections"]["N2"])):
                                 print("Something is wrong for {} {} {} {}".format(name,unit,flow,property))
+    print("...done!")
     return processed
 
 
@@ -55,6 +57,7 @@ def engineStatusCalculation(type, raw, processed, CONSTANTS, status, hd):
 
 
 def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type, T_0):
+    print("Started calculating analysis for {} cooling systems...".format(engine_type))
     # This function calculates the different flows related to the cooling systems of the main engines.
     for name in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
@@ -104,8 +107,8 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type, T
         processed[name]["CAC_HT"]["HTWater_out"]["T"] = processed[name]["CAC_HT"]["HTWater_in"]["T"] + energy_2_cac_ht / processed[name]["CAC_HT"]["HTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
         # For the LOC, we know the outlet (lower) temperature, we calculate the inlet temperature
         processed[name]["LOC"]["LubOil_out"]["mdot"][:] = CONSTANTS[engine_type]["MFR_LO"]
-        processed[name]["LOC"]["LubOil_in"]["mdot"][:] = CONSTANTS[engine_type]["MFR_LO"]
         processed[name]["LOC"]["LubOil_in"]["T"] = processed[name]["LOC"]["LubOil_out"]["T"] + energy_2_loc / processed[name]["LOC"]["LubOil_out"]["mdot"] / CONSTANTS["General"]["CP_LO"]
+    print("...done!")
     return processed
 
 
@@ -145,6 +148,7 @@ def mixtureComposition(composition,mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
     # "HEOS::COMP_1[%]&COMP_2[%]..."
     # Accepted components are: N2, O2, CO2, H2O (SO2?)
     # The composition is a dataframe of 4 columns, in the order above
+    mixture = pd.Series(index=mdot_air.index)
     fuel_C_x = pd.Series(0,index=mdot_air.index)
     fuel_H_x = pd.Series(0,index=mdot_air.index)
     # Reading from the data the mass composition of the fuel, depending on its temperature
@@ -164,11 +168,13 @@ def mixtureComposition(composition,mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
     # Finally, calculating the compositions
     tot_molfr = output_CO2_molfr + output_H2O_molfr + output_N2_molfr + output_O2_molfr
     tot_molfr[tot_molfr==0] = 1 # Just to avoid N2comp and so == NaN
-    composition["N2"] = output_N2_molfr / tot_molfr
-    composition["O2"] = output_O2_molfr / tot_molfr
-    composition["H2O"] = output_H2O_molfr / tot_molfr
-    composition["CO2"] = output_CO2_molfr / tot_molfr
-    return composition
+    O2 = output_O2_molfr / tot_molfr
+    H2O = output_H2O_molfr / tot_molfr
+    CO2 = output_CO2_molfr / tot_molfr
+    N2 = 1 - O2 - H2O - CO2
+    for idx in mdot_air.index:
+        mixture[idx] = "HEOS::" + "N2[" + str(N2[idx]) + "]&" + "O2[" + str(O2[idx]) + "]&" + "H2O[" + str(H2O[idx]) + "]&" + "CO2[" + str(CO2[idx]) + "]"
+    return mixture
 
 
 def polyvalHelperFunction(x,p):
@@ -182,6 +188,11 @@ def piecewisePolyvalHelperFunction(x,p):
     # instead of being the first. So we use this function to invert the two, waiting to find a better way
     output = np.piecewise(x, [x < 0.5 , x >= 0.5], [np.polyval(p[1],x) , np.polyval(p[0],x)])
     return output
+
+
+def coolpropMixtureHelperFunction(composition):
+    mixture = "HEOS::" + "N2[" + str(composition["N2"]) + "]&" + "O2[" + str(composition["O2"]) + "]&" + "H2O[" + str(composition["H2O"]) + "]&" + "CO2[" + str(composition) + "]"
+    return mixture
 
 
 

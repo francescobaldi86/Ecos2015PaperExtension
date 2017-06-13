@@ -1,3 +1,5 @@
+import pandas as pd
+
 def enginesCheck(data, status, CONSTANTS):
     # This function checks that all relative values are consistent
     print("Started consistency check...")
@@ -24,3 +26,14 @@ def enginesCheck(data, status, CONSTANTS):
             temp = sum(data[name]["CAC_LT"]["LTWater_out"]["T"][on] > data[name]["LOC"]["LTWater_in"]["T"][on]) / tot * 100
             print(name + " CAC-LT temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints")
     print("...done!")
+
+
+def missingValues(data):
+    print("Started looking for missing values...")
+    for system in data:
+        for unit in data[system]:
+            for flow in data[system][unit]:
+                for property in data[system][unit][flow]:
+                    if type(data[system][unit][flow][property]) == pd.Series:
+                        if data[system][unit][flow][property].isnull().sum() == len(data[system][unit][flow][property]):
+                            print("The field {}_{}_{}_{} is still empty".format(system,unit,flow,property))

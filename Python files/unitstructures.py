@@ -37,7 +37,7 @@ def flowStructure():
     structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}
     for idx in structure.keys():
         if idx[1] == "E":  # This basically means that this operation is only done if the system is an engine
-            structure[idx] = {"TC": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
+            structure[idx] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
             structure[idx]["Comp"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
             structure[idx]["BPsplit"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "BP_out": {"type": "CPF"}}  # Bypass valve
             structure[idx]["BPmerge"] = {"EG_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "BP_in": {"type": "CPF"}}
@@ -80,7 +80,7 @@ def flowStructure():
                                               "HTWater_out": {"type": "IPF"}}
         else:
             print("Error! There is an unrecognized element in the unit name structure at system level")
-        print("...done!")
+    print("...done!")
     return structure
 
 
@@ -93,7 +93,9 @@ def flowPreparation(structure, database_index, CONSTANTS):
                 for property in CONSTANTS["General"]["PROPERTY_LIST"][structure[system][unit][flow]["type"]]:
                     structure[system][unit][flow][property] = pd.Series(index=database_index)
                 if ("EG" in flow or "Mix" in flow):
-                    structure[system][unit][flow]["Composition"] = pd.DataFrame(index=database_index, columns=["N2", "O2", "CO2", "H2O"])
+                    #structure[system][unit][flow]["Composition"] = pd.DataFrame(index=database_index, columns=["N2", "O2", "CO2", "H2O"])
+                    structure[system][unit][flow]["Composition"] = pd.Series(index=database_index)
+
     print("...done!")
     return structure
 
@@ -138,7 +140,7 @@ def connectionAssignment(structure):
 
 
 def generalStatus():
-    ("Started initializing the --status-- dataset...")
+    print("Started initializing the --status-- dataset...")
     structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Boiler": {}}
     for idx in structure.keys():
         # Adding the load and the "on/off"
