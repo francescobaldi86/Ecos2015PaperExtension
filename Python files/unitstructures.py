@@ -30,123 +30,229 @@
 
 
 import pandas as pd
+from helpers import d2df
+
+def structurePreparation(CONSTANTS, index, empty_dataset_filename):
+    dict_structure = flowStructure()  # Here we initiate the structure fields
+    try:
+        processed = pd.read_hdf(empty_dataset_filename, 'empty_dataset')
+        dict_structure = flowPreparationSimplified(dict_structure, index, CONSTANTS)
+    except FileNotFoundError:
+        (dict_structure, processed) = flowPreparation(dict_structure, index, CONSTANTS)  # Here we create the appropriate empty data series for each field
+        processed.to_hdf(empty_dataset_filename, "empty_dataset", format='table', mode='w')
+    dict_structure = streamsAssignment(dict_structure)
+    dict_structure = connectionAssignment(dict_structure)
+    processed = generalStatus(processed, dict_structure)  # Here we simply initiate the "status" structure
+    return dict_structure, processed
 
 
 def flowStructure():
     print("Started preparing the dataset_processed multi-level dictionary...")
-    structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}
-    for idx in structure.keys():
-        if idx[1] == "E":  # This basically means that this operation is only done if the system is an engine
-            structure[idx] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
-            structure[idx]["Comp"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
-            structure[idx]["BPsplit"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "BP_out": {"type": "CPF"}}  # Bypass valve
-            structure[idx]["BPmerge"] = {"EG_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "BP_in": {"type": "CPF"}}
-            structure[idx]["Turbine"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}}  # Turbocharger turbine
-            # structure[idx]["WasteGate"] = {"EG_in": {"type": "CPF"},"EG_out": {"type": "CPF"}}  # Waste gate
-            structure[idx]["CAC_HT"] = {"Air_in": {"type": "CPF"}, "HTWater_in": {"type": "IPF"},
+    structure = {"systems": {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}}
+    for system in structure["systems"]:
+        structure["systems"][system]["equations"] = {}
+        if system[1] == "E":  # This basically means that this operation is only done if the system is an engine
+            structure["systems"][system]["units"] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
+            # Compressor
+            structure["systems"][system]["units"]["Comp"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
+            structure["systems"][system]["units"]["Comp"]["equations"] = ["MassBalance"]
+            # Bypass Split
+            structure["systems"][system]["units"]["BPsplit"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "BP_out": {"type": "CPF"}}  # Bypass valve
+            structure["systems"][system]["units"]["BPsplit"]["equations"] = ["MassBalance", "ConstantPressure", "ConstantTemperature"]
+            # Bypass Merge
+            structure["systems"][system]["units"]["BPmerge"]["flows"] = {"EG_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "BP_in": {"type": "CPF"}}
+            structure["systems"][system]["units"]["BPmerge"]["equations"] = ["MassBalance"]
+            # Turbine
+            structure["systems"][system]["units"]["Turbine"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}}  # Turbocharger turbine
+            structure["systems"][system]["units"]["Turbine"]["equations"] = ["MassBalance"]
+            # Charge air cooler, HT side
+            structure["systems"][system]["units"]["CAC_HT"]["flows"] = {"Air_in": {"type": "CPF"}, "HTWater_in": {"type": "IPF"},
                                         "Air_out": {"type": "CPF"}, "HTWater_out": {"type": "IPF"}}  # Charge air
-            # cooler, HT stage
-            structure[idx]["CAC_LT"] = {"Air_in": {"type": "CPF"}, "LTWater_in": {"type": "IPF"},
+            structure["systems"][system]["units"]["CAC_HT"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Charge air cooler, LT stage
+            structure["systems"][system]["units"]["CAC_LT"]["flows"] = {"Air_in": {"type": "CPF"}, "LTWater_in": {"type": "IPF"},
                                         "Air_out": {"type": "CPF"}, "LTWater_out": {"type": "IPF"}}  # Charge air
-            # cooler, LT stage
-            structure[idx]["LOC"] = {"LubOil_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+            structure["systems"][system]["units"]["CAC_LT"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Lubricating oil cooler
+            structure["systems"][system]["units"]["LOC"]["flows"] = {"LubOil_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                      "LubOil_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}  # Lubricating oil
-            # cooler
-            structure[idx]["JWC"] = {"QdotJW_in": {"type": "Qdot"}, "HTWater_in": {"type": "IPF"},
+            structure["systems"][system]["units"]["LOC"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Jacket water cooler
+            structure["systems"][system]["units"]["JWC"]["flows"] = {"QdotJW_in": {"type": "Qdot"}, "HTWater_in": {"type": "IPF"},
                                                                     "HTWater_out": {"type": "IPF"}}  # Jacket water
-            # cooler Cylinders
-            structure[idx]["Cyl"] = {"Air_in": {"type": "CPF"},  "FuelPh_in": {"type": "IPF"}, "EG_out": {"type":"CPF"},
+            structure["systems"][system]["units"]["JWC"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Engine cylinders
+            structure["systems"][system]["units"]["Cyl"]["flows"] = {"Air_in": {"type": "CPF"},  "FuelPh_in": {"type": "CPF"}, "EG_out": {"type":"CPF"},
                                      "Power_out": {"type": "Wdot"}, "FuelCh_in": {"type": "Wdot"}, "QdotJW_out": {"type":"Qdot"},
                                      "LubOil_in": {"type": "IPF"}, "LubOil_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["Cyl"]["equations"] = ["MassBalance"]
             # Only auxiliary engines AND main engines 2/3 have the exhaust gas boiler
-            if idx[0] == "A" or idx[2] == "2" or idx[2] == "3":
+            if system[0] == "A" or system[2] == "2" or system[2] == "3":
                 # Heat recovery steam generator
-                structure[idx]["HRSG"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"},
+                structure["systems"][system]["units"].update({"HRSG": {}})
+                structure["systems"][system]["units"]["HRSG"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"},
                                           "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
+                structure["systems"][system]["units"]["HRSG"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Auxiliary engines also have electric generators connected
-            if idx[0] == "A":
-                structure[idx]["AG"] = {"Power_in": {"type": "Wdot"}, "Power_out": {"type": "Wdot"}, "Losses": {"type": "Qdot"}}
-        elif idx == "Other":
-            structure[idx] = {"Boiler": {}, "SWC": {}, "LTCS": {}, "SWCS": {}}
-            structure[idx]["Boiler"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
+            if system[0] == "A":
+                structure["systems"][system]["units"].update({"AG": {}})
+                structure["systems"][system]["units"]["AG"]["flows"] = {"Power_in": {"type": "Wdot"}, "Power_out": {"type": "Wdot"}, "Losses": {"type": "Qdot"}}
+                structure["systems"][system]["units"]["AG"]["equations"] = []
+        elif system == "Other":
+            structure["systems"][system]["units"] = {"Boiler": {}, "SWC13": {}, "SWC24": {}, "HTLTMixer":{}, "HTLTSplitter": {}}
+            # Auxiliary boiler
+            structure["systems"][system]["units"]["Boiler"]["flows"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
                                         "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
-            structure[idx]["SWC13"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+            structure["systems"][system]["units"]["Boiler"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Seawater cooler, ER 1/3
+            structure["systems"][system]["units"]["SWC13"]["flows"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                      "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
-            structure[idx]["SWC24"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+            structure["systems"][system]["units"]["SWC13"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Seawater cooler, ER 2/4
+            structure["systems"][system]["units"]["SWC24"]["flows"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                        "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
-            structure[idx]["HTLTMixer"] = {"HTWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
+            structure["systems"][system]["units"]["SWC24"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # HT - LT central mixer
+            structure["systems"][system]["units"]["HTLTMixer"]["flows"] = {"HTWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                            "HTWater_out": {"type": "IPF"}}
-            structure[idx]["HTLTSplitter"] = {"HTWater_in": {"type": "IPF"}, "LTWater_out": {"type": "IPF"},
+            structure["systems"][system]["units"]["HTLTMixer"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # HT - LT central splitter
+            structure["systems"][system]["units"]["HTLTSplitter"]["flows"] = {"HTWater_in": {"type": "IPF"}, "LTWater_out": {"type": "IPF"},
                                               "HTWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTLTSplitter"]["equations"] = ["MassBalance", "ConstantPressure"]
         else:
             print("Error! There is an unrecognized element in the unit name structure at system level")
     print("...done!")
     return structure
 
 
-def flowPreparation(structure, database_index, CONSTANTS):
-    print("Start preparing the Pandas dataseries/dataframes for all entries...")
-    for system in structure:
-        for unit in structure[system]:
-            for flow in structure[system][unit]:
-                structure[system][unit][flow]["ID"] = system + unit + flow
-                for property in CONSTANTS["General"]["PROPERTY_LIST"][structure[system][unit][flow]["type"]]:
-                    structure[system][unit][flow][property] = pd.Series(index=database_index)
-                if ("EG" in flow or "Mix" in flow):
-                    #structure[system][unit][flow]["Composition"] = pd.DataFrame(index=database_index, columns=["N2", "O2", "CO2", "H2O"])
-                    structure[system][unit][flow]["Composition"] = pd.Series(index=database_index)
+def streamsAssignment(dict_structure):
+    for system in dict_structure["systems"]:
+        for unit in dict_structure["systems"][system]["units"]:
+            streams = {}
+            if unit == "Cyl":
+                streams["Total"] = []
+                for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                    if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF"}:
+                        streams["Total"].append(d2df(system, unit, flow, ""))
+                    elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"IPF"}:
+                        temp = flow.split(sep="_")
+                        if temp[0] not in streams:
+                            streams[temp[0]] = [d2df(system, unit, flow, "")]
+                        elif temp[0] in streams:
+                            streams[temp[0]].append(d2df(system, unit, flow, ""))
+                        else:
+                            print("Something very weird happened")
+            elif "BP" in unit:
+                streams["Total"] = []
+                for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                    if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "CPF":
+                        streams["Total"].append(d2df(system, unit, flow, ""))
+            else:
+                for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                    if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF", "IPF"}:
+                        temp = flow.split(sep="_")
+                        if temp[0] not in streams:
+                            streams[temp[0]] = [d2df(system, unit, flow, "")]
+                        elif temp[0] in streams:
+                            streams[temp[0]].append(d2df(system, unit, flow, ""))
+                        else:
+                            print("Something very weird happened")
+            dict_structure["systems"][system]["units"][unit]["streams"] = streams
+    return dict_structure
 
+
+
+def flowPreparation(structure, database_index, CONSTANTS):
+    print("Start preparing the Pandas dataframe with all inputs...")
+    structure["property_list"] = []
+    dataframe = pd.DataFrame(index=database_index)
+    for system in structure["systems"]:
+        for unit in structure["systems"][system]["units"]:
+            for flow in structure["systems"][system]["units"][unit]["flows"]:
+                structure["systems"][system]["units"][unit]["flows"][flow]["ID"] = system + ":" + unit + ":" + flow
+                structure["systems"][system]["units"][unit]["flows"][flow]["properties"] = \
+                    CONSTANTS["General"]["PROPERTY_LIST"][structure["systems"][system]["units"][unit]["flows"][flow]["type"]]
+            # Creating an element of the main structure with the full list of properties in the whole model
+                for property in structure["systems"][system]["units"][unit]["flows"][flow]["properties"]:
+                    flow_ID = system + ":" + unit + ":" + flow + ":" + property
+                    structure["property_list"].append(flow_ID)
+                    dataframe[flow_ID] = pd.Series(index=database_index)
+    print("...done!")
+    return (structure, dataframe)
+
+
+def flowPreparationSimplified(structure, database_index, CONSTANTS):
+    print("Start preparing the Pandas dataframe with all inputs...")
+    structure["property_list"] = []
+    for system in structure["systems"]:
+        for unit in structure["systems"][system]["units"]:
+            for flow in structure["systems"][system]["units"][unit]["flows"]:
+                structure["systems"][system]["units"][unit]["flows"][flow]["ID"] = system + ":" + unit + ":" + flow
+                structure["systems"][system]["units"][unit]["flows"][flow]["properties"] = \
+                    CONSTANTS["General"]["PROPERTY_LIST"][structure["systems"][system]["units"][unit]["flows"][flow]["type"]]
+            # Creating an element of the main structure with the full list of properties in the whole model
+                for property in structure["systems"][system]["units"][unit]["flows"][flow]["properties"]:
+                    flow_ID = system + ":" + unit + ":" + flow + ":" + property
+                    structure["property_list"].append(flow_ID)
     print("...done!")
     return structure
 
 
 def connectionAssignment(structure):
     print("Start assigning connections between components...")
-    for name in structure.keys():
+    for name in structure["systems"]:
         if name[1] == "E":  # This basically means that this operation is only done if the system is an engine
             # The compressor is connected to the BP valve
-            structure[name]["Comp"]["Air_out"]["Connections"] = name + ":" + "BPsplit" + ":" + "Air_in"
-            structure[name]["BPsplit"]["Air_in"]["Connections"] = name + ":" + "Comp" + ":" + "Air_out"
+            structure["systems"][name]["units"]["Comp"]["flows"]["Air_out"]["Connections"] = [name + ":" + "BPsplit" + ":" + "Air_in"]
+            structure["systems"][name]["units"]["BPsplit"]["flows"]["Air_in"]["Connections"] = [name + ":" + "Comp" + ":" + "Air_out"]
             # The BP valve is connected to the CAC-HT cooler
-            structure[name]["CAC_HT"]["Air_in"]["Connections"] = name + ":" + "BPsplit" + ":" + "Air_out"
-            structure[name]["BPsplit"]["Air_out"]["Connections"] = name + ":" + "CAC_HT" + ":" + "Air_in"
+            structure["systems"][name]["units"]["CAC_HT"]["flows"]["Air_in"]["Connections"] = [name + ":" + "BPsplit" + ":" + "Air_out"]
+            structure["systems"][name]["units"]["BPsplit"]["flows"]["Air_out"]["Connections"] = [name + ":" + "CAC_HT" + ":" + "Air_in"]
             # The CAC-HT cooler is connected to the CAC-LT cooler
-            structure[name]["CAC_HT"]["Air_out"]["Connections"] = name + ":" + "CAC_LT" + ":" + "Air_in"
-            structure[name]["CAC_LT"]["Air_in"]["Connections"] = name + ":" + "CAC_HT" + ":" + "Air_out"
+            structure["systems"][name]["units"]["CAC_HT"]["flows"]["Air_out"]["Connections"] = [name + ":" + "CAC_LT" + ":" + "Air_in"]
+            structure["systems"][name]["units"]["CAC_LT"]["flows"]["Air_in"]["Connections"] = [name + ":" + "CAC_HT" + ":" + "Air_out"]
             # The CAC-LT cooler is connected to the Cylinder inlet manifold
-            structure[name]["Cyl"]["Air_in"]["Connections"] = name + ":" + "CAC_LT" + ":" + "Air_out"
-            structure[name]["CAC_LT"]["Air_out"]["Connections"] = name + ":" + "Cyl" + ":" + "Air_in"
+            structure["systems"][name]["units"]["Cyl"]["flows"]["Air_in"]["Connections"] = [name + ":" + "CAC_LT" + ":" + "Air_out"]
+            structure["systems"][name]["units"]["CAC_LT"]["flows"]["Air_out"]["Connections"] = [name + ":" + "Cyl" + ":" + "Air_in"]
             # The cylinder exhaust manifold is connected to the BP valve
-            structure[name]["BPmerge"]["EG_in"]["Connections"] = name + ":" + "Cyl" + ":" + "EG_out"
-            structure[name]["Cyl"]["EG_out"]["Connections"] = name + ":" + "BPmerge" + ":" + "EG_in"
+            structure["systems"][name]["units"]["BPmerge"]["flows"]["EG_in"]["Connections"] = [name + ":" + "Cyl" + ":" + "EG_out"]
+            structure["systems"][name]["units"]["Cyl"]["flows"]["EG_out"]["Connections"] = [name + ":" + "BPmerge" + ":" + "EG_in"]
             # The turbine is connected to the BP valve
-            structure[name]["Turbine"]["Mix_in"]["Connections"] = name + ":" + "BPmerge" + ":" + "Mix_out"
-            structure[name]["BPmerge"]["Mix_out"]["Connections"] = name + ":" + "Turbine" + ":" + "Mix_in"
+            structure["systems"][name]["units"]["Turbine"]["flows"]["Mix_in"]["Connections"] = [name + ":" + "BPmerge" + ":" + "Mix_out"]
+            structure["systems"][name]["units"]["BPmerge"]["flows"]["Mix_out"]["Connections"] = [name + ":" + "Turbine" + ":" + "Mix_in"]
             # The CAC-LT cooler water is connected to the LOC
-            structure[name]["LOC"]["LTWater_in"]["Connections"] = name + ":" + "CAC_LT" + ":" + "LTWater_out"
-            structure[name]["CAC_LT"]["LTWater_out"]["Connections"] = name + ":" + "LOC" + ":" + "LTWater_in"
+            structure["systems"][name]["units"]["LOC"]["flows"]["LTWater_in"]["Connections"] = [name + ":" + "CAC_LT" + ":" + "LTWater_out"]
+            structure["systems"][name]["units"]["CAC_LT"]["flows"]["LTWater_out"]["Connections"] = [name + ":" + "LOC" + ":" + "LTWater_in"]
             # The CAC-HT cooler water is connected to the JWC
-            structure[name]["CAC_HT"]["HTWater_in"]["Connections"] = name + ":" + "JWC" + ":" + "HTWater_out"
-            structure[name]["JWC"]["HTWater_out"]["Connections"] = name + ":" + "CAC_HT" + ":" + "HTWater_in"
+            structure["systems"][name]["units"]["CAC_HT"]["flows"]["HTWater_in"]["Connections"] = [name + ":" + "JWC" + ":" + "HTWater_out"]
+            structure["systems"][name]["units"]["JWC"]["flows"]["HTWater_out"]["Connections"] = [name + ":" + "CAC_HT" + ":" + "HTWater_in"]
+            # The BP split is also connected to the BP merge
+            structure["systems"][name]["units"]["BPsplit"]["flows"]["BP_out"]["Connections"] = [name + ":" + "BPmerge" + ":" + "BP_in"]
+            structure["systems"][name]["units"]["BPmerge"]["flows"]["BP_in"]["Connections"] = [name + ":" + "BPsplit" + ":" + "BP_out"]
+            # The Compressor outlet is also connected to the CAC HT cooler inlet
+            structure["systems"][name]["units"]["CAC_HT"]["flows"]["Air_in"]["Connections"].append(name + ":" + "Comp" + ":" + "Air_out")
+            structure["systems"][name]["units"]["Comp"]["flows"]["Air_out"]["Connections"].append(name + ":" + "CAC_HT" + ":" + "Air_in")
             if name[0] == "A" or name[2] == "2" or name[2] == "3":
                 # The HRSG inlet is connected to the engine turbine outlet
-                structure[name]["HRSG"]["Mix_in"]["Connections"] = name + ":" + "Turbine" + ":" + "Mix_out"
-                structure[name]["Turbine"]["Mix_out"]["Connections"] = name + ":" + "HRSG" + ":" + "Mix_in"
+                structure["systems"][name]["units"]["HRSG"]["flows"]["Mix_in"]["Connections"] = [name + ":" + "Turbine" + ":" + "Mix_out"]
+                structure["systems"][name]["units"]["Turbine"]["flows"]["Mix_out"]["Connections"] = [name + ":" + "HRSG" + ":" + "Mix_in"]
             if name[0] == "A":
-                structure[name]["AG"]["Power_in"]["Connections"] = name + ":" + "Cyl" + ":" + "Power_out"
-                structure[name]["Cyl"]["Power_out"]["Connections"] = name + ":" + "AG" + ":" + "Power_in"
+                structure["systems"][name]["units"]["AG"]["flows"]["Power_in"]["Connections"] = [name + ":" + "Cyl" + ":" + "Power_out"]
+                structure["systems"][name]["units"]["Cyl"]["flows"]["Power_out"]["Connections"] = [name + ":" + "AG" + ":" + "Power_in"]
     print("...done!")
     return structure
 
 
-def generalStatus():
+def generalStatus(processed, structure):
     print("Started initializing the --status-- dataset...")
-    structure = {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Boiler": {}}
-    for idx in structure.keys():
-        # Adding the load and the "on/off"
-        structure[idx] = {"Load": {}, "OnOff": {}}
+    for system in structure["systems"]:
+        onoff_ID = system + ":" + "on"
+        load_ID = system + ":" + "load"
+        processed[onoff_ID] = pd.Series(index=processed.index)
+        processed[load_ID] = pd.Series(index=processed.index)
     print("...done!")
-    return structure
+    return processed
 
 
 

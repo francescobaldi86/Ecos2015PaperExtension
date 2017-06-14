@@ -1,85 +1,162 @@
 import numpy as np
 import pandas as pd
+from helpers import d2df
+from helpers import piecewisePolyvalHelperFunction
+from helpers import polyvalHelperFunction
 
 
-def assumptions(raw, processed, CONSTANTS, hd):
-    # This function includes generic assumed values in the main structure
-    for name in CONSTANTS["General"]["NAMES"]["MainEngines"]:
-        # The pressure at the turbocharger inlet is equal to the atmospheric pressure
-        processed[name]["Comp"]["Air_in"]["p"][:] = CONSTANTS["General"]["P_ATM"]
-    for name in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
-        # The pressure at the turbocharger inlet is equal to the atmospheric pressure
-        processed[name]["Comp"]["Air_in"]["p"][:] = CONSTANTS["General"]["P_ATM"]
-    T_0 = raw[hd["SEA_SW_T_"]] + 273.15
-    processed["Other"]["SWC13"]["SeaWater_out"]["T"] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
-    processed["Other"]["SWC24"]["SeaWater_out"]["T"] = raw[hd["SWC24_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
-    #processed["Other"]["SWC24"]["SeaWater"]["T_in"] = raw["SeaWater_T"]
-    #processed["Other"]["SWC24"]["SeaWater"]["T_in"] = raw["SeaWater_T"]
-    return (processed, T_0)
 
-
-def trivialAssignment(processed, CONSTANTS):
-    print("Started calculating the known connected flows...")
-    for name in processed:
-        for unit in processed[name]:
-            for flow in processed[name][unit]:
-                if "Connections" in processed[name][unit][flow].keys():
-                    connected_unit = processed[name][unit][flow]["Connections"]
-                    split_name = connected_unit.split(":")
-                    name_c = split_name[0]
-                    unit_c = split_name[1]
-                    flow_c = split_name[2]
-                    for property in CONSTANTS["General"]["PROPERTY_LIST"][processed[name][unit][flow]["type"]]:
-                        if processed[name][unit][flow][property].isnull().sum() == 0:
-                            if processed[name_c][unit_c][flow_c][property].isnull().sum() != 0:
-                                processed[name_c][unit_c][flow_c][property] = processed[name][unit][flow][property]
-                            elif not (processed[name][unit][flow][property].equals(processed[name_c][unit_c][flow_c][property])):
-                                print("Something is wrong for {} {} {} {}".format(name,unit,flow,property))
-                    if ("EG" in flow or "Mix" in flow):
-                        if "N2" in processed[name][unit][flow]["Connections"]:
-                            if "N2" not in processed[name][unit][flow]["Connections"]:
-                                processed[name_c][unit_c][flow_c]["Connections"] = processed[name][unit][flow]["Connections"]
-                            elif not (processed[name][unit][flow]["Connections"]["N2"].equals(processed[name_c][unit_c][flow_c]["Connections"]["N2"])):
-                                print("Something is wrong for {} {} {} {}".format(name,unit,flow,property))
-    print("...done!")
+def systemFill(processed, dict_structure, CONSTANTS):
+    print("Started filling the gaps in the dataframe...")
+    counter_mdot_tot = 0
+    counter_p_tot = 0
+    counter_T_tot = 0
+    counter_c_tot = 0
+    for system in dict_structure["systems"]:
+        for unit in dict_structure["systems"][system]["units"]:
+            # Check if the mass balance needs to be respected:
+            for equation in dict_structure["systems"][system]["units"][unit]["equations"]:
+                if equation == "MassBalance":
+                    streams = dict_structure["systems"][system]["units"][unit]["streams"]
+                    (counter_mdot,processed) = massFill(processed, dict_structure, CONSTANTS, system, unit, streams)
+                    counter_mdot_tot = counter_mdot_tot + counter_mdot
+                elif equation == "ConstantPressure":
+                    (counter_p,processed) = constantProperty("p", processed, dict_structure, CONSTANTS, system, unit, streams)
+                    counter_p_tot = counter_p_tot + counter_p
+                elif equation == "ConstantTemperature":
+                    (counter_T,processed) = constantProperty("T", processed, dict_structure, CONSTANTS, system, unit, streams)
+                    counter_T_tot = counter_T_tot + counter_T
+                else:
+                    print("Equation not recognized")
+                        # Trivial assignment: doing this if the flow is connected with other flows
+            (counter_c,processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit)
+            counter_c_tot = counter_c_tot + counter_c
+    print("...done! Filled {} mdot values, {} p values, {} T values and assigned {} connections".format(counter_mdot_tot,counter_p_tot,counter_T_tot,counter_c_tot))
     return processed
 
 
 
+def connectionAssignment(processed, dict_structure, CONSTANTS, system, unit):
+    counter = 0
+    for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+        if "Connections" in dict_structure["systems"][system]["units"][unit]["flows"][flow]:
+            for connected_flow in dict_structure["systems"][system]["units"][unit]["flows"][flow]["Connections"]:
+                for property in CONSTANTS["General"]["PROPERTY_LIST"][dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"]]:
+                    ID = d2df(system,unit,flow,property)
+                    ID_c = connected_flow + ":" + property
+                    if processed[ID].isnull().sum() == 0:
+                        if processed[ID_c].isnull().sum() != 0:
+                            processed[ID_c] = processed[ID]
+                            counter = counter + 1
+                        elif not (processed[ID].equals(processed[ID_c])):
+                            print("Something is wrong for {} {} {} {}".format(system,unit,flow,property))
+    return (counter,processed)
 
-def engineStatusCalculation(type, raw, processed, CONSTANTS, status, hd):
-    for name in CONSTANTS["General"]["NAMES"][type]:
-        status[name]["Load"] = processed[name]["Cyl"]["Power_out"]["Wdot"] / CONSTANTS[type]["MCR"]
+
+
+
+
+def massFill(processed, dict_structure, CONSTANTS, system, unit, streams):
+    # This function applies the mass balance over one component:
+    # - If some of the flows have not been assigned yet, they are calculated based on the mass balance
+    counter = 0
+    for stream in streams:
+        # If there is only one flow, something is tricky...
+        # If there are only two flows associated to the stream, things are rather easy
+        flow_nan = []
+        for flow in streams[stream]:
+            flow_nan.append(processed[flow+"mdot"].isnull().sum() == len(processed[flow+"mdot"]))
+        if sum(flow_nan) == 0:
+            # All flows have a value, just do nothing
+            pass
+        elif sum(flow_nan) == 1:
+            idx_nan = flow_nan.index(1)
+            balance = pd.Series()
+            for flow in streams[stream]:
+                if flow != idx_nan:
+                    balance = balance + processed[flow+"mdot"] * (2 * float("out" not in flow) - 1)
+            processed[streams[stream][idx_nan]] = balance.abs()
+            counter = counter + 1
+        else:
+            # There are are more than 1 non defined fluid, I cannot calculate the mass balance
+            pass
+    return (counter,processed)
+
+
+
+
+def constantProperty(property, processed, dict_structure, CONSTANTS, system, unit, streams):
+    # This function assigns a constant pressure to all streams of the same type for units
+    counter = 0
+    for stream in streams:
+        # If there is only one flow, something is tricky...
+        # If there are only two flows associated to the stream, things are rather easy
+        flow_nan = []
+        for flow in streams[stream]:
+            flow_nan.append(processed[flow+property].isnull().sum() == len(processed[flow+property]))
+        if sum(flow_nan) == 0:
+            # All flows have a value, just do nothing
+            pass
+        elif sum(flow_nan) < len(flow_nan):
+            idx_non_nan = flow_nan.index(0)
+            for flow in streams[stream]:
+                if flow_nan[streams[stream].index(flow)] == 1:
+                    processed[flow+property] = processed[streams[stream][idx_non_nan]+property]
+                    counter = counter + 1
+        else:
+            # All fluids are NaN, so there is nothing to be done here
+            pass
+    return (counter,processed)
+
+
+
+def assumptions(raw, processed, CONSTANTS, hd):
+    # This function includes generic assumed values in the main structure
+    for system in CONSTANTS["General"]["NAMES"]["MainEngines"]:
+        # The pressure at the turbocharger inlet is equal to the atmospheric pressure
+        processed[d2df(system,"Comp","Air_in","p")][:] = CONSTANTS["General"]["P_ATM"]
+    for system in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
+        # The pressure at the turbocharger inlet is equal to the atmospheric pressure
+        processed[d2df(system, "Comp", "Air_in", "p")][:] = CONSTANTS["General"]["P_ATM"]
+    processed["T_0"] = raw[hd["SEA_SW_T_"]] + 273.15
+    processed[d2df("Other","SWC13","SeaWater_out","T")] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    processed[d2df("Other","SWC24","SeaWater_out","T")] = raw[hd["SWC24_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    return processed
+
+
+def engineStatusCalculation(type, raw, processed, CONSTANTS, hd):
+    for system in CONSTANTS["General"]["NAMES"][type]:
+        processed[system+":"+"load"] = processed[d2df(system,"Cyl","Power_out","Wdot")] / CONSTANTS[type]["MCR"]
         # We consider that the engines are on if the RPM of the turbocharger is higher than 5000 RPM
-        #status[name]["OnOff"] = (status[name]["Load"] > 0.05) & (processed[name]["Cyl"]["Power_out"]["omega"] > CONSTANTS["MainEngines"]["RPM_DES"] * 0.1)
-        status[name]["OnOff"] = raw[hd[name+"-TC__RPM_"]] > 5000
-    return status
+        #status[system]["OnOff"] = (status[system]["Load"] > 0.05) & (processed[d2df(system,"Cyl"]["Power_out","omega"] > CONSTANTS["MainEngines"]["RPM_DES"] * 0.1)
+        processed[system + ":" + "on"] = raw[hd[system+"-TC__RPM_"]] > 5000
+    return processed
 
 
-def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type, T_0):
+def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
     print("Started calculating analysis for {} cooling systems...".format(engine_type))
     # This function calculates the different flows related to the cooling systems of the main engines.
-    for name in CONSTANTS["General"]["NAMES"][engine_type]:
+    for system in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
-        energy_2_cooling = (processed[name]["Cyl"]["FuelCh_in"]["Wdot"] -
-            processed[name]["Cyl"]["Power_out"]["Wdot"] +
-            CONSTANTS["General"]["HFO"]["CP"] * processed[name]["Cyl"]["FuelPh_in"]["mdot"] *
-                (processed[name]["Cyl"]["FuelPh_in"]["T"] - T_0) -
-            CONSTANTS["General"]["CP_EG"] * processed[name]["Turbine"]["Mix_out"]["mdot"] *
-                (processed[name]["Turbine"]["Mix_out"]["T"] - T_0) +
-            CONSTANTS["General"]["CP_AIR"] * processed[name]["Comp"]["Air_in"]["mdot"] *
-                (processed[name]["Comp"]["Air_in"]["T"] - T_0))
+        energy_2_cooling = (processed[d2df(system,"Cyl","FuelCh_in","Wdot")] -
+            processed[d2df(system,"Cyl","Power_out","Wdot")] +
+            CONSTANTS["General"]["HFO"]["CP"] * processed[d2df(system,"Cyl","FuelPh_in","mdot")] *
+                (processed[d2df(system,"Cyl","FuelPh_in","T")] - processed["T_0"]) -
+            CONSTANTS["General"]["CP_EG"] * processed[d2df(system,"Turbine","Mix_out","mdot")] *
+                (processed[d2df(system,"Turbine","Mix_out","T")] - processed["T_0"]) +
+            CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"Comp","Air_in","mdot")] *
+                (processed[d2df(system,"Comp","Air_in","T")] - processed["T_0"]))
         # Calculating the energy going to the charge air cooler, based on the estimated temperatures on the air line
-        energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[name]["Cyl"]["Air_in"]["mdot"] * (processed[name]["Comp"]["Air_out"]["T"] - processed[name]["Cyl"]["Air_in"]["T"])
+        energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"Cyl","Air_in","mdot")] * (processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"Cyl","Air_in","T")])
         # Calculating the energy going to the HT cooling systems, based on interpolation from the project guide
-        energy_2_ht_theoric = status[name]["Load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],)) * CONSTANTS[engine_type]["QDOT_HT_DES"]
-        energy_2_lt_theoric = status[name]["Load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],)) * CONSTANTS[engine_type]["QDOT_LT_DES"]
+        energy_2_ht_theoric = processed[system+":"+"load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],)) * CONSTANTS[engine_type]["QDOT_HT_DES"]
+        energy_2_lt_theoric = processed[system+":"+"load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],)) * CONSTANTS[engine_type]["QDOT_LT_DES"]
         # The values calculated based on the project guide are reconciled based on the energy balance
         energy_2_ht = energy_2_cooling * energy_2_ht_theoric / (energy_2_ht_theoric + energy_2_lt_theoric)
         energy_2_lt = energy_2_cooling - energy_2_ht
         # The energy going to the CAC, HT stage is calculated assuming a 85% effectiveness of the heat exchanger
-        energy_2_cac_ht = CONSTANTS[engine_type]["EPS_CAC_HTSTAGE"] * processed[name]["Comp"]["Air_in"]["mdot"] * CONSTANTS["General"]["CP_AIR"] * (
-            processed[name]["Comp"]["Air_out"]["T"] - processed[name]["CAC_HT"]["HTWater_in"]["T"])
+        energy_2_cac_ht = CONSTANTS[engine_type]["EPS_CAC_HTSTAGE"] * processed[d2df(system,"Comp","Air_in","mdot")] * CONSTANTS["General"]["CP_AIR"] * (
+            processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"CAC_HT","HTWater_in","T")])
         # The energy going to the CAC, LT stage results as a consequence by thermal balance over the CAC
         energy_2_cac_lt = energy_2_cac - energy_2_cac_ht
         # The energy to the JWC results as a balance over the HT cooling systems
@@ -87,27 +164,20 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, status, engine_type, T
         # The energy to the LOC results as a balance over the LT cooling systems
         energy_2_loc = energy_2_lt - energy_2_cac_lt
         # For all pumps, it is here assumed that the flow scales only with the speed of the engine (biiiiig assumption)
-        processed[name]["LOC"]["LTWater_in"]["mdot"] = CONSTANTS[engine_type]["MFR_LT"] * processed[name]["Cyl"]["Power_out"]["omega"] / CONSTANTS[engine_type]["RPM_DES"]
-        processed[name]["JWC"]["HTWater_in"]["mdot"] = CONSTANTS[engine_type]["MFR_HT"] * processed[name]["Cyl"]["Power_out"]["omega"] / CONSTANTS[engine_type]["RPM_DES"]
-        # Asssigning values based on mass balances
-        processed[name]["LOC"]["LTWater_out"]["mdot"] = processed[name]["LOC"]["LTWater_in"]["mdot"]
-        processed[name]["CAC_LT"]["LTWater_out"]["mdot"] = processed[name]["LOC"]["LTWater_in"]["mdot"]
-        processed[name]["CAC_LT"]["LTWater_out"]["mdot"] = processed[name]["LOC"]["LTWater_in"]["mdot"]
-        processed[name]["JWC"]["HTWater_out"]["mdot"] = processed[name]["JWC"]["HTWater_in"]["mdot"]
-        processed[name]["CAC_HT"]["HTWater_in"]["mdot"] = processed[name]["JWC"]["HTWater_in"]["mdot"]
-        processed[name]["CAC_HT"]["HTWater_out"]["mdot"] = processed[name]["JWC"]["HTWater_in"]["mdot"]
+        processed[d2df(system,"LOC","LTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_LT"] * processed[d2df(system,"Cyl","Power_out","omega")] / CONSTANTS[engine_type]["RPM_DES"]
+        processed[d2df(system,"JWC","HTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_HT"] * processed[d2df(system,"Cyl","Power_out","omega")] / CONSTANTS[engine_type]["RPM_DES"]
         # Finally, the temperatures in the flows are calculated based on the calculated energy and mass flow values
         # For LT, first we have the CAC, then the LOC
-        processed[name]["CAC_LT"]["LTWater_out"]["T"] = processed[name]["CAC_LT"]["LTWater_in"]["T"] + energy_2_cac_lt / processed[name]["CAC_LT"]["LTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
-        processed[name]["LOC"]["LTWater_in"]["T"] = processed[name]["CAC_LT"]["LTWater_out"]["T"]
-        processed[name]["LOC"]["LTWater_out"]["T"] = processed[name]["LOC"]["LTWater_in"]["T"] + energy_2_loc / processed[name]["LOC"]["LTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
+        processed[d2df(system,"CAC_LT","LTWater_out","T")] = processed[d2df(system,"CAC_LT","LTWater_in","T")] + energy_2_cac_lt / processed[d2df(system,"CAC_LT","LTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
+        processed[d2df(system,"LOC","LTWater_in","T")] = processed[d2df(system,"CAC_LT","LTWater_out","T")]
+        processed[d2df(system,"LOC","LTWater_out","T")] = processed[d2df(system,"LOC","LTWater_in","T")] + energy_2_loc / processed[d2df(system,"LOC","LTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
         # For HT, first we have the JWC, then the CAC, HT
-        processed[name]["JWC"]["HTWater_out"]["T"] = processed[name]["JWC"]["HTWater_in"]["T"] + energy_2_jwc / processed[name]["JWC"]["HTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
-        processed[name]["CAC_HT"]["HTWater_in"]["T"] = processed[name]["JWC"]["HTWater_out"]["T"]
-        processed[name]["CAC_HT"]["HTWater_out"]["T"] = processed[name]["CAC_HT"]["HTWater_in"]["T"] + energy_2_cac_ht / processed[name]["CAC_HT"]["HTWater_out"]["mdot"] / CONSTANTS["General"]["CP_WATER"]
+        processed[d2df(system,"JWC","HTWater_out","T")] = processed[d2df(system,"JWC","HTWater_in","T")] + energy_2_jwc / processed[d2df(system,"JWC","HTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
+        processed[d2df(system,"CAC_HT","HTWater_in","T")] = processed[d2df(system,"JWC","HTWater_out","T")]
+        processed[d2df(system,"CAC_HT","HTWater_out","T")] = processed[d2df(system,"CAC_HT","HTWater_in","T")] + energy_2_cac_ht / processed[d2df(system,"CAC_HT","HTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
         # For the LOC, we know the outlet (lower) temperature, we calculate the inlet temperature
-        processed[name]["LOC"]["LubOil_out"]["mdot"][:] = CONSTANTS[engine_type]["MFR_LO"]
-        processed[name]["LOC"]["LubOil_in"]["T"] = processed[name]["LOC"]["LubOil_out"]["T"] + energy_2_loc / processed[name]["LOC"]["LubOil_out"]["mdot"] / CONSTANTS["General"]["CP_LO"]
+        processed[d2df(system,"LOC","LubOil_out","mdot")][:] = CONSTANTS[engine_type]["MFR_LO"]
+        processed[d2df(system,"LOC","LubOil_in","T")] = processed[d2df(system,"LOC","LubOil_out","T")] + energy_2_loc / processed[d2df(system,"LOC","LubOil_out","mdot")] / CONSTANTS["General"]["CP_LO"]
     print("...done!")
     return processed
 
@@ -177,22 +247,7 @@ def mixtureComposition(composition,mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
     return mixture
 
 
-def polyvalHelperFunction(x,p):
-    # The problem with applying "polyval" to data series is that the "x" is the second argument of the function
-    # instead of being the first. So we use this function to invert the two, waiting to find a better way
-    output = np.polyval(p,x)
-    return output
 
-def piecewisePolyvalHelperFunction(x,p):
-    # The problem with applying "polyval" to data series is that the "x" is the second argument of the function
-    # instead of being the first. So we use this function to invert the two, waiting to find a better way
-    output = np.piecewise(x, [x < 0.5 , x >= 0.5], [np.polyval(p[1],x) , np.polyval(p[0],x)])
-    return output
-
-
-def coolpropMixtureHelperFunction(composition):
-    mixture = "HEOS::" + "N2[" + str(composition["N2"]) + "]&" + "O2[" + str(composition["O2"]) + "]&" + "H2O[" + str(composition["H2O"]) + "]&" + "CO2[" + str(composition) + "]"
-    return mixture
 
 
 

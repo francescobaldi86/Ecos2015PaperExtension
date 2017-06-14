@@ -30,8 +30,8 @@ def general():
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
     output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
     output["PROPERTY_LIST"] = {}
-    output["PROPERTY_LIST"]["CPF"] =  ["mdot", "T", "p", "cp", "h", "h0", "s", "s0", "b", "Edot", "Bdot"]
-    output["PROPERTY_LIST"]["IPF"] = ["mdot", "T", "p", "cp", "b", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["CPF"] =  ["mdot", "T", "p", "h", "b", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["IPF"] = ["mdot", "T", "p", "h", "b", "Edot", "Bdot"]
     output["PROPERTY_LIST"]["Qdot"] = ["Qdot", "T", "Edot", "Bdot"]
     output["PROPERTY_LIST"]["Wdot"] = ["Wdot", "omega", "Edot", "Bdot"]
     output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
