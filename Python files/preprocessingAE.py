@@ -128,5 +128,15 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"])
         processed[system + ":CP_MIX"] = (processed[d2df(system, "BPsplit", "BP_out", "mdot")] * CONSTANTS["General"]["CP_AIR"] +
             processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_AIR"]) / processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
+        processed[system + ":EG_Composition"] = ppo.mixtureComposition(
+            processed[d2df(system, "Cyl", "Air_in", "mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "T")],
+            CONSTANTS)
+        processed[system + ":Mix_Composition"] = ppo.mixtureComposition(
+            processed[d2df(system, "BPsplit", "Air_in", "mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "T")],
+            CONSTANTS)
     print("...done!")
     return processed

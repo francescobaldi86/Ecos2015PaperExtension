@@ -147,10 +147,20 @@ def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"] +
             processed[d2df(system,"BPsplit","BP_out","mdot")] * CONSTANTS["General"]["CP_AIR"])
         # The air mass flow going through the compressor is equal to the sum of the air flow through the bypass valve and to the cylinders
-        processed[d2df(system,"BPsplit","Air_in","mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","Air_in","mdot")]
+        processed[d2df(system, "BPsplit", "Air_in", "mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","Air_in","mdot")]
         # The flow through the turbine is equal to the sum of the bypass flow and the exhaust coming from the cylinders
         processed[d2df(system,"BPmerge","Mix_out","mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","EG_out","mdot")]
         processed[system+":CP_MIX"] = (processed[d2df(system,"BPsplit","BP_out","mdot")] * CONSTANTS["General"]["CP_AIR"] +
             processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_AIR"]) / processed[d2df(system,"BPmerge","Mix_out","mdot")]
+        processed[system+":EG_Composition"] = ppo.mixtureComposition(
+            processed[d2df(system,"Cyl","Air_in","mdot")],
+            processed[d2df(system,"Cyl","FuelPh_in","mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "T")],
+            CONSTANTS)
+        processed[system + ":Mix_Composition"] = ppo.mixtureComposition(
+            processed[d2df(system, "BPsplit", "Air_in", "mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "mdot")],
+            processed[d2df(system, "Cyl", "FuelPh_in", "T")],
+            CONSTANTS)
     print("...done!")
     return processed

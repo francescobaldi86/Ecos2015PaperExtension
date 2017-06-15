@@ -247,7 +247,7 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
     return (bsfc, LHV)
 
 
-def mixtureComposition(composition,mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
+def mixtureComposition(mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
     # This value takes as input the flow of air and fuel and calculates the resulting composition of the exhaust gas, assuming full combustion
     # The composition is written in the code accepted by CoolProp, i.e. in the form:
     # "HEOS::COMP_1[%]&COMP_2[%]..."

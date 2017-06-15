@@ -104,7 +104,7 @@ cc.enginesCheck(processed, CONSTANTS)
 cc.missingValues(processed, dict_structure, CONSTANTS)
 
 # Assigning defined values to all flows for engines off
-
+processed = ea.propertyCalculator(processed, dict_structure, CONSTANTS)
 #%%
 ######################################
 ## EXPLORATORY DATA ANALYSIS	##
