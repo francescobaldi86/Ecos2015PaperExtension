@@ -230,9 +230,6 @@ def connectionAssignment(structure):
             # The BP split is also connected to the BP merge
             structure["systems"][name]["units"]["BPsplit"]["flows"]["BP_out"]["Connections"] = [name + ":" + "BPmerge" + ":" + "BP_in"]
             structure["systems"][name]["units"]["BPmerge"]["flows"]["BP_in"]["Connections"] = [name + ":" + "BPsplit" + ":" + "BP_out"]
-            # The Compressor outlet is also connected to the CAC HT cooler inlet
-            structure["systems"][name]["units"]["CAC_HT"]["flows"]["Air_in"]["Connections"].append(name + ":" + "Comp" + ":" + "Air_out")
-            structure["systems"][name]["units"]["Comp"]["flows"]["Air_out"]["Connections"].append(name + ":" + "CAC_HT" + ":" + "Air_in")
             if name[0] == "A" or name[2] == "2" or name[2] == "3":
                 # The HRSG inlet is connected to the engine turbine outlet
                 structure["systems"][name]["units"]["HRSG"]["flows"]["Mix_in"]["Connections"] = [name + ":" + "Turbine" + ":" + "Mix_out"]

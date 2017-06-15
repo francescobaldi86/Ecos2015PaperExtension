@@ -11,6 +11,7 @@ def mainEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readMainEnginesExistingValues(raw, processed, CONSTANTS, hd)
+    processed = ppo.coolingFlows(processed, CONSTANTS, "MainEngines")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS)
     # Calculating the main engines fuel flows
     processed = mainEngineFuelFlowCalculation(raw, processed, CONSTANTS, hd)
@@ -54,6 +55,9 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         processed[d2df(name,"CAC_LT","Air_out","T")] = raw[hd[name + "-CAC_AIR_T_OUT"]] + 273.15
         # Reading Engine rpm
         processed[d2df(name,"Cyl","Power_out","omega")] = raw[hd[name + "__RPM_"]]
+        # Reading the pressure in the cooling flows
+        processed[d2df(name, "CAC_LT", "LTWater_in", "p")] = (raw[hd[name + "-LT-CAC_FW_P_IN"]] + 1.01325) * 100000
+        processed[d2df(name, "JWC", "HTWater_in", "p")] = (raw[hd[name + "-HT-JWC_FW_P_IN"]] + 1.01325) * 100000
         # Assuming that the pressure in the exhaust gas is 90% of the pressure in the inlet manifold. Somewhat reasonable
         processed[d2df(name,"Cyl","EG_out","p")] = (0.9 * raw[hd[name+"-CAC_AIR_P_OUT"]] + 1.01325) * 100000
     print("...done!")
@@ -142,14 +146,11 @@ def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"] * processed[d2df(system,"Cyl","EG_out","T")]) / (
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"] +
             processed[d2df(system,"BPsplit","BP_out","mdot")] * CONSTANTS["General"]["CP_AIR"])
-        # The air mass flow going through the compressor is equal to the sum of the air flow through the bypass valve and
-        # to the cylinders
+        # The air mass flow going through the compressor is equal to the sum of the air flow through the bypass valve and to the cylinders
         processed[d2df(system,"BPsplit","Air_in","mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","Air_in","mdot")]
         # The flow through the turbine is equal to the sum of the bypass flow and the exhaust coming from the cylinders
         processed[d2df(system,"BPmerge","Mix_out","mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","EG_out","mdot")]
-        processed[d2df(system,"Turbine","Mix_out","mdot")] = processed[d2df(system,"BPmerge","Mix_out","mdot")]
-        if "HRSG" in dict_structure["systems"][system]["units"]:
-            processed[d2df(system,"HRSG","Mix_out","mdot")] = processed[d2df(system,"BPmerge","Mix_out","mdot")]
-        processed[d2df(system,"Comp","Air_in","mdot")] = processed[d2df(system,"BPsplit","Air_in","mdot")]
+        processed[system+":CP_MIX"] = (processed[d2df(system,"BPsplit","BP_out","mdot")] * CONSTANTS["General"]["CP_AIR"] +
+            processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_AIR"]) / processed[d2df(system,"BPmerge","Mix_out","mdot")]
     print("...done!")
     return processed

@@ -13,5 +13,9 @@ def filenames(project_path):
     output["dataset_output_empty"] = project_path + os.sep +'Data_Process' + os.sep + 'database_out_empty.h5'
     output["dataset_output"] = project_path + os.sep +'Data_Process' + os.sep + 'database_out.csv'
     output["consistency_check_report"] = project_path + os.sep + 'Data_Process' + os.sep + 'check_report.txt'
+    # opening the
+    text_file = open(output["consistency_check_report"],"w") # Cleaning the file
+    text_file.write("=== STARTING THE REPORT FILE === \n \n")
+    text_file.close()
 
     return output

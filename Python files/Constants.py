@@ -34,6 +34,7 @@ def general():
     output["PROPERTY_LIST"]["IPF"] = ["mdot", "T", "p", "h", "b", "Edot", "Bdot"]
     output["PROPERTY_LIST"]["Qdot"] = ["Qdot", "T", "Edot", "Bdot"]
     output["PROPERTY_LIST"]["Wdot"] = ["Wdot", "omega", "Edot", "Bdot"]
+    output["PROPERTY_LIST"]["REF"] = {"Wdot": 0, "omega":0, "mdot":0, "T": 273, "p": output["P_ATM"], "h": 0, "b": 0, "Edot": 0, "Bdot": 0, "Qdot": 0}
     output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
     output["MDO"] = {"LHV": 42230.0, "CP": 1.8, "C": 0.87, "H": 0.13}
     output["MDO"]["HHV"] = output["MDO"]["LHV"] * (1.0406 + 0.0144 * output["MDO"]["H"] / output["MDO"]["C"] * 12) * 1.01  # Calculated Higher heating value
@@ -44,7 +45,6 @@ def general():
 def steamProperties():
     # STEAM PROPERTIES
     output = {}
-    pass
     output["H_STEAM_LS"] = 662.0  # Specific enthalpy of 6 bar steam, saturated liquid, in [kJ/kg]
     output["H_STEAM_VS"] = 2754.0  # Specific enthalpy of 6 bar steam, saturated vapour, in [kJ/kg]
     output["S_STEAM_LS"] = 1.9108  # Specific entropy of 6 bar steam, saturated liquid, in [kJ/kg]
@@ -71,14 +71,17 @@ def mainEngines(CONSTANTS):
     output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit([0.25, 0.5, 0.75, 0.85, 1.0, 1.1], [np.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1], 2)
     output["QDOT_HT_DES"] = 1650.0  # Heat flow to the HT cooling systems at design load, in [kW]
     output["QDOT_LT_DES"] = 1450.0  # Heat flow to the HT cooling systems at design load, in [kW]
-    output["POLY_LOAD_2_QDOT_HT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
-                                        np.array([500.0, 1000.0, 1250.0, output["QDOT_HT_DES"]]) / output["QDOT_HT_DES"], 2)]
-    output["POLY_LOAD_2_QDOT_LT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
-                                        np.array([800.0, 1050.0, 1200.0, output["QDOT_LT_DES"]]) / output["QDOT_LT_DES"], 2)]
-    output["POLY_LOAD_2_QDOT_HT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_HT"][0],0.5)]), 1))
-    output["POLY_LOAD_2_QDOT_LT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_LT"][0], 0.5)]), 1))
-    output["POLY_LOAD_2_EPS_CACHT"] = np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
-                                                    np.array([0.922, 0.902, 0.876, 0.871]), 1)
+    # output["POLY_LOAD_2_QDOT_HT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
+    #                                     np.array([500.0, 1000.0, 1250.0, output["QDOT_HT_DES"]]) / output["QDOT_HT_DES"], 2)]
+    # output["POLY_LOAD_2_QDOT_LT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
+    #                                     np.array([800.0, 1050.0, 1200.0, output["QDOT_LT_DES"]]) / output["QDOT_LT_DES"], 2)]
+    # output["POLY_LOAD_2_QDOT_HT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_HT"][0],0.5)]), 1))
+    # output["POLY_LOAD_2_QDOT_LT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_LT"][0], 0.5)]), 1))
+    # output["POLY_LOAD_2_EPS_CACHT"] = np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
+    #                                                 np.array([0.922, 0.902, 0.876, 0.871]), 1)
+    output["POLY_LOAD_2_QDOT_HT"] = np.array([0.7826 , 0.2204 , 0])
+    output["POLY_LOAD_2_QDOT_LT"] = np.array([-0.1206 , 1.0978 , 0])
+    output["POLY_H_2_QDOT"] = np.array([-1.74E-3, -1.36E-2, 3.48E1])
 # output["POLY_FUEL_RACK_2_MASS_FUEL_CYCLE"] = polyfit([0.233333, 0.5, 0.7, 0.8, 1],[0.01726, 0.02435, 0.03081, 0.03397, 0.03869],1)  
     output["BSFC_ISO_DES"] = np.polyval(output["POLY_LOAD_2_ISO_BSFC"], 1)
 # Function handle that allows to calculate the fuel load
@@ -98,7 +101,8 @@ def mainEngines(CONSTANTS):
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
     output["FRP_DES"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}  # Value of the fuel rack position at 100% load
-    output["BYPASS_FLOW"] = 1.1
+    # output["BYPASS_FLOW"] = 1.1
+    output["STATIC_HEAD"] = 19.2
     return output
     
     
@@ -124,6 +128,7 @@ def auxiliaryEngines(CONSTANTS):
 # Assuming that the amount of heat from the engine to the HT cooling systems behaves in the same way as that of the main engines.
     output["POLY_LOAD_2_QDOT_HT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_HT"]
     output["POLY_LOAD_2_QDOT_LT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_LT"]
+    output["POLY_H_2_QDOT"] = np.array([-3.65E-4, +3.17E-2, 2.85E1])
 # Assuming that the sare of the charge air cooling heat going to the HT stage is linearly increasing from 0 to its value at the engine design point.
     output["POLY_LOAD_2_SHARE_CAC"] = np.polyfit([0, 1], [0, output["QDOT_2_CAC_HT_DES"]/(output["QDOT_2_CAC_HT_DES"]+output["QDOT_2_CAC_LT_DES"])], 1)
     output["MFR_LT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of LT cooling water, in [kg/s]
@@ -135,6 +140,7 @@ def auxiliaryEngines(CONSTANTS):
     output["AG"]["A"] = 0.18
     output["AG"]["k"] = 5
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
+    output["STATIC_HEAD"] = 10
     return output
 
 

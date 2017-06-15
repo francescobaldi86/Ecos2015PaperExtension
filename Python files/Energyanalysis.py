@@ -11,8 +11,7 @@ def propertyCalculator(processed, T0):
             for flow in processed[system][unit]:
                 if processed[system][unit][flow]["type"] == "CPF":
                     # Only doing the calculations if the values for p and T are not NaN
-                    if (processed[system][unit][flow]["p"].isnull().sum() < 1) & (
-                        processed[system][unit][flow]["T"].isnull().sum() < 1):
+                    if (processed[system][unit][flow]["p"].isnull().sum() < 1) & (processed[system][unit][flow]["T"].isnull().sum() < 1):
                         press = np.array(processed[system][unit][flow]["p"])  # .values()
                         temp = np.array(processed[system][unit][flow]["T"])  # .values()
                         # If the specific enthalpy is available already, it needs to be calculated

@@ -1,3 +1,5 @@
+
+
 def ME_CW_Pump(rpm,pressure):
     "Engine driven cooling water pump HT/LT for ME. Inputs engine-rpm and gauge-pressure [bar] CW."
     # The equation was derived from the pump diagram in the engine project manual at 500 rpm
@@ -43,19 +45,3 @@ def AE_CW_Pump(rpm,pressure):
     # Account for the affinity laws
     Q_out = Q * (rpm/500.)
     return Q_out
-
-    return mass_flow
-
-ME_CW_Pump(500,3.3)
-AE_CW_Pump(750,3)
-
-
-#%%
-
-%pylab
-p = linspace(0,6,10000)
-q = ME_CW_Pump(400,p+1)
-p
-q
-
-plot(q,p)

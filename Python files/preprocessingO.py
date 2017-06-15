@@ -12,9 +12,10 @@ def systemFill(processed, dict_structure, CONSTANTS):
     counter_p_tot = 0
     counter_T_tot = 0
     counter_c_tot = 0
+    processed = unitOffCheck(processed, dict_structure, CONSTANTS)
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
-            # Check if the mass balance needs to be respected:
+            # (counter_c, processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit)
             for equation in dict_structure["systems"][system]["units"][unit]["equations"]:
                 if equation == "MassBalance":
                     streams = dict_structure["systems"][system]["units"][unit]["streams"]
@@ -29,6 +30,9 @@ def systemFill(processed, dict_structure, CONSTANTS):
                 else:
                     print("Equation not recognized")
                         # Trivial assignment: doing this if the flow is connected with other flows
+    processed = unitOffCheck(processed, dict_structure, CONSTANTS)
+    for system in dict_structure["systems"]:
+        for unit in dict_structure["systems"][system]["units"]:
             (counter_c,processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit)
             counter_c_tot = counter_c_tot + counter_c
     print("...done! Filled {} mdot values, {} p values, {} T values and assigned {} connections".format(counter_mdot_tot,counter_p_tot,counter_T_tot,counter_c_tot))
@@ -36,20 +40,45 @@ def systemFill(processed, dict_structure, CONSTANTS):
 
 
 
+def unitOffCheck(processed, dict_structure, CONSTANTS):
+    # Assigns to 0 all values related to components when they are off
+    for system in dict_structure["systems"]:
+        if processed[system + ":" + "on"].isnull().sum() == 0:
+            for unit in dict_structure["systems"][system]["units"]:
+                for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                    for property in dict_structure["systems"][system]["units"][unit]["flows"][flow]["properties"]:
+                        if processed[d2df(system,unit,flow,property)].isnull().sum() == len(processed[d2df(system,unit,flow,property)]):
+                            pass # the value is still untouched, better leave it that way
+                        elif property == "T":
+                            processed.loc[~processed[system + ":" + "on"], d2df(system, unit, flow, property)] = processed.loc[~processed[system+":"+"on"], "T_0"]
+                        else:
+                            processed.loc[~processed[system + ":" + "on"], d2df(system, unit, flow, property)] = CONSTANTS["General"]["PROPERTY_LIST"]["REF"][property]
+        elif processed[system + ":" + "on"].isnull().sum() < len(processed[system + ":" + "on"]):
+            print("Something went wrong here, the system -on- field has NaNs for system {}".format(system))
+        else:
+            pass
+    return processed
+
+
+
 def connectionAssignment(processed, dict_structure, CONSTANTS, system, unit):
+    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
     counter = 0
     for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+        if system+":"+unit+":"+flow == "ME1:JWC:HTWater_out":
+            aaa = 0
         if "Connections" in dict_structure["systems"][system]["units"][unit]["flows"][flow]:
             for connected_flow in dict_structure["systems"][system]["units"][unit]["flows"][flow]["Connections"]:
                 for property in CONSTANTS["General"]["PROPERTY_LIST"][dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"]]:
                     ID = d2df(system,unit,flow,property)
                     ID_c = connected_flow + ":" + property
-                    if processed[ID].isnull().sum() == 0:
-                        if processed[ID_c].isnull().sum() != 0:
+                    if processed[ID].isnull().sum() != len(processed[ID]):
+                        if processed[ID_c].isnull().sum() == len(processed[ID_c]):
                             processed[ID_c] = processed[ID]
                             counter = counter + 1
-                        elif not (processed[ID].equals(processed[ID_c])):
-                            print("Something is wrong for {} {} {} {}".format(system,unit,flow,property))
+                        elif (processed[ID] - processed[ID_c]).sum() > processed[ID].max():
+                            text_file.write("ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows {} and {} should be the same, they are not. \n".format(ID, ID_c))
+    text_file.close()
     return (counter,processed)
 
 
@@ -60,6 +89,8 @@ def massFill(processed, dict_structure, CONSTANTS, system, unit, streams):
     # This function applies the mass balance over one component:
     # - If some of the flows have not been assigned yet, they are calculated based on the mass balance
     counter = 0
+    if system+":"+unit == "ME1:BPsplit":
+        aaa = 0
     for stream in streams:
         # If there is only one flow, something is tricky...
         # If there are only two flows associated to the stream, things are rather easy
@@ -71,11 +102,12 @@ def massFill(processed, dict_structure, CONSTANTS, system, unit, streams):
             pass
         elif sum(flow_nan) == 1:
             idx_nan = flow_nan.index(1)
-            balance = pd.Series()
+            balance = pd.Series(index=processed.index)
+            balance[:] = 0
             for flow in streams[stream]:
-                if flow != idx_nan:
+                if flow != streams[stream][idx_nan]:
                     balance = balance + processed[flow+"mdot"] * (2 * float("out" not in flow) - 1)
-            processed[streams[stream][idx_nan]] = balance.abs()
+            processed[streams[stream][idx_nan]+"mdot"] = balance.abs()
             counter = counter + 1
         else:
             # There are are more than 1 non defined fluid, I cannot calculate the mass balance
@@ -149,35 +181,38 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
         # Calculating the energy going to the charge air cooler, based on the estimated temperatures on the air line
         energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"Cyl","Air_in","mdot")] * (processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"Cyl","Air_in","T")])
         # Calculating the energy going to the HT cooling systems, based on interpolation from the project guide
-        energy_2_ht_theoric = processed[system+":"+"load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],)) * CONSTANTS[engine_type]["QDOT_HT_DES"]
-        energy_2_lt_theoric = processed[system+":"+"load"].apply(piecewisePolyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],)) * CONSTANTS[engine_type]["QDOT_LT_DES"]
+        energy_2_ht_theoric = processed[system+":"+"load"].apply(polyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_HT"],)) * CONSTANTS[engine_type]["QDOT_HT_DES"]
+        energy_2_lt_theoric = processed[system+":"+"load"].apply(polyvalHelperFunction,args=(CONSTANTS[engine_type]["POLY_LOAD_2_QDOT_LT"],)) * CONSTANTS[engine_type]["QDOT_LT_DES"]
         # The values calculated based on the project guide are reconciled based on the energy balance
         energy_2_ht = energy_2_cooling * energy_2_ht_theoric / (energy_2_ht_theoric + energy_2_lt_theoric)
         energy_2_lt = energy_2_cooling - energy_2_ht
         # The energy going to the CAC, HT stage is calculated assuming a 85% effectiveness of the heat exchanger
         energy_2_cac_ht = CONSTANTS[engine_type]["EPS_CAC_HTSTAGE"] * processed[d2df(system,"Comp","Air_in","mdot")] * CONSTANTS["General"]["CP_AIR"] * (
-            processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"CAC_HT","HTWater_in","T")])
+            processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"JWC","HTWater_in","T")])
+        energy_2_cac_ht[energy_2_cac_ht<0] = 0
         # The energy going to the CAC, LT stage results as a consequence by thermal balance over the CAC
         energy_2_cac_lt = energy_2_cac - energy_2_cac_ht
         # The energy to the JWC results as a balance over the HT cooling systems
         energy_2_jwc = energy_2_ht - energy_2_cac_ht
         # The energy to the LOC results as a balance over the LT cooling systems
         energy_2_loc = energy_2_lt - energy_2_cac_lt
-        # For all pumps, it is here assumed that the flow scales only with the speed of the engine (biiiiig assumption)
-        processed[d2df(system,"LOC","LTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_LT"] * processed[d2df(system,"Cyl","Power_out","omega")] / CONSTANTS[engine_type]["RPM_DES"]
-        processed[d2df(system,"JWC","HTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_HT"] * processed[d2df(system,"Cyl","Power_out","omega")] / CONSTANTS[engine_type]["RPM_DES"]
         # Finally, the temperatures in the flows are calculated based on the calculated energy and mass flow values
         # For LT, first we have the CAC, then the LOC
         processed[d2df(system,"CAC_LT","LTWater_out","T")] = processed[d2df(system,"CAC_LT","LTWater_in","T")] + energy_2_cac_lt / processed[d2df(system,"CAC_LT","LTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
-        processed[d2df(system,"LOC","LTWater_in","T")] = processed[d2df(system,"CAC_LT","LTWater_out","T")]
-        processed[d2df(system,"LOC","LTWater_out","T")] = processed[d2df(system,"LOC","LTWater_in","T")] + energy_2_loc / processed[d2df(system,"LOC","LTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
+        processed[d2df(system,"LOC","LTWater_out","T")] = processed[d2df(system,"CAC_LT","LTWater_out","T")] + energy_2_loc / processed[d2df(system,"LOC","LTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
         # For HT, first we have the JWC, then the CAC, HT
         processed[d2df(system,"JWC","HTWater_out","T")] = processed[d2df(system,"JWC","HTWater_in","T")] + energy_2_jwc / processed[d2df(system,"JWC","HTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
-        processed[d2df(system,"CAC_HT","HTWater_in","T")] = processed[d2df(system,"JWC","HTWater_out","T")]
-        processed[d2df(system,"CAC_HT","HTWater_out","T")] = processed[d2df(system,"CAC_HT","HTWater_in","T")] + energy_2_cac_ht / processed[d2df(system,"CAC_HT","HTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
+        processed[d2df(system,"CAC_HT","HTWater_out","T")] = processed[d2df(system,"JWC","HTWater_out","T")] + energy_2_cac_ht / processed[d2df(system,"CAC_HT","HTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
         # For the LOC, we know the outlet (lower) temperature, we calculate the inlet temperature
-        processed[d2df(system,"LOC","LubOil_out","mdot")][:] = CONSTANTS[engine_type]["MFR_LO"]
         processed[d2df(system,"LOC","LubOil_in","T")] = processed[d2df(system,"LOC","LubOil_out","T")] + energy_2_loc / processed[d2df(system,"LOC","LubOil_out","mdot")] / CONSTANTS["General"]["CP_LO"]
+        # Now calculating the temperature of the air in the charge air cooler
+        processed[d2df(system, "CAC_HT", "Air_out", "T")] = processed[d2df(system, "Comp", "Air_out", "T")] - energy_2_cac_ht / processed[d2df(system,"Cyl","Air_in","mdot")] / CONSTANTS["General"]["CP_AIR"]
+        processed[d2df(system, "CAC_LT", "Air_out", "T")] = processed[d2df(system, "CAC_HT", "Air_out", "T")] - energy_2_cac_lt / processed[d2df(system, "Cyl", "Air_in", "mdot")] / CONSTANTS["General"]["CP_AIR"]
+        # Finally, we have the HRSG (for some cases)
+        if engine_type == "AuxEngines" or system in {"ME2", "ME3"}:
+            processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","T")] - processed[d2df(system,"HRSG","Mix_out","T")]) *
+                processed[d2df(system, "HRSG", "Mix_in", "mdot")] * processed[system+":CP_MIX"] /
+                (CONSTANTS["Steam"]["H_STEAM_VS"] - CONSTANTS["Steam"]["H_STEAM_LS"]))
     print("...done!")
     return processed
 
@@ -247,7 +282,40 @@ def mixtureComposition(composition,mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
     return mixture
 
 
+def coolingFlows(processed, CONSTANTS, engine_type):
+    print("Started calculating cooling flows for the {}...".format(engine_type))
+    # This function calculates the different flows related to the cooling systems of the main engines.
+    for system in CONSTANTS["General"]["NAMES"][engine_type]:
+        processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
+                       processed[d2df(system, "CAC_LT", "LTWater_in", "p")], CONSTANTS, engine_type)
+        processed[d2df(system, "JWC", "HTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
+                       processed[d2df(system, "JWC", "HTWater_in", "p")], CONSTANTS, engine_type)
+        processed.loc[:, d2df(system, "LOC", "LubOil_out", "mdot")] = CONSTANTS[engine_type]["MFR_LO"]
+    return processed
 
 
+def pumpFlow(rpm, pressure, CONSTANTS, engine_type):
+    "Engine driven cooling water pump HT/LT for ME. Inputs engine-rpm and gauge-pressure [bar] CW."
+    # The equation was derived from the pump diagram in the engine project manual at 500 rpm
+    # H = -0.0004 Q^2 + 0.0317 Q + 28.47
+    # pq-formula: ax^2 + bx + c = 0
+    # Affinity laws
+    #if pressure < 1:
+    #    print('Out of domain, P')
+    # The pump formula is for 500 rpm. So the pressure input must be scaled so
+    # it "fits" the right rpm using the affinity laws
+    static_head = CONSTANTS[engine_type]["STATIC_HEAD"]
+    H = (pressure / (9.81 * 1000) - static_head) * (CONSTANTS[engine_type]["RPM_DES"]/(rpm+1))**2
 
+    a = CONSTANTS[engine_type]["POLY_H_2_QDOT"][0]
+    b = CONSTANTS[engine_type]["POLY_H_2_QDOT"][1]
+    c = CONSTANTS[engine_type]["POLY_H_2_QDOT"][2] - H
+    # pq-formula, only the positive
+    Q = -b/(2*a) + ( (b**2) / ((2*a)**2) - (c / a) )**0.5
+
+    # The value which is calculated is for if the pump was running on 500 rpm
+    # Account for the affinity laws
+    Q_out = Q * (rpm/CONSTANTS[engine_type]["RPM_DES"]) * 1000 / 3600 # Also converting from m3/h to kg/s
+    Q_out[Q_out<0] = 1
+    return Q_out
 

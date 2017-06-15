@@ -87,8 +87,9 @@ header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
 
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
+CONSTANTS["filenames"] = filenames
 
-(dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, filenames["dataset_output_empty"])
+(dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"])
 
 # Running the pre-processing required for filling in the data structures:
 
@@ -99,8 +100,8 @@ processed = ppm.mainEngineProcessing(dataset_raw, processed, dict_structure, CON
 processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
 
 # Checking the consistency of the data
-cc.enginesCheck(processed, CONSTANTS, filenames)
-cc.missingValues(processed, dict_structure, filenames)
+cc.enginesCheck(processed, CONSTANTS)
+cc.missingValues(processed, dict_structure, CONSTANTS)
 
 # Assigning defined values to all flows for engines off
 
@@ -136,23 +137,22 @@ cc.missingValues(processed, dict_structure, filenames)
 
 import matplotlib
 matplotlib.style.use('ggplot')
+from helpers import d2df
 
 #%%
 
 k_1_3 = 927.27
 k_2_4 = 903.65
 
-ME1_FO = dataset_processed['ME1']['Cyl']['FuelPh_in']['mdot']
-ME2_FO = dataset_processed['ME2']['Cyl']['FuelPh_in']['mdot']
-ME3_FO = dataset_processed['ME3']['Cyl']['FuelPh_in']['mdot']
-ME4_FO = dataset_processed['ME4']['Cyl']['FuelPh_in']['mdot']
-AE1_FO = dataset_processed['AE1']['Cyl']['FuelPh_in']['mdot']
-AE2_FO = dataset_processed['AE2']['Cyl']['FuelPh_in']['mdot']
-AE3_FO = dataset_processed['AE3']['Cyl']['FuelPh_in']['mdot']
-AE4_FO = dataset_processed['AE4']['Cyl']['FuelPh_in']['mdot']
+ME1_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+ME2_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+ME3_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+ME4_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+AE1_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+AE2_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+AE3_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
+AE4_FO = processed[d2df('ME1','Cyl','FuelPh_in','mdot')]
 
-
-dataset_processed['AE1']['Cyl']['FuelPh_in']['mdot'].describe()
 
 
 FO1_flow = dataset_raw['FO BOOST 1 CONSUMPT:6165:m3/h:Average:900']/3.600*k_1_3
@@ -162,8 +162,8 @@ FO2_flow = dataset_raw['FO BOOST 2 CONSUMPT:6166:m3/h:Average:900']/3.600*k_2_4
 tot_ME13 = (ME1_FO + ME3_FO + AE1_FO) * 1000
 tot_ME24 = (ME2_FO + ME4_FO + AE2_FO + AE4_FO) * 1000
 
-tot_ME13_sel = tot_ME13[(dataset_status['AE1']['OnOff'] == 0)]
-FO1_flow_sel = FO1_flow[(dataset_status['AE1']['OnOff'] == 0)]
+tot_ME13_sel = tot_ME13[processed['AE1'+":"+"on"] == 0]
+FO1_flow_sel = FO1_flow[processed['AE1'+":"+"on"] == 0]
 #tot_ME13_sel = tot_ME13[(dataset_status['AE1']['OnOff'] == 0)]
 #FO1_flow_sel = FO1_flow[(dataset_status['AE1']['OnOff'] == 0)]
 tot_ME13_sel.plot()
