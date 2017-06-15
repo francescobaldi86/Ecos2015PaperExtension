@@ -9,3 +9,4 @@ Manuscript/*.synctex.gz
 Manuscript/*.bbl
 Manuscript/*.blg
 Data_Process/database_out_empty.h5
+Data_Process/check_report.txt
