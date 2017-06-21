@@ -103,7 +103,7 @@ def flowStructure():
                 structure["systems"][system]["units"].update({"HRSG": {}})
                 structure["systems"][system]["units"]["HRSG"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"},
                                           "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
-                structure["systems"][system]["units"]["HRSG"]["equations"] = ["MassBalance", "ConstantPressure", "ConstantTemperature"]
+                structure["systems"][system]["units"]["HRSG"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Auxiliary engines also have electric generators connected
             if system[0] == "A":
                 structure["systems"][system]["units"].update({"AG": {}})

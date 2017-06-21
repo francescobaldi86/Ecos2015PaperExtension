@@ -12,28 +12,37 @@ def enginesCheck(processed, CONSTANTS):
             on = processed[name+":"+"on"]
             tot = sum(on)
                 # Compressor outlet temperature must be higher than compressor inlet temperature
-            temp = sum(processed[d2df(name,"Comp","Air_out","T")][on] > processed[d2df(name,"Comp","Air_in","T")][on]) / tot * 100
-            text_file.write(name + " Compressor temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"Comp","Air_out","T")][on] >= processed[d2df(name,"Comp","Air_in","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " Compressor temperatures are consistent for " + str(temp) + " % of the datapoints \n")
                 # Exhaust temperature should be higher closer to the engine exhaust valve
-            temp = sum(processed[d2df(name,"Cyl","EG_out","T")][on] > processed[d2df(name,"Turbine","Mix_in","T")][on]) / tot * 100
-            text_file.write(name + " Exhaust temperatures (Cyl->TC are consistent for " + str(temp) + " % of the datapoints \n")
-            temp = sum(processed[d2df(name,"Turbine","Mix_in","T")][on] > processed[d2df(name,"Turbine","Mix_out","T")][on]) / tot * 100
-            text_file.write(name + " Turbine temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"Cyl","EG_out","T")][on] >= processed[d2df(name,"Turbine","Mix_in","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " Exhaust temperatures (Cyl->TC are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"Turbine","Mix_in","T")][on] >= processed[d2df(name,"Turbine","Mix_out","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " Turbine temperatures are consistent for " + str(temp) + " % of the datapoints \n")
                 # Checking the consistency of the LOC temperatures
-            temp = sum(processed[d2df(name,"LOC","LubOil_in","T")][on] > processed[d2df(name,"LOC","LubOil_out","T")][on]) / tot * 100
-            text_file.write(name + " LOC temperatures (oil side) are consistent for " + str(temp) + " % of the datapoints \n")
-            temp = sum(processed[d2df(name,"LOC","LTWater_out","T")][on] > processed[d2df(name,"LOC","LTWater_in","T")][on]) / tot * 100
-            text_file.write(name + " LOC temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"LOC","LubOil_in","T")][on] >= processed[d2df(name,"LOC","LubOil_out","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " LOC temperatures (oil side) are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"LOC","LTWater_out","T")][on] >= processed[d2df(name,"LOC","LTWater_in","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " LOC temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
                 # Checking the consistency of the CAC_LT temperatures
-            temp = sum(processed[d2df(name,"CAC_LT","Air_in","T")][on] > processed[d2df(name,"CAC_LT","Air_out","T")][on]) / tot * 100
-            text_file.write(name + " CAC_LT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
-            temp = sum(processed[d2df(name,"CAC_LT","LTWater_out","T")][on] > processed[d2df(name,"CAC_LT","LTWater_in","T")][on]) / tot * 100
-            text_file.write(name + " CAC_LT temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"CAC_LT","Air_in","T")][on] >= processed[d2df(name,"CAC_LT","Air_out","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " CAC_LT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"CAC_LT","LTWater_out","T")][on] >= processed[d2df(name,"CAC_LT","LTWater_in","T")][on]) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " CAC_LT temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
             # Checking the consistency of the CAC_HT temperatures
             temp = sum(processed[d2df(name, "CAC_HT", "Air_in", "T")][on] >= processed[d2df(name, "CAC_HT", "Air_out", "T")][on]) / tot * 100
-            text_file.write(name + " CAC_HT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " CAC_HT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
             temp = sum(processed[d2df(name, "CAC_HT", "HTWater_out", "T")][on] >= processed[d2df(name, "CAC_HT", "HTWater_in", "T")][on]) / tot * 100
-            text_file.write(name + " CAC_HT temperatures (HT water side) are consistent for " + str(temp) + " % of the datapoints \n")
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn+name + " CAC_HT temperatures (HT water side) are consistent for " + str(temp) + " % of the datapoints \n")
     text_file.close()
     print("...done!")
 
@@ -60,12 +69,15 @@ def massBalance(processed, dict_structure, CONSTANTS):
     print("Started checking mass balances...")
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
-            balance = pd.Series()
+            balance = pd.Series(index=processed.index)
+            balance[:] = 0
+            max_value = 0
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
                 if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF" , "IPF"}:
-                    balance = balance + processed[d2df(system,unit,flow,"mdot")]
-            balance_occ = np.sum(balance[processed[system+":on"]] != 0) / len(balance[processed[system+":on"]]) * 100
-            balance_ave = np.sum(balance[processed[system+":on"]]) / len(balance[processed[system+":on"]])
+                    balance = balance + processed[d2df(system,unit,flow,"mdot")] * (2 * float("out" not in flow) - 1)
+                    max_value = max(max_value,max(processed[d2df(system,unit,flow,"mdot")]))
+            balance_occ = np.sum(balance[processed[system+":on"]] < 0.001*max_value) / max(1,len(balance[processed[system+":on"]])) * 100
+            balance_ave = np.sum(balance[processed[system+":on"]]) / max(1,len(balance[processed[system+":on"]]))
             text_file.write("Mass balance for {}_{} unit is not respected {}% of the times, with {} average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()
@@ -78,11 +90,14 @@ def energyBalance(processed, dict_structure, CONSTANTS):
     print("Started checking the energy balances...")
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
-            balance = pd.Series()
+            balance = pd.Series(index=processed.index)
+            balance[:] = 0
+            max_value = 0
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
-                balance = balance + processed[d2df(system,unit,flow,"Edot")]
-            balance_occ = np.sum(balance[processed[system+":on"]] != 0) / len(balance[processed[system+":on"]]) * 100
-            balance_ave = np.sum(balance[processed[system+":on"]]) / len(balance[processed[system+":on"]])
-            text_file.write("Mass balance for {}_{} unit is not respected {}% of the times, with {} average error".format(system, unit, str(balance_occ), str(balance_ave)))
+                balance = balance + processed[d2df(system,unit,flow,"Edot")] * (2 * float("out" not in flow) - 1)
+                max_value = max(max_value, max(processed[d2df(system, unit, flow, "Edot")]))
+            balance_occ = np.sum(balance[processed[system+":on"]] < 0.001*max_value) / max(1,len(balance[processed[system+":on"]])) * 100
+            balance_ave = np.sum(balance[processed[system+":on"]]) / max(1,len(balance[processed[system+":on"]]))
+            text_file.write("Energy balance for {}_{} unit is respected {}% of the times, with {} average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()

@@ -32,7 +32,7 @@ def mainEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
 
 
 def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
-    print("Started reading main engines raw values...", end="")
+    print("Started reading main engines raw values...", end="", flush=True)
     # This function only reads existing series. It does not do any pre-processing action.
     for system in CONSTANTS["General"]["NAMES"]["MainEngines"]:
         # Reading main engines exhaust gas temperature, TC inlet and outlet
@@ -73,7 +73,7 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
 
 
 def mainEngineFuelFlowCalculation(raw, processed, CONSTANTS, hd):
-    print("Started calculating main engine fuel flows...", end="")
+    print("Started calculating main engine fuel flows...", end="", flush=True)
     # This function calculates the engine
     for system in CONSTANTS["General"]["NAMES"]["MainEngines"]:
         # This function calculates the fuel flow of the main engines
@@ -90,7 +90,7 @@ def mainEngineFuelFlowCalculation(raw, processed, CONSTANTS, hd):
 
 
 def mainEnginePowerCalculation(processed, CONSTANTS):
-    print("Started calculating main engine power...", end="")
+    print("Started calculating main engine power...", end="", flush=True)
     # This function calculates the Power of the engine starting from the efficiency of the engine,
     # which is calcualted starting from other available data
     for system in CONSTANTS["General"]["NAMES"]["MainEngines"]:
@@ -115,7 +115,7 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
 
 
 def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
-    print("Started calculating main engine air and exhaust flows...", end="")
+    print("Started calculating main engine air and exhaust flows...", end="", flush=True)
     # This function calculates the different air and exhaust gas flows in the main engines, taking into account the
     # presence of air bypass and exhaust wastegate valves
     for system in CONSTANTS["General"]["NAMES"]["MainEngines"]:
@@ -128,6 +128,11 @@ def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
         T_Comp_out_iso = processed[d2df(system,"Comp","Air_in","T")] * beta_comp**((CONSTANTS["General"]["K_AIR"]-1)/CONSTANTS["General"]["K_AIR"])
         processed[d2df(system,"Comp","Air_out","T")] = processed[d2df(system,"Comp","Air_in","T")] + (
             T_Comp_out_iso - processed[d2df(system,"Comp","Air_in","T")]) / comp_isentropic_efficiency
+        #### NOTE: HERE WE MAKE THE ASSUMPTION THAT THE COMPRESSOR OUTLET TEMPERATURE CANNOT BE LOWER THAN THE CYLINDER INLET TEMPERATURE
+        processed.loc[processed[d2df(system, "Comp", "Air_out", "T")] < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(
+                system, "Comp", "Air_out", "T")] = \
+            processed.loc[processed[d2df(system, "Comp", "Air_out", "T")] < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(
+                system, "Cyl", "Air_in", "T")]
         # Calculating the air inflow aspired by the cylinder: calculated as inlet air density times the maximum volume,
         # times the engine speed
         processed[d2df(system,"Cyl","Air_in","mdot")] = CONSTANTS["MainEngines"]["V_MAX"] * (

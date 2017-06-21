@@ -6,7 +6,7 @@ import preprocessingO as ppo
 from helpers import d2df
 
 def propertyCalculator(processed, dict_structure, CONSTANTS):
-    print("Started calculating flow properties...")
+    print("Started calculating flow properties...", end="", flush=True)
     df_index = processed.index
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
@@ -89,7 +89,7 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
 
 
 def eYergyAnalysis(processed,T0):
-    ("Started with the calculation of energy and exergy flows...")
+    print("Started with the calculation of energy and exergy flows...", end="", flush=True)
     for system in processed:
         for unit in processed[system]:
             for flow in processed[system][unit]:

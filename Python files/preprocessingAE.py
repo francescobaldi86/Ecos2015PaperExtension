@@ -30,7 +30,7 @@ def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
 
 
 def readAuxEnginesExistingValues(raw, processed,CONSTANTS,hd):
-    print("Started reading raw values for auxiliary engines...", end="")
+    print("Started reading raw values for auxiliary engines...", end="", flush=True)
     for system in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         # Reading main engines exhaust gas temperature, TC inlet and outlet
         processed[d2df(system,"Turbine","Mix_in","T")] = raw[hd[system + "-TC_EG_T_IN1"]] + 273.15
@@ -47,9 +47,10 @@ def readAuxEnginesExistingValues(raw, processed,CONSTANTS,hd):
         processed[d2df(system,"Cyl","FuelPh_in","T")] = raw[hd[system + "-CYL_FUEL_T_IN"]] + 273.15
         # Reading charge air temperature.
         processed[d2df(system,"CAC_LT","Air_out","T")] = raw[hd[system + "-CAC_AIR_T_OUT"]] + 273.15
+        # Reading power output
         processed[d2df(system,"AG","Power_out","Wdot")] = raw[hd[system + "_POWER_Wdot_OUT"]]
         # Reading Engine rpm
-        processed[d2df(system, "Cyl", "Power_out", "omega")] = raw[hd[system + "__RPM_"]]
+        # processed[d2df(system, "Cyl", "Power_out", "omega")] = raw[hd[system + "__RPM_"]]
         # Reading the pressure in the cooling flows
         processed[d2df(system, "CAC_LT", "LTWater_in", "p")] = (raw[hd[system + "-LT-CAC_FW_P_IN"]] + 1.01325) * 100000
         processed[d2df(system, "JWC", "HTWater_in", "p")] = raw[hd[system + "-HT-JWC_FW_P_IN"]] + 273.15
@@ -64,20 +65,20 @@ def readAuxEnginesExistingValues(raw, processed,CONSTANTS,hd):
 
 
 def auxEnginePowerCalculation(processed, CONSTANTS):
-    print("Started calculating auxiliary engine power...", end="")
+    print("Started calculating auxiliary engine power...", end="", flush=True)
     # Calculating the power of the auxiliary engines
     for system in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         load = processed[d2df(system,"AG","Power_out","Wdot")] / CONSTANTS["AuxEngines"]["MCR"]
         eta_AG =  CONSTANTS["AuxEngines"]["AG"]["ETA_DES"] - CONSTANTS["AuxEngines"]["AG"]["A"] * np.exp(
             -CONSTANTS["AuxEngines"]["AG"]["k"] * (load))
         processed[d2df(system,"AG","Power_in","Wdot")] = processed[d2df(system,"AG","Power_out","Wdot")] / eta_AG
-        processed[d2df(system,"AG","Losses","Wdot")] = processed[d2df(system,"AG","Power_in","Wdot")] - processed[d2df(system,"AG","Power_out","Wdot")]
+        processed[d2df(system,"AG","Losses","Qdot")] = processed[d2df(system,"AG","Power_in","Wdot")] - processed[d2df(system,"AG","Power_out","Wdot")]
         processed[d2df(system,"Cyl","Power_out","Wdot")] = processed[d2df(system,"AG","Power_in","Wdot")]
     print("...done!")
     return processed
 
 def auxEngineFuelFlowCalculation(raw, processed, CONSTANTS):
-    print("Started calculating auxiliary engine fuel flows...", end="")
+    print("Started calculating auxiliary engine fuel flows...", end="", flush=True)
     # Proceeding with the auxiliary engines
     for system in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         # First we calculate the ISO break specific fuel consumption (BSFC)
@@ -92,7 +93,7 @@ def auxEngineFuelFlowCalculation(raw, processed, CONSTANTS):
 
 
 def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
-    print("Started calculating auxiliary engine air and exhaust flows...", end="")
+    print("Started calculating auxiliary engine air and exhaust flows...", end="", flush=True)
     # This function calculates the different air and exhaust gas flows in the main engines, taking into account the
     # presence of air bypass and exhaust wastegate valves
     for system in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
@@ -104,11 +105,16 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
         T_Comp_out_iso = processed[d2df(system, "Comp", "Air_in", "T")] * beta_comp ** ((CONSTANTS["General"]["K_AIR"] - 1) / CONSTANTS["General"]["K_AIR"])
         processed[d2df(system, "Comp", "Air_out", "T")] = processed[d2df(system, "Comp", "Air_in", "T")] + (
             T_Comp_out_iso - processed[d2df(system, "Comp", "Air_in", "T")]) / comp_isentropic_efficiency
+        #### NOTE: HERE WE MAKE THE ASSUMPTION THAT THE COMPRESSOR OUTLET TEMPERATURE CANNOT BE LOWER THAN THE CYLINDER INLET TEMPERATURE
+        processed.loc[processed[d2df(system, "Comp", "Air_out", "T")] < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(
+                system, "Comp", "Air_out", "T")] = \
+            processed.loc[processed[d2df(system, "Comp", "Air_out", "T")] < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(
+                    system, "Cyl", "Air_in", "T")]
         # Calculating the air inflow aspired by the cylinder: calculated as inlet air density times the maximum volume,
         # times the engine speed
         processed[d2df(system,"Cyl","Air_in","mdot")] = CONSTANTS["AuxEngines"]["V_MAX"] * (
             processed[d2df(system,"Comp","Air_out","p")]) / (
-            CONSTANTS["General"]["R_AIR"] * processed[d2df(system,"CAC_LT","Air_out","T")]) * (
+            CONSTANTS["General"]["R_AIR"] * processed[d2df(system,"Cyl","Air_in","T")]) * (
             processed[d2df(system,"Cyl","Power_out","omega")] / 60 / 2 * CONSTANTS["General"]["ETA_VOL"]) * (
             CONSTANTS["AuxEngines"]["N_CYL"])
         # Exhaust gas flow after the cylinders
@@ -121,18 +127,18 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
         # processed[d2df(system, "BPsplit", "BP_out", "mdot")] = (processed[d2df(system, "Cyl", "Air_in", "mdot")] * CONSTANTS["General"]["CP_AIR"] * dT_comp -
         #     processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"] * dT_turb * CONSTANTS["MainEngines"]["ETA_MECH_TC"]) / (
         #     CONSTANTS["General"]["CP_AIR"] * (CONSTANTS["MainEngines"]["ETA_MECH_TC"] * dT_turb - dT_comp))
-        processed.loc[:, d2df(system, "BPsplit", "BP_out", "mdot")] = 0
+        processed.loc[:, d2df(system, "BPmerge", "BP_in", "mdot")] = 0
         # The air mass flow going through the compressor is equal to the sum of the air flow through the bypass valve and
         # to the cylinders
-        processed[d2df(system,"BPsplit","Air_in","mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","Air_in","mdot")]
+        processed[d2df(system,"BPsplit","Air_in","mdot")] = processed[d2df(system, "BPmerge", "BP_in", "mdot")] + processed[d2df(system,"Cyl","Air_in","mdot")]
         # The flow through the turbine is equal to the sum of the bypass flow and the exhaust coming from the cylinders
         processed[d2df(system,"BPmerge","Mix_out","mdot")] = processed[d2df(system,"BPmerge","BP_in","mdot")] + processed[d2df(system,"Cyl","EG_out","mdot")]
         # Calculating the temperature of the mixture after the merge between bypass and exhaust gas from the cylinders
-        processed[d2df(system,"Cyl","EG_out","T")] = ((processed[d2df(system,"BPmerge","EG_in","mdot")] * CONSTANTS["General"]["CP_EG"] +
+        processed[d2df(system,"Cyl","EG_out","T")] = ((processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"] +
             processed[d2df(system,"BPmerge","BP_in","mdot")] * CONSTANTS["General"]["CP_AIR"]) * processed[d2df(system,"Turbine","Mix_in","T")] -
-            processed[d2df(system,"BPmerge","BP_in","mdot")] * CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"BPmerge","BP_in","T")]) / (
+            processed[d2df(system,"BPmerge","BP_in","mdot")] * CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "Comp", "Air_out", "T")]) / (
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"])
-        processed[system + ":CP_MIX"] = (processed[d2df(system, "BPsplit", "BP_out", "mdot")] * CONSTANTS["General"]["CP_AIR"] +
+        processed[system + ":CP_MIX"] = (processed[d2df(system, "BPmerge", "BP_in", "mdot")] * CONSTANTS["General"]["CP_AIR"] +
             processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_AIR"]) / processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
         # processed[system + ":EG_Composition"] = ppo.mixtureComposition(
         #     processed[d2df(system, "Cyl", "Air_in", "mdot")],

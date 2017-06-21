@@ -8,7 +8,7 @@ import CoolProp.CoolProp as cp
 
 
 def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
-    print("Started filling the gaps in the dataframe...", end="")
+    print("Started filling the gaps in the dataframe...", end="", flush=True)
     if system_type == "MainEngines":
         system_set = {"ME1", "ME2", "ME3", "ME4"}
     elif system_type == "AuxEngines":
@@ -172,6 +172,11 @@ def assumptions(raw, processed, CONSTANTS, hd):
         if system in {"AE1", "AE2", "AE3", "AE4", "ME2", "ME3"}:
             processed[d2df(system, "HRSG", "Steam_in", "T")][:] = cp.PropsSI('T', 'P', hrsg_pressure_assumption, 'Q', 0.5, "Water")
             processed[d2df(system, "HRSG", "Steam_in", "p")][:] = hrsg_pressure_assumption
+            processed[d2df(system, "HRSG", "Steam_out", "T")] = processed[d2df(system, "HRSG", "Steam_in", "T")]
+            processed[d2df(system, "HRSG", "Steam_out", "p")] = processed[d2df(system, "HRSG", "Steam_in", "p")]
+        if system in {"AE1", "AE2", "AE3", "AE4"}:
+            processed[d2df(system, "AG", "Losses", "T")][:] = 100 + 273.15
+            processed[d2df(system, "Cyl", "Power_out", "omega")][:] = 750
     # Others
     processed["T_0"] = raw[hd["SEA_SW_T_"]] + 273.15
     processed[d2df("Other","SWC13","SeaWater_out","T")] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
@@ -189,7 +194,7 @@ def engineStatusCalculation(type, raw, processed, CONSTANTS, hd):
 
 
 def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
-    print("Started calculating analysis for {} cooling systems...".format(engine_type), end="")
+    print("Started calculating analysis for {} cooling systems...".format(engine_type), end="", flush=True)
     # This function calculates the different flows related to the cooling systems of the main engines.
     for system in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
@@ -342,7 +347,7 @@ def mixtureCompositionNew(mdot_tot,mdot_fuel,temp_fuel,CONSTANTS):
 
 
 def coolingFlows(processed, CONSTANTS, engine_type):
-    print("Started calculating cooling flows for the {}...".format(engine_type))
+    print("Started calculating cooling flows for the {}...".format(engine_type), end="", flush=True)
     # This function calculates the different flows related to the cooling systems of the main engines.
     for system in CONSTANTS["General"]["NAMES"][engine_type]:
         processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
@@ -350,6 +355,7 @@ def coolingFlows(processed, CONSTANTS, engine_type):
         processed[d2df(system, "JWC", "HTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
                        processed[d2df(system, "JWC", "HTWater_in", "p")], CONSTANTS, engine_type)
         processed.loc[:, d2df(system, "LOC", "LubOil_out", "mdot")] = CONSTANTS[engine_type]["MFR_LO"]
+    print("done!")
     return processed
 
 
