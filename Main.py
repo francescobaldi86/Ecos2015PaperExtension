@@ -24,8 +24,11 @@
 # - EXERGY ANALYSIS
 
 
-input_run = "yes"
-datareading_run = "yes"
+processed_data_preparation = "no"
+main_engines_analysis = "yes"
+aux_engines_analysis = "yes"
+energy_analysis = "yes"
+
 
 
 
@@ -41,7 +44,6 @@ import pandas as pd
 project_path = os.getcwd()
 path_files = project_path + os.sep + 'Python files' + os.sep
 sys.path.append(path_files)
-
 # Loading local modules
 import input
 import plotting as plot
@@ -54,57 +56,52 @@ import preprocessingME as ppm
 import preprocessingO as ppo
 import energyanalysis as ea
 
-
-# Setting the filenames
-filenames = input.filenames(project_path) # Note: this is just a test
-
-
 #%%
 ######################################
 ## DATA READING			##
 ######################################
-
 # Responsible: FA
-
-
-
-
-
+# Setting the filenames
+filenames = input.filenames(project_path) # Note: this is just a test
+# Reading the input data (measurements)
 dataset_raw = pd.read_hdf(filenames["dataset_raw"] ,'table')
+# load the dictionary with the header names
 header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
-#%%
-######################################
-## DATA CLEANING			##
-######################################
 
-# Responsible: FA
 
 ######################################
 ## DATA PROCESSING		##
 ######################################
 # Responsible: FB
 #%%
-
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
 CONSTANTS["filenames"] = filenames
-
-(dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"])
+(dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"], processed_data_preparation)
 
 # Running the pre-processing required for filling in the data structures:
 
 # First updating the "CONSTANTS" dictionary with the some additional information
 processed = ppo.assumptions(dataset_raw, processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
-processed = ppm.mainEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
-processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
+if main_engines_analysis == "yes":
+    processed = ppm.mainEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
+if aux_engines_analysis == "yes":
+    processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
 
-# Checking the consistency of the data
-cc.enginesCheck(processed, CONSTANTS)
-cc.missingValues(processed, dict_structure, CONSTANTS)
+
 
 # Assigning defined values to all flows for engines off
-processed = ea.propertyCalculator(processed, dict_structure, CONSTANTS)
+if energy_analysis == "yes":
+    processed = ea.propertyCalculator(processed, dict_structure, CONSTANTS)
+
+######################################
+## RESULTS CHECK                	##
+######################################
+cc.enginesCheck(processed, CONSTANTS)
+cc.missingValues(processed, dict_structure, CONSTANTS)
+cc.massBalance(processed, dict_structure, CONSTANTS)
+cc.energyBalance(processed, dict_structure, CONSTANTS)
 #%%
 ######################################
 ## EXPLORATORY DATA ANALYSIS	##

@@ -1,5 +1,6 @@
 import numpy as np
 import pdb
+import CoolProp.CoolProp as cp
 
 
 def constantsSetting():
@@ -15,7 +16,8 @@ def constantsSetting():
 def general():
     # GENERAL CONSTANTS
     output = {}
-    output["R_AIR"] = 8314.0 / 29 # Air gas constant
+    output["R_0"] = 8314.0 # Ideal gas constant, in [J/mol*K]
+    output["R_AIR"] = 8314.0 / 29 # Air gas constant, in [kJ/kg*K]
     output["K_AIR"] = 1.4   # Air specific heat ratio
     output["CP_AIR"] = 1.01   # Air specific heat, in [kJ/kgK]
     output["CP_EG"] = 1.10   # EG specific heat, in [kJ/kgK]
@@ -27,6 +29,7 @@ def general():
     output["AIR_STOIC"] = 14.7  # Stoichiometric ratio fuel/air for Diesel-type fuels
     output["ETA_VOL"] = 0.97 # Assumption about volumetric efficiency
     output["P_ATM"] = 101325 # Assumption on atmospheric pressure
+    output["T_STANDARD"] = 323 # Standard temperature, for the calculation of the exergy in the exhaust gas
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
     output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
     output["PROPERTY_LIST"] = {}
@@ -40,6 +43,11 @@ def general():
     output["MDO"]["HHV"] = output["MDO"]["LHV"] * (1.0406 + 0.0144 * output["MDO"]["H"] / output["MDO"]["C"] * 12) * 1.01  # Calculated Higher heating value
     output["HFO"] = {"LHV": 40360.0, "CP": 1.8, "C": 0.89, "H": 0.11}
     output["HFO"]["HHV"] = output["HFO"]["LHV"] * (1.0406 + 0.0144 * output["HFO"]["H"] / output["HFO"]["C"] * 12) * 1.01  # Calculated Higher heating value
+    output["NASA_POLY"] = {"N2":  [0.03298677E+02,  0.14082404E-02, -0.03963222E-04,  0.05641515E-07, -0.02444854E-10, -0.10208999E+04,  0.03950372E+02],
+                 "O2":  [3.78245636E+00, -2.99673416E-03,  9.84730201E-06, -9.68129509E-09,  3.24372837E-12, -1.06394356E+03,  3.65767573E+00],
+                 "CO2": [2.35677352E+00,  8.98459677E-03, -7.12356269E-06,  2.45919022E-09, -1.43699548E-13, -4.83719697E+04,  9.90105222E+00],
+                 "H2O": [4.19864056E+00, -2.03643410E-03,  6.52040211E-06, -5.48797062E-09,  1.77197817E-12, -3.02937267E+04, -8.49032208E-01]}
+    output["MOLAR_MASSES"] = {"N2": 28, "O2": 32, "CO2": 44, "H2O": 18}
     return output
 
 def steamProperties():

@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from helpers import d2df
 
 def enginesCheck(processed, CONSTANTS):
@@ -25,9 +26,14 @@ def enginesCheck(processed, CONSTANTS):
             text_file.write(name + " LOC temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
                 # Checking the consistency of the CAC_LT temperatures
             temp = sum(processed[d2df(name,"CAC_LT","Air_in","T")][on] > processed[d2df(name,"CAC_LT","Air_out","T")][on]) / tot * 100
-            text_file.write(name + " CAC-LT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
-            temp = sum(processed[d2df(name,"CAC_LT","LTWater_out","T")][on] > processed[d2df(name,"LOC","LTWater_in","T")][on]) / tot * 100
-            text_file.write(name + " CAC-LT temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
+            text_file.write(name + " CAC_LT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name,"CAC_LT","LTWater_out","T")][on] > processed[d2df(name,"CAC_LT","LTWater_in","T")][on]) / tot * 100
+            text_file.write(name + " CAC_LT temperatures (LT water side) are consistent for " + str(temp) + " % of the datapoints \n")
+            # Checking the consistency of the CAC_HT temperatures
+            temp = sum(processed[d2df(name, "CAC_HT", "Air_in", "T")][on] >= processed[d2df(name, "CAC_HT", "Air_out", "T")][on]) / tot * 100
+            text_file.write(name + " CAC_HT temperatures (air side) are consistent for " + str(temp) + " % of the datapoints \n")
+            temp = sum(processed[d2df(name, "CAC_HT", "HTWater_out", "T")][on] >= processed[d2df(name, "CAC_HT", "HTWater_in", "T")][on]) / tot * 100
+            text_file.write(name + " CAC_HT temperatures (HT water side) are consistent for " + str(temp) + " % of the datapoints \n")
     text_file.close()
     print("...done!")
 
@@ -55,15 +61,28 @@ def massBalance(processed, dict_structure, CONSTANTS):
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
             balance = pd.Series()
-            flow_ref = 0
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
                 if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF" , "IPF"}:
                     balance = balance + processed[d2df(system,unit,flow,"mdot")]
-                    flow_ref = max(flow_ref, processed[d2df(system,unit,flow,"mdot")].max())
-            if balance.sum() > 0.0001 * len(balance) * flow_ref:
-                text_file.write("The mass balance is not respected for the {}_{} unit".format(system, unit))
+            balance_occ = np.sum(balance[processed[system+":on"]] != 0) / len(balance[processed[system+":on"]]) * 100
+            balance_ave = np.sum(balance[processed[system+":on"]]) / len(balance[processed[system+":on"]])
+            text_file.write("Mass balance for {}_{} unit is not respected {}% of the times, with {} average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()
 
 
-#def energyBalance(processed, dict_structure, CONSTANTS, system, unit):
+def energyBalance(processed, dict_structure, CONSTANTS):
+    # This function checks that the mass balance is respected
+    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
+    text_file.write("\n *** CHECKING THE ENERGY BALANCE *** \n")
+    print("Started checking the energy balances...")
+    for system in dict_structure["systems"]:
+        for unit in dict_structure["systems"][system]["units"]:
+            balance = pd.Series()
+            for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                balance = balance + processed[d2df(system,unit,flow,"Edot")]
+            balance_occ = np.sum(balance[processed[system+":on"]] != 0) / len(balance[processed[system+":on"]]) * 100
+            balance_ave = np.sum(balance[processed[system+":on"]]) / len(balance[processed[system+":on"]])
+            text_file.write("Mass balance for {}_{} unit is not respected {}% of the times, with {} average error".format(system, unit, str(balance_occ), str(balance_ave)))
+    print("...done!")
+    text_file.close()

@@ -31,15 +31,22 @@
 
 import pandas as pd
 from helpers import d2df
+import os
 
-def structurePreparation(CONSTANTS, index, empty_dataset_filename):
+def structurePreparation(CONSTANTS, index, empty_dataset_filename, data_structure_preparation):
     dict_structure = flowStructure()  # Here we initiate the structure fields
+
     try:
         processed = pd.read_hdf(empty_dataset_filename, 'empty_dataset')
-        dict_structure = flowPreparationSimplified(dict_structure, index, CONSTANTS)
+        if data_structure_preparation == "no":
+            dict_structure = flowPreparationSimplified(dict_structure, index, CONSTANTS)
+        elif data_structure_preparation == "yes":
+            os.remove(empty_dataset_filename)
+        else:
+            print("The data_structure_preparation value should either be yes or no")
     except FileNotFoundError:
         (dict_structure, processed) = flowPreparation(dict_structure, index, CONSTANTS)  # Here we create the appropriate empty data series for each field
-        processed.to_hdf(empty_dataset_filename, "empty_dataset", format='table', mode='w')
+        processed.to_hdf(empty_dataset_filename, "empty_dataset", format='fixed', mode='w')
     dict_structure = streamsAssignment(dict_structure)
     dict_structure = connectionAssignment(dict_structure)
     processed = generalStatus(processed, dict_structure)  # Here we simply initiate the "status" structure
@@ -47,12 +54,13 @@ def structurePreparation(CONSTANTS, index, empty_dataset_filename):
 
 
 def flowStructure():
-    print("Started preparing the dataset_processed multi-level dictionary...")
+    print("Started preparing the dataset_processed multi-level dictionary...", end="")
     structure = {"systems": {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}}
     for system in structure["systems"]:
         structure["systems"][system]["equations"] = {}
         if system[1] == "E":  # This basically means that this operation is only done if the system is an engine
-            structure["systems"][system]["units"] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
+            structure["systems"][system]["units"] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "BPvalve": {},
+                                                     "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {}}
             # Compressor
             structure["systems"][system]["units"]["Comp"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
             structure["systems"][system]["units"]["Comp"]["equations"] = ["MassBalance"]
@@ -61,7 +69,10 @@ def flowStructure():
             structure["systems"][system]["units"]["BPsplit"]["equations"] = ["MassBalance", "ConstantPressure", "ConstantTemperature"]
             # Bypass Merge
             structure["systems"][system]["units"]["BPmerge"]["flows"] = {"EG_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "BP_in": {"type": "CPF"}}
-            structure["systems"][system]["units"]["BPmerge"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["BPmerge"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Bypass Valve
+            structure["systems"][system]["units"]["BPvalve"]["flows"] = {"BP_in": {"type": "CPF"}, "BP_out": {"type": "CPF"}}
+            structure["systems"][system]["units"]["BPvalve"]["equations"] = ["MassBalance", "ConstantTemperature"]
             # Turbine
             structure["systems"][system]["units"]["Turbine"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}}  # Turbocharger turbine
             structure["systems"][system]["units"]["Turbine"]["equations"] = ["MassBalance"]
@@ -92,7 +103,7 @@ def flowStructure():
                 structure["systems"][system]["units"].update({"HRSG": {}})
                 structure["systems"][system]["units"]["HRSG"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"},
                                           "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
-                structure["systems"][system]["units"]["HRSG"]["equations"] = ["MassBalance", "ConstantPressure"]
+                structure["systems"][system]["units"]["HRSG"]["equations"] = ["MassBalance", "ConstantPressure", "ConstantTemperature"]
             # Auxiliary engines also have electric generators connected
             if system[0] == "A":
                 structure["systems"][system]["units"].update({"AG": {}})
@@ -164,7 +175,7 @@ def streamsAssignment(dict_structure):
 
 
 def flowPreparation(structure, database_index, CONSTANTS):
-    print("Start preparing the Pandas dataframe with all inputs...")
+    print("Start preparing the Pandas dataframe with all inputs...", end="")
     structure["property_list"] = []
     dataframe = pd.DataFrame(index=database_index)
     for system in structure["systems"]:
@@ -183,7 +194,7 @@ def flowPreparation(structure, database_index, CONSTANTS):
 
 
 def flowPreparationSimplified(structure, database_index, CONSTANTS):
-    print("Start preparing the Pandas dataframe with all inputs...")
+    print("Start preparing the Pandas dataframe with all inputs...", end="")
     structure["property_list"] = []
     for system in structure["systems"]:
         for unit in structure["systems"][system]["units"]:
@@ -200,7 +211,7 @@ def flowPreparationSimplified(structure, database_index, CONSTANTS):
 
 
 def connectionAssignment(structure):
-    print("Start assigning connections between components...")
+    print("Start assigning connections between components...", end="")
     for name in structure["systems"]:
         if name[1] == "E":  # This basically means that this operation is only done if the system is an engine
             # The compressor is connected to the BP valve
@@ -227,9 +238,16 @@ def connectionAssignment(structure):
             # The CAC-HT cooler water is connected to the JWC
             structure["systems"][name]["units"]["CAC_HT"]["flows"]["HTWater_in"]["Connections"] = [name + ":" + "JWC" + ":" + "HTWater_out"]
             structure["systems"][name]["units"]["JWC"]["flows"]["HTWater_out"]["Connections"] = [name + ":" + "CAC_HT" + ":" + "HTWater_in"]
+            # The oil out from the lub oil cooler is connected to the engine inlet, and vice versa
+            structure["systems"][name]["units"]["LOC"]["flows"]["LubOil_in"]["Connections"] = [name + ":" + "Cyl" + ":" + "LubOil_out"]
+            structure["systems"][name]["units"]["Cyl"]["flows"]["LubOil_out"]["Connections"] = [name + ":" + "LOC" + ":" + "LubOil_in"]
+            structure["systems"][name]["units"]["LOC"]["flows"]["LubOil_out"]["Connections"] = [name + ":" + "Cyl" + ":" + "LubOil_in"]
+            structure["systems"][name]["units"]["Cyl"]["flows"]["LubOil_in"]["Connections"] = [name + ":" + "LOC" + ":" + "LubOil_out"]
             # The BP split is also connected to the BP merge
-            structure["systems"][name]["units"]["BPsplit"]["flows"]["BP_out"]["Connections"] = [name + ":" + "BPmerge" + ":" + "BP_in"]
-            structure["systems"][name]["units"]["BPmerge"]["flows"]["BP_in"]["Connections"] = [name + ":" + "BPsplit" + ":" + "BP_out"]
+            structure["systems"][name]["units"]["BPsplit"]["flows"]["BP_out"]["Connections"] = [name + ":" + "BPvalve" + ":" + "BP_in"]
+            structure["systems"][name]["units"]["BPvalve"]["flows"]["BP_in"]["Connections"] = [name + ":" + "BPsplit" + ":" + "BP_out"]
+            structure["systems"][name]["units"]["BPmerge"]["flows"]["BP_in"]["Connections"] = [name + ":" + "BPvalve" + ":" + "BP_out"]
+            structure["systems"][name]["units"]["BPvalve"]["flows"]["BP_out"]["Connections"] = [name + ":" + "BPmerge" + ":" + "BP_in"]
             if name[0] == "A" or name[2] == "2" or name[2] == "3":
                 # The HRSG inlet is connected to the engine turbine outlet
                 structure["systems"][name]["units"]["HRSG"]["flows"]["Mix_in"]["Connections"] = [name + ":" + "Turbine" + ":" + "Mix_out"]
@@ -242,7 +260,7 @@ def connectionAssignment(structure):
 
 
 def generalStatus(processed, structure):
-    print("Started initializing the --status-- dataset...")
+    print("Started initializing the --status-- dataset...", end="")
     for system in structure["systems"]:
         onoff_ID = system + ":" + "on"
         load_ID = system + ":" + "load"
