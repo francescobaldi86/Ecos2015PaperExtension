@@ -4,6 +4,30 @@ import numpy as np
 import pandas as pd
 import preprocessingO as ppo
 from helpers import d2df
+import os
+
+
+
+def energyAnalysisLauncher(processed, dict_structure, CONSTANTS, run_decision):
+    try:
+        # Checking first if the file exists
+        processed_temp = pd.read_hdf(CONSTANTS["filenames"]["dataset_output"], 'processed')
+        if run_decision == "no":
+            # If the file exists AND we want to use it, we just assign the "processed" variable to it
+            processed = processed_temp
+        elif run_decision == "yes":
+            # Otherwise, we simply do as if it didn't exist
+            del processed_temp
+            os.remove(CONSTANTS["filenames"]["dataset_output"])
+            processed = propertyCalculator(processed, dict_structure, CONSTANTS)
+            processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
+        else:
+            print("The data_structure_preparation value should either be yes or no")
+    except FileNotFoundError:
+        processed = propertyCalculator(processed, dict_structure, CONSTANTS)
+        processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
+    return processed
+
 
 def propertyCalculator(processed, dict_structure, CONSTANTS):
     print("Started calculating flow properties...", end="", flush=True)
@@ -50,8 +74,8 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                             #     else:
                             #         dh.loc[idx] = 0
                             #         ds.loc[idx] = 0
-                            dh = dh * (temp - processed["T_0"]) / (temp - CONSTANTS["General"]["T_STANDARD"])
-                            ds = ds * np.log(temp / processed["T_0"]) / np.log((temp - CONSTANTS["General"]["T_STANDARD"]))
+                            #dh = dh * (temp - processed["T_0"]) / (temp - CONSTANTS["General"]["T_STANDARD"])
+                            #ds = ds * np.log(temp / processed["T_0"]) / np.log((temp - CONSTANTS["General"]["T_STANDARD"]))
                         elif "Steam" in flow:
                             if "in" in flow:
                                 dh = CONSTANTS["Steam"]["DH_STEAM"] + CONSTANTS["General"]["CP_WATER"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
@@ -87,40 +111,6 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
     print("...done!")
     return processed
 
-
-def eYergyAnalysis(processed,T0):
-    print("Started with the calculation of energy and exergy flows...", end="", flush=True)
-    for system in processed:
-        for unit in processed[system]:
-            for flow in processed[system][unit]:
-                if processed[system][unit][flow]["Type"] == "IPF":
-                    # Calculating the energy flows
-                    processed[system][unit][flow]["Edot"] = processed[system][unit][flow]["mdot"] * (
-                        processed[system][unit][flow]["h"] - processed[system][unit][flow]["h0"])
-                    # Calculating the specific exergy
-                    processed[system][unit][flow]["b"] = (
-                        processed[system][unit][flow]["h"] - processed[system][unit][flow]["h0"]) - T0 * (
-                        processed[system][unit][flow]["s"] - processed[system][unit][flow]["s0"])
-                # Calculating the exergy flows
-                    processed[system][unit][flow]["Bdot"] = processed[system][unit][flow]["mdot"] * (processed[system][unit][flow]["b"])
-                elif processed[system][unit][flow]["Type"] == "IPF":
-                    # Calculating the specific exergy
-                    processed[system][unit][flow]["b"] = processed[system][unit][flow]["cp"] * (
-                        (processed[system][unit][flow]["T"] - T0) - T0 * (
-                        np.log(processed[system][unit][flow]["T"] / T0)))
-                # Calculating the energy flows
-                    processed[system][unit][flow]["Edot"] = processed[system][unit][flow]["mdot"] * processed[system][unit][flow]["cp"] * (
-                        processed[system][unit][flow]["T"] - T0)
-                # Calculating the exergy flows
-                    processed[system][unit][flow]["Bdot"] = processed[system][unit][flow]["mdot"] * processed[system][unit][flow]["b"]
-                elif processed[system][unit][flow]["Type"] == "Qdot":
-                    processed[system][unit][flow]["Edot"] = processed[system][unit][flow]["Qdot"]
-                    processed[system][unit][flow]["Bdot"] = processed[system][unit][flow]["Qdot"] / processed[system][unit][flow]["T"]
-                elif processed[system][unit][flow]["Type"] == "Wdot":
-                    processed[system][unit][flow]["Edot"] = processed[system][unit][flow]["Wdot"]
-                    processed[system][unit][flow]["Bdot"] = processed[system][unit][flow]["Wdot"]
-    print("...done!")
-    return processed
 
 
 

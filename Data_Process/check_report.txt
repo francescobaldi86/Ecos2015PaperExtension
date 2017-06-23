@@ -1,2 +1,428 @@
 === STARTING THE REPORT FILE === 
  
+
+ *** CONSISTENTCY CHECK FOR ENGINES *** 
+ME1 Compressor temperatures are consistent for 100.0 % of the datapoints 
+ME1 Exhaust temperatures (Cyl->TC are consistent for 98.5221222691 % of the datapoints 
+ME1 Turbine temperatures are consistent for 99.7613365155 % of the datapoints 
+ME1 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME1 LOC temperatures (LT water side) are consistent for 99.5318523958 % of the datapoints 
+ME1 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME1 CAC_LT temperatures (LT water side) are consistent for 99.5318523958 % of the datapoints 
+ME1 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME1 CAC_HT temperatures (HT water side) are consistent for 99.219753993 % of the datapoints 
+ME2 Compressor temperatures are consistent for 100.0 % of the datapoints 
+ME2 Exhaust temperatures (Cyl->TC are consistent for 99.9745266197 % of the datapoints 
+ME2 Turbine temperatures are consistent for 99.2697630976 % of the datapoints 
+ME2 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME2 LOC temperatures (LT water side) are consistent for 99.702810563 % of the datapoints 
+ME2 CAC_LT temperatures (air side) are consistent for 99.9915088732 % of the datapoints 
+ME2 CAC_LT temperatures (LT water side) are consistent for 99.6943194362 % of the datapoints 
+ME2 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME2 CAC_HT temperatures (HT water side) are consistent for 99.0744671818 % of the datapoints 
+ME3 Compressor temperatures are consistent for 100.0 % of the datapoints 
+ME3 Exhaust temperatures (Cyl->TC are consistent for 95.8340207886 % of the datapoints 
+ME3 Turbine temperatures are consistent for 99.9010064346 % of the datapoints 
+ME3 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME3 LOC temperatures (LT water side) are consistent for 99.653522521 % of the datapoints 
+ME3 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME3 CAC_LT temperatures (LT water side) are consistent for 99.653522521 % of the datapoints 
+ME3 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME3 CAC_HT temperatures (HT water side) are consistent for 99.7855139416 % of the datapoints 
+ME4 Compressor temperatures are consistent for 100.0 % of the datapoints 
+WARNING ME4 Exhaust temperatures (Cyl->TC are consistent for 94.6686908376 % of the datapoints 
+ME4 Turbine temperatures are consistent for 99.9821396678 % of the datapoints 
+ME4 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME4 LOC temperatures (LT water side) are consistent for 99.1427040543 % of the datapoints 
+ME4 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_LT temperatures (LT water side) are consistent for 99.1427040543 % of the datapoints 
+ME4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_HT temperatures (HT water side) are consistent for 96.552955885 % of the datapoints 
+AE1 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE1 Exhaust temperatures (Cyl->TC are consistent for 97.708385797 % of the datapoints 
+AE1 Turbine temperatures are consistent for 99.944598338 % of the datapoints 
+AE1 LOC temperatures (oil side) are consistent for 99.3754721733 % of the datapoints 
+AE1 LOC temperatures (LT water side) are consistent for 96.8421052632 % of the datapoints 
+AE1 CAC_LT temperatures (air side) are consistent for 99.9949634853 % of the datapoints 
+AE1 CAC_LT temperatures (LT water side) are consistent for 97.4615965752 % of the datapoints 
+AE1 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+WARNING AE1 CAC_HT temperatures (HT water side) are consistent for 22.9060690003 % of the datapoints 
+AE2 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE2 Exhaust temperatures (Cyl->TC are consistent for 97.092608216 % of the datapoints 
+AE2 Turbine temperatures are consistent for 99.9935102862 % of the datapoints 
+AE2 LOC temperatures (oil side) are consistent for 98.9227075086 % of the datapoints 
+WARNING AE2 LOC temperatures (LT water side) are consistent for 93.3220844961 % of the datapoints 
+AE2 CAC_LT temperatures (air side) are consistent for 99.9935102862 % of the datapoints 
+WARNING AE2 CAC_LT temperatures (LT water side) are consistent for 94.3799078461 % of the datapoints 
+AE2 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+WARNING AE2 CAC_HT temperatures (HT water side) are consistent for 92.2123434357 % of the datapoints 
+AE3 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE3 Exhaust temperatures (Cyl->TC are consistent for 95.6451007383 % of the datapoints 
+AE3 Turbine temperatures are consistent for 97.9351770742 % of the datapoints 
+AE3 LOC temperatures (oil side) are consistent for 98.147916406 % of the datapoints 
+AE3 LOC temperatures (LT water side) are consistent for 98.147916406 % of the datapoints 
+AE3 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+WARNING AE3 CAC_HT temperatures (HT water side) are consistent for 6.5323488925 % of the datapoints 
+AE4 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE4 Exhaust temperatures (Cyl->TC are consistent for 97.4275125354 % of the datapoints 
+AE4 Turbine temperatures are consistent for 100.0 % of the datapoints 
+AE4 LOC temperatures (oil side) are consistent for 99.5131167793 % of the datapoints 
+WARNING AE4 LOC temperatures (LT water side) are consistent for 93.9393939394 % of the datapoints 
+AE4 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+WARNING AE4 CAC_LT temperatures (LT water side) are consistent for 94.4190102463 % of the datapoints 
+AE4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+WARNING AE4 CAC_HT temperatures (HT water side) are consistent for 54.6907928203 % of the datapoints 
+
+ *** LIST OF MISSING VALUES *** 
+The field ME1:Cyl:FuelCh_in:omega is still empty 
+The field ME1:HTsplit:HTWater_out:mdot is still empty 
+The field ME1:HTsplit:LTWater_out:mdot is still empty 
+The field ME1:HTmerge:HTWater_in:mdot is still empty 
+The field ME1:HTmerge:LTWater_in:mdot is still empty 
+The field ME1:LTsplit:HTWater_out:mdot is still empty 
+The field ME1:LTsplit:LTWater_out:mdot is still empty 
+The field ME2:Cyl:FuelCh_in:omega is still empty 
+The field ME2:HTsplit:HTWater_out:mdot is still empty 
+The field ME2:HTsplit:LTWater_out:mdot is still empty 
+The field ME2:HTmerge:HTWater_in:mdot is still empty 
+The field ME2:HTmerge:LTWater_in:mdot is still empty 
+The field ME2:LTsplit:HTWater_out:mdot is still empty 
+The field ME2:LTsplit:LTWater_out:mdot is still empty 
+The field ME3:Cyl:FuelCh_in:omega is still empty 
+The field ME3:HTsplit:HTWater_out:mdot is still empty 
+The field ME3:HTsplit:LTWater_out:mdot is still empty 
+The field ME3:HTmerge:HTWater_in:mdot is still empty 
+The field ME3:HTmerge:LTWater_in:mdot is still empty 
+The field ME3:LTsplit:HTWater_out:mdot is still empty 
+The field ME3:LTsplit:LTWater_out:mdot is still empty 
+The field ME4:Cyl:FuelCh_in:omega is still empty 
+The field ME4:HTsplit:HTWater_out:mdot is still empty 
+The field ME4:HTsplit:LTWater_out:mdot is still empty 
+The field ME4:HTmerge:HTWater_in:mdot is still empty 
+The field ME4:HTmerge:LTWater_in:mdot is still empty 
+The field ME4:LTsplit:HTWater_out:mdot is still empty 
+The field ME4:LTsplit:LTWater_out:mdot is still empty 
+The field AE1:Cyl:FuelCh_in:omega is still empty 
+The field AE1:HTsplit:HTWater_out:mdot is still empty 
+The field AE1:HTsplit:LTWater_out:mdot is still empty 
+The field AE1:HTmerge:HTWater_in:mdot is still empty 
+The field AE1:HTmerge:LTWater_in:mdot is still empty 
+The field AE1:LTsplit:HTWater_out:mdot is still empty 
+The field AE1:LTsplit:LTWater_out:mdot is still empty 
+The field AE1:AG:Power_out:omega is still empty 
+The field AE2:Cyl:FuelCh_in:omega is still empty 
+The field AE2:HTsplit:HTWater_out:mdot is still empty 
+The field AE2:HTsplit:LTWater_out:mdot is still empty 
+The field AE2:HTmerge:HTWater_in:mdot is still empty 
+The field AE2:HTmerge:LTWater_in:mdot is still empty 
+The field AE2:LTsplit:HTWater_out:mdot is still empty 
+The field AE2:LTsplit:LTWater_out:mdot is still empty 
+The field AE2:AG:Power_out:omega is still empty 
+The field AE3:Cyl:FuelCh_in:omega is still empty 
+The field AE3:HTsplit:HTWater_out:mdot is still empty 
+The field AE3:HTsplit:LTWater_out:mdot is still empty 
+The field AE3:HTmerge:HTWater_in:mdot is still empty 
+The field AE3:HTmerge:LTWater_in:mdot is still empty 
+The field AE3:LTsplit:HTWater_out:mdot is still empty 
+The field AE3:LTsplit:LTWater_out:mdot is still empty 
+The field AE3:AG:Power_out:omega is still empty 
+The field AE4:Cyl:FuelCh_in:omega is still empty 
+The field AE4:HTsplit:HTWater_out:mdot is still empty 
+The field AE4:HTsplit:LTWater_out:mdot is still empty 
+The field AE4:HTmerge:HTWater_in:mdot is still empty 
+The field AE4:HTmerge:LTWater_in:mdot is still empty 
+The field AE4:LTsplit:HTWater_out:mdot is still empty 
+The field AE4:LTsplit:LTWater_out:mdot is still empty 
+The field AE4:AG:Power_out:omega is still empty 
+The field Other:Boiler:Air_in:T is still empty 
+The field Other:Boiler:Air_in:p is still empty 
+The field Other:Boiler:EG_out:T is still empty 
+The field Other:Boiler:EG_out:p is still empty 
+The field Other:Boiler:Steam_in:mdot is still empty 
+The field Other:Boiler:Steam_in:T is still empty 
+The field Other:Boiler:Steam_in:p is still empty 
+The field Other:Boiler:Steam_out:mdot is still empty 
+The field Other:Boiler:Steam_out:T is still empty 
+The field Other:Boiler:Steam_out:p is still empty 
+The field Other:SWC13:SeaWater_in:mdot is still empty 
+The field Other:SWC13:SeaWater_in:T is still empty 
+The field Other:SWC13:SeaWater_in:p is still empty 
+The field Other:SWC13:LTWater_in:T is still empty 
+The field Other:SWC13:SeaWater_out:mdot is still empty 
+The field Other:SWC13:SeaWater_out:p is still empty 
+The field Other:SWC13:LTWater_out:T is still empty 
+The field Other:SWC24:SeaWater_in:mdot is still empty 
+The field Other:SWC24:SeaWater_in:T is still empty 
+The field Other:SWC24:SeaWater_in:p is still empty 
+The field Other:SWC24:LTWater_in:T is still empty 
+The field Other:SWC24:SeaWater_out:mdot is still empty 
+The field Other:SWC24:SeaWater_out:p is still empty 
+The field Other:SWC24:LTWater_out:T is still empty 
+The field Other:LTcollector13:LTWater_AE1_in:mdot is still empty 
+The field Other:LTcollector13:HTWater_AE1_in:mdot is still empty 
+The field Other:LTcollector13:LTWater_AE3_in:mdot is still empty 
+The field Other:LTcollector13:HTWater_AE3_in:mdot is still empty 
+The field Other:LTcollector13:LTWater_ME1_in:mdot is still empty 
+The field Other:LTcollector13:HTWater_ME1_in:mdot is still empty 
+The field Other:LTcollector13:LTWater_ME3_in:mdot is still empty 
+The field Other:LTcollector13:HTWater_ME3_in:mdot is still empty 
+The field Other:LTcollector13:LTWater_out:T is still empty 
+The field Other:LTcollector24:LTWater_AE2_in:mdot is still empty 
+The field Other:LTcollector24:HTWater_AE2_in:mdot is still empty 
+The field Other:LTcollector24:LTWater_AE4_in:mdot is still empty 
+The field Other:LTcollector24:HTWater_AE4_in:mdot is still empty 
+The field Other:LTcollector24:LTWater_ME2_in:mdot is still empty 
+The field Other:LTcollector24:HTWater_ME2_in:mdot is still empty 
+The field Other:LTcollector24:LTWater_ME4_in:mdot is still empty 
+The field Other:LTcollector24:HTWater_ME4_in:mdot is still empty 
+The field Other:LTcollector24:LTWater_out:T is still empty 
+The field Other:LTdistribution13:LTWater_in:T is still empty 
+The field Other:LTdistribution24:LTWater_in:T is still empty 
+
+ *** CHECKING THE MASS BALANCE *** 
+Mass balance for ME1_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME1_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME1_BPsplit unit is not respected 100.0% of the times, with 1.0782208478511755e-18 average error 
+Mass balance for ME1_BPmerge unit is not respected 98.7057095649% of the times, with 0.0017822793011756973 average error 
+Mass balance for ME1_BPvalve unit is not respected 100.0% of the times, with -0.0017822793011756973 average error 
+Mass balance for ME1_CAC_HT unit is not respected 99.219753993% of the times, with 1.705997194072436e-17 average error 
+Mass balance for ME1_CAC_LT unit is not respected 99.5318523958% of the times, with -1.5694358894095293e-17 average error 
+Mass balance for ME1_LOC unit is not respected 99.5318523958% of the times, with -1.471600924874909e-17 average error 
+Mass balance for ME1_JWC unit is not respected 99.219753993% of the times, with 0.0 average error 
+Mass balance for ME1_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME1_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME1_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME1_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME2_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME2_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME2_BPsplit unit is not respected 100.0% of the times, with 1.0963358097728942e-18 average error 
+Mass balance for ME2_BPmerge unit is not respected 99.9830177465% of the times, with 7.369797656834182e-06 average error 
+Mass balance for ME2_BPvalve unit is not respected 100.0% of the times, with -7.369797656834242e-06 average error 
+Mass balance for ME2_CAC_HT unit is not respected 99.0744671818% of the times, with -1.7766443642559104e-17 average error 
+Mass balance for ME2_CAC_LT unit is not respected 99.702810563% of the times, with -1.5724310139040174e-17 average error 
+Mass balance for ME2_LOC unit is not respected 99.702810563% of the times, with -3.278726058967729e-17 average error 
+Mass balance for ME2_JWC unit is not respected 99.0744671818% of the times, with 0.0 average error 
+Mass balance for ME2_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME2_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME2_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME2_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME2_HRSG unit is not respected 100.0% of the times, with -5.120042730215087e-05 average error 
+Mass balance for ME3_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME3_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME3_BPsplit unit is not respected 100.0% of the times, with 2.4558583428386184e-18 average error 
+Mass balance for ME3_BPmerge unit is not respected 95.8670186438% of the times, with 0.020893988009390796 average error 
+Mass balance for ME3_BPvalve unit is not respected 100.0% of the times, with -0.02089398800939079 average error 
+Mass balance for ME3_CAC_HT unit is not respected 99.7855139416% of the times, with -5.403659334506206e-18 average error 
+Mass balance for ME3_CAC_LT unit is not respected 99.653522521% of the times, with 1.3738116952134424e-18 average error 
+Mass balance for ME3_LOC unit is not respected 99.653522521% of the times, with -3.562751662920194e-17 average error 
+Mass balance for ME3_JWC unit is not respected 99.7855139416% of the times, with 0.0 average error 
+Mass balance for ME3_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME3_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME3_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME3_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME3_HRSG unit is not respected 100.0% of the times, with -0.0003198790938907562 average error 
+Mass balance for ME4_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME4_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME4_BPsplit unit is not respected 100.0% of the times, with -8.278006549666517e-19 average error 
+Mass balance for ME4_BPmerge unit is not respected 94.7044115021% of the times, with 0.04665959862800685 average error 
+Mass balance for ME4_BPvalve unit is not respected 100.0% of the times, with -0.04665959862800685 average error 
+Mass balance for ME4_CAC_HT unit is not respected 96.552955885% of the times, with -4.783734679243062e-19 average error 
+Mass balance for ME4_CAC_LT unit is not respected 99.1427040543% of the times, with -1.514931935727129e-17 average error 
+Mass balance for ME4_LOC unit is not respected 99.1427040543% of the times, with -2.4825847951968137e-17 average error 
+Mass balance for ME4_JWC unit is not respected 96.552955885% of the times, with 0.0 average error 
+Mass balance for ME4_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for ME4_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME4_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME4_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE1_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE1_BPsplit unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE1_BPmerge unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE1_BPvalve unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_CAC_HT unit is not respected 22.9060690003% of the times, with 7.157317912466383e-19 average error 
+Mass balance for AE1_CAC_LT unit is not respected 97.4666330899% of the times, with 4.4733236952914896e-18 average error 
+Mass balance for AE1_LOC unit is not respected 97.4666330899% of the times, with 1.9324758363659235e-16 average error 
+Mass balance for AE1_JWC unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE1_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_HRSG unit is not respected 100.0% of the times, with -0.00019917234122469573 average error 
+Mass balance for AE1_AG unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE2_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE2_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE2_BPsplit unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE2_BPmerge unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE2_BPvalve unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE2_CAC_HT unit is not respected 92.2123434357% of the times, with -2.7667314001950814e-18 average error 
+Mass balance for AE2_CAC_LT unit is not respected 94.3863975599% of the times, with 4.611219000325136e-19 average error 
+Mass balance for AE2_LOC unit is not respected 94.3863975599% of the times, with 6.3750102679495e-17 average error 
+Mass balance for AE2_JWC unit is not respected 92.2123434357% of the times, with 0.0 average error 
+Mass balance for AE2_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE2_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE2_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE2_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE2_HRSG unit is not respected 100.0% of the times, with -0.00020850150921073934 average error 
+Mass balance for AE2_AG unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE3_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE3_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE3_BPsplit unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE3_BPmerge unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE3_BPvalve unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE3_CAC_HT unit is not respected 6.5323488925% of the times, with 4.44589372894569e-19 average error 
+Mass balance for AE3_CAC_LT unit is not respected 100.0% of the times, with -1.0225555576575087e-17 average error 
+Mass balance for AE3_LOC unit is not respected 100.0% of the times, with 1.689439616999362e-17 average error 
+Mass balance for AE3_JWC unit is not respected 6.5323488925% of the times, with 0.0 average error 
+Mass balance for AE3_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE3_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE3_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE3_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE3_HRSG unit is not respected 100.0% of the times, with -0.000383590555006691 average error 
+Mass balance for AE3_AG unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE4_Comp unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE4_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE4_BPsplit unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE4_BPmerge unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE4_BPvalve unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE4_CAC_HT unit is not respected 54.6907928203% of the times, with 4.905280132055048e-18 average error 
+Mass balance for AE4_CAC_LT unit is not respected 94.4190102463% of the times, with 1.794299837778031e-17 average error 
+Mass balance for AE4_LOC unit is not respected 94.4190102463% of the times, with -1.306353550957818e-16 average error 
+Mass balance for AE4_JWC unit is not respected 54.6907928203% of the times, with 0.0 average error 
+Mass balance for AE4_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
+Mass balance for AE4_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE4_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE4_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE4_HRSG unit is not respected 100.0% of the times, with -0.00027188385081439815 average error 
+Mass balance for AE4_AG unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_Boiler unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_SWC13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_SWC24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_LTcollector13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_LTcollector24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_LTdistribution13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Other_LTdistribution24 unit is not respected 0.0% of the times, with 0.0 average error 
+
+ *** CHECKING THE ENERGY BALANCE *** 
+Energy balance for ME1_Comp unit is respected 100.0% of the times, with -566416.2495691142 average error 
+Energy balance for ME1_Turbine unit is respected 0.376353956306% of the times, with 524093.2176971922 average error 
+Energy balance for ME1_BPsplit unit is respected 100.0% of the times, with -1.1050459244185329e-14 average error 
+Energy balance for ME1_BPmerge unit is respected 4.17661097852% of the times, with 51513.411699595235 average error 
+Energy balance for ME1_BPvalve unit is respected 100.0% of the times, with -350.48876381937487 average error 
+Energy balance for ME1_CAC_HT unit is respected 28.5386451258% of the times, with 695766.554425959 average error 
+Energy balance for ME1_CAC_LT unit is respected 99.5318523958% of the times, with -570988.7958827403 average error 
+Energy balance for ME1_LOC unit is respected 99.5318523958% of the times, with 7.794237686572478e-13 average error 
+Energy balance for ME1_JWC unit is respected 21.7091977235% of the times, with 227.50795811418033 average error 
+Energy balance for ME1_Cyl unit is respected 100.0% of the times, with -2596108.3524758243 average error 
+Energy balance for ME1_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME1_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME1_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME2_Comp unit is respected 100.0% of the times, with -536966.3588974561 average error 
+Energy balance for ME2_Turbine unit is respected 1.06139084657% of the times, with 487807.4584988455 average error 
+Energy balance for ME2_BPsplit unit is respected 100.0% of the times, with -3.1183034040259513e-13 average error 
+Energy balance for ME2_BPmerge unit is respected 2.14825507345% of the times, with 59039.400431709684 average error 
+Energy balance for ME2_BPvalve unit is respected 100.0% of the times, with -1.6147728551494904 average error 
+Energy balance for ME2_CAC_HT unit is respected 31.4935891993% of the times, with 591047.4759812235 average error 
+Energy balance for ME2_CAC_LT unit is respected 99.1593784495% of the times, with -536203.9938602226 average error 
+Energy balance for ME2_LOC unit is respected 99.702810563% of the times, with -1.197162848508443e-12 average error 
+Energy balance for ME2_JWC unit is respected 98.0640230959% of the times, with 278.1896759184712 average error 
+Energy balance for ME2_Cyl unit is respected 100.0% of the times, with -2669519.8946872847 average error 
+Energy balance for ME2_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME2_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME2_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME2_HRSG unit is respected 0.13585802836% of the times, with 800548.9380133866 average error 
+Energy balance for ME3_Comp unit is respected 100.0% of the times, with -526199.1534825726 average error 
+Energy balance for ME3_Turbine unit is respected 0.164989275697% of the times, with 483798.01261457277 average error 
+Energy balance for ME3_BPsplit unit is respected 100.0% of the times, with 7.035205430737398e-14 average error 
+Energy balance for ME3_BPmerge unit is respected 1.02293350932% of the times, with 52079.16078958071 average error 
+Energy balance for ME3_BPvalve unit is respected 100.0% of the times, with -3682.9731750675246 average error 
+Energy balance for ME3_CAC_HT unit is respected 32.4121432107% of the times, with 650061.1175043504 average error 
+Energy balance for ME3_CAC_LT unit is respected 99.579277347% of the times, with -546416.87072452 average error 
+Energy balance for ME3_LOC unit is respected 99.653522521% of the times, with -1.622414901100297e-12 average error 
+Energy balance for ME3_JWC unit is respected 10.5675631084% of the times, with 328.8871056117018 average error 
+Energy balance for ME3_Cyl unit is respected 100.0% of the times, with -2468912.3033002876 average error 
+Energy balance for ME3_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME3_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME3_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME3_HRSG unit is respected 0.808447450916% of the times, with 689863.9298704872 average error 
+Energy balance for ME4_Comp unit is respected 100.0% of the times, with -555087.5466883105 average error 
+Energy balance for ME4_Turbine unit is respected 0.0267904983033% of the times, with 538646.4424709728 average error 
+Energy balance for ME4_BPsplit unit is respected 100.0% of the times, with -7.718703531506605e-13 average error 
+Energy balance for ME4_BPmerge unit is respected 2.47365601% of the times, with 49641.56959352845 average error 
+Energy balance for ME4_BPvalve unit is respected 100.0% of the times, with -8095.506027613441 average error 
+Energy balance for ME4_CAC_HT unit is respected 26.4422218253% of the times, with 609825.7720810497 average error 
+Energy balance for ME4_CAC_LT unit is respected 97.9907126273% of the times, with -465814.1939012179 average error 
+Energy balance for ME4_LOC unit is respected 99.1427040543% of the times, with 1.1693561322357327e-12 average error 
+Energy balance for ME4_JWC unit is respected 12.6004643686% of the times, with 256.93428050796894 average error 
+Energy balance for ME4_Cyl unit is respected 100.0% of the times, with -2546380.5663413615 average error 
+Energy balance for ME4_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME4_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for ME4_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE1_Comp unit is respected 100.0% of the times, with -166876.73645213392 average error 
+Energy balance for AE1_Turbine unit is respected 0.0705112062453% of the times, with 297196.8885709685 average error 
+Energy balance for AE1_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
+Energy balance for AE1_BPmerge unit is respected 100.0% of the times, with 5.951223956400848e-13 average error 
+Energy balance for AE1_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE1_CAC_HT unit is respected 16.7615210274% of the times, with 16981.370103033147 average error 
+Energy balance for AE1_CAC_LT unit is respected 97.4666330899% of the times, with -1223439.4539744747 average error 
+Energy balance for AE1_LOC unit is respected 97.4666330899% of the times, with -6.522893252705363e-12 average error 
+Energy balance for AE1_JWC unit is respected 0.47343238479% of the times, with 51.17562558744302 average error 
+Energy balance for AE1_Cyl unit is respected 100.0% of the times, with -1289242.3728135068 average error 
+Energy balance for AE1_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE1_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE1_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE1_HRSG unit is respected 1.60664819945% of the times, with 381512.2783991214 average error 
+Energy balance for AE1_AG unit is respected 0.16620498615% of the times, with 126.9348371434719 average error 
+Energy balance for AE2_Comp unit is respected 100.0% of the times, with -201578.5066081868 average error 
+Energy balance for AE2_Turbine unit is respected 0.00648971380362% of the times, with 284202.2177086618 average error 
+Energy balance for AE2_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
+Energy balance for AE2_BPmerge unit is respected 100.0% of the times, with -8.801599709804598e-13 average error 
+Energy balance for AE2_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE2_CAC_HT unit is respected 57.9336751249% of the times, with 230023.6084386355 average error 
+Energy balance for AE2_CAC_LT unit is respected 94.3863975599% of the times, with -1095196.6298691505 average error 
+Energy balance for AE2_LOC unit is respected 94.3863975599% of the times, with 4.544345257894821e-12 average error 
+Energy balance for AE2_JWC unit is respected 92.2123434357% of the times, with 184.9736999274142 average error 
+Energy balance for AE2_Cyl unit is respected 100.0% of the times, with -1397911.8184284782 average error 
+Energy balance for AE2_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE2_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE2_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE2_HRSG unit is respected 0.992926211954% of the times, with 365431.61894130794 average error 
+Energy balance for AE2_AG unit is respected 0.181711986501% of the times, with 126.88917055595967 average error 
+Energy balance for AE3_Comp unit is respected 100.0% of the times, with -226293.6651190451 average error 
+Energy balance for AE3_Turbine unit is respected 2.12739331748% of the times, with 372277.88237484195 average error 
+Energy balance for AE3_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
+Energy balance for AE3_BPmerge unit is respected 100.0% of the times, with -2.8335352390612967e-12 average error 
+Energy balance for AE3_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE3_CAC_HT unit is respected 6.51983481417% of the times, with 30.43480364824432 average error 
+Energy balance for AE3_CAC_LT unit is respected 24.5150794644% of the times, with 79281.1027988867 average error 
+Energy balance for AE3_LOC unit is respected 98.2855712677% of the times, with -17008.04652722375 average error 
+Energy balance for AE3_JWC unit is respected 6.5323488925% of the times, with 6.399045252532438 average error 
+Energy balance for AE3_Cyl unit is respected 100.0% of the times, with -1480152.0956481502 average error 
+Energy balance for AE3_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE3_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE3_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE3_HRSG unit is respected 1.98973845576% of the times, with 451734.49359715346 average error 
+Energy balance for AE3_AG unit is respected 0.125140783381% of the times, with 130.70984630988914 average error 
+Energy balance for AE4_Comp unit is respected 100.0% of the times, with -145563.24194791666 average error 
+Energy balance for AE4_Turbine unit is respected 0.00726691374173% of the times, with 252956.21581038527 average error 
+Energy balance for AE4_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
+Energy balance for AE4_BPmerge unit is respected 100.0% of the times, with -1.7384891094713397e-12 average error 
+Energy balance for AE4_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE4_CAC_HT unit is respected 40.62931473% of the times, with 43191.75784567426 average error 
+Energy balance for AE4_CAC_LT unit is respected 94.4190102463% of the times, with -1015016.5986021789 average error 
+Energy balance for AE4_LOC unit is respected 94.4190102463% of the times, with -8.861641567743203e-12 average error 
+Energy balance for AE4_JWC unit is respected 54.6907928203% of the times, with 136.67936884633684 average error 
+Energy balance for AE4_Cyl unit is respected 100.0% of the times, with -1178442.9819393938 average error 
+Energy balance for AE4_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE4_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE4_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for AE4_HRSG unit is respected 2.45621684471% of the times, with 352946.126150495 average error 
+Energy balance for AE4_AG unit is respected 0.109003706126% of the times, with 126.04951980532493 average error 
+Energy balance for Other_Boiler unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for Other_SWC13 unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for Other_SWC24 unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for Other_LTcollector13 unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for Other_LTcollector24 unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for Other_LTdistribution13 unit is respected 0.0% of the times, with 0.0 average error 
+Energy balance for Other_LTdistribution24 unit is respected 0.0% of the times, with 0.0 average error 

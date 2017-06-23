@@ -1,21 +1,22 @@
 import numpy as np
 import pandas as pd
 import preprocessingO as ppo
-import energyanalysis as ea
+import coolingsystems as cs
 from helpers import d2df
 
 def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readAuxEnginesExistingValues(raw, processed, CONSTANTS, hd)
+    processed = ppo.engineStatusCalculation("AuxEngines", raw, processed, CONSTANTS, hd)
     # Calculating the cooling flows, so that they can be later assigned easily
-    processed = ppo.coolingFlows(processed, CONSTANTS, "AuxEngines")
+    processed = cs.coolingFlows(processed, CONSTANTS, "AuxEngines")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.1")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.2")
     # Calculating the power, including the generator efficiency
     processed = auxEnginePowerCalculation(processed, CONSTANTS)
     # Calculating engine load, that is used many times later on
-    processed = ppo.engineStatusCalculation("AuxEngines", raw, processed, CONSTANTS, hd)
+    processed = ppo.engineLoadCalculation("AuxEngines", raw, processed, CONSTANTS, hd)
     # Calculating the auxiliary engines fuel flows
     processed = auxEngineFuelFlowCalculation(raw, processed, CONSTANTS)
     # Calculate air and exhaust gas flows in the main engines
@@ -23,7 +24,7 @@ def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.1")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.2")
     # Calculating cooling flows
-    processed = ppo.engineCoolingSystemsCalculation(processed, CONSTANTS, "AuxEngines")
+    processed = cs.engineCoolingSystemsCalculation(processed, CONSTANTS, "AuxEngines")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.1")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.2")
     return processed

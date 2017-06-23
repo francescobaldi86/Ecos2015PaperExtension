@@ -24,10 +24,10 @@
 # - EXERGY ANALYSIS
 
 
-processed_data_preparation = "no"
-main_engines_analysis = "yes"
-aux_engines_analysis = "yes"
-energy_analysis = "yes"
+do_processed_data_preparation = "yes"
+do_main_engines_analysis = "yes"
+do_aux_engines_analysis = "yes"
+do_energy_analysis = "yes"
 
 
 
@@ -55,6 +55,7 @@ import preprocessingAE as ppa
 import preprocessingME as ppm
 import preprocessingO as ppo
 import energyanalysis as ea
+import coolingsystems as cs
 
 #%%
 ######################################
@@ -77,23 +78,26 @@ header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
 # Setting the important constants
 CONSTANTS = kk.constantsSetting()
 CONSTANTS["filenames"] = filenames
-(dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"], processed_data_preparation)
+(dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"], do_processed_data_preparation)
 
 # Running the pre-processing required for filling in the data structures:
 
 # First updating the "CONSTANTS" dictionary with the some additional information
 processed = ppo.assumptions(dataset_raw, processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
-if main_engines_analysis == "yes":
+if do_main_engines_analysis == "yes":
     processed = ppm.mainEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
-if aux_engines_analysis == "yes":
+if do_aux_engines_analysis == "yes":
     processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
+processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
+processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
 
 
 
 # Assigning defined values to all flows for engines off
-if energy_analysis == "yes":
-    processed = ea.propertyCalculator(processed, dict_structure, CONSTANTS)
+
+processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS, do_energy_analysis)
+
 
 ######################################
 ## RESULTS CHECK                	##

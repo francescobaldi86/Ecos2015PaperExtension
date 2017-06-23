@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import preprocessingO as ppo
-import energyanalysis as ea
+import coolingsystems as cs
 import CoolProp.CoolProp as cp
 from helpers import d2df
 from helpers import polyvalHelperFunction
@@ -11,7 +11,8 @@ def mainEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readMainEnginesExistingValues(raw, processed, CONSTANTS, hd)
-    processed = ppo.coolingFlows(processed, CONSTANTS, "MainEngines")
+    processed = ppo.engineStatusCalculation("MainEngines", raw, processed, CONSTANTS, hd)
+    processed = cs.coolingFlows(processed, CONSTANTS, "MainEngines")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-1.1")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-1.2")
     # Calculating the main engines fuel flows
@@ -19,13 +20,13 @@ def mainEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # Calculating the main engines power output
     processed = mainEnginePowerCalculation(processed, CONSTANTS)
     # Calculating engine load, that is used many times later on
-    processed = ppo.engineStatusCalculation("MainEngines", raw, processed, CONSTANTS, hd)
+    processed = ppo.engineLoadCalculation("MainEngines", raw, processed, CONSTANTS, hd)
     # Calculating air and exhaust gas flows in the main engines
     processed = mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS)
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-2.1")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-2.2")
     # Calculating cooling flows
-    processed = ppo.engineCoolingSystemsCalculation(processed, CONSTANTS, "MainEngines")
+    processed = cs.engineCoolingSystemsCalculation(processed, CONSTANTS, "MainEngines")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-3.1")
     processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-3.2")
     return processed
