@@ -60,10 +60,15 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         # Pressure of the charge air, at the compressor outlet (and, hence, at the cylinder inlet)
         processed[d2df(system, "Comp", "Air_out", "p")] = (raw[hd[system + "-CAC_AIR_P_OUT"]] + 1.01325) * 100000
         # Reading the pressure of the lubricating oil
-        processed[d2df(system, "LOC", "LubOil_out", "p")] = (raw[hd[system + "-LOC_OIL_P_IN"]] + 1.01325) * 100000
+        # processed[d2df(system, "LOC", "LubOil_out", "p")] = (raw[hd[system + "-LOC_OIL_P_IN"]] + 1.01325) * 100000
         # Reading the pressure in the cooling flows
         processed[d2df(system, "CAC_LT", "LTWater_in", "p")] = (raw[hd[system + "-LT-CAC_FW_P_IN"]] + 1.01325) * 100000
         processed[d2df(system, "JWC", "HTWater_in", "p")] = (raw[hd[system + "-HT-JWC_FW_P_IN"]] + 1.01325) * 100000
+        # Reading turbocharger speed
+        processed[d2df(system, "TCshaft", "Power_in", "omega")] = raw[hd[system+"-TC__RPM_"]]
+        processed[d2df(system, "TCshaft", "Power_out", "omega")] = raw[hd[system + "-TC__RPM_"]]
+        processed[d2df(system, "Turbine", "Power_out", "omega")] = raw[hd[system + "-TC__RPM_"]]
+        processed[d2df(system, "Compressor", "Power_in", "omega")] = raw[hd[system + "-TC__RPM_"]]
 
 
     print("...done!")
@@ -105,9 +110,9 @@ def mainEnginePowerCalculation(processed, CONSTANTS):
         processed[d2df(system,"Cyl","FuelPh_in","mdot")] = processed[d2df(system,"Cyl","FuelPh_in","mdot")] * bsfc / bsfc_iso
         # Calculates the power of the engine as mfr/bsfc, with unit conversion to get the output in kW
         # Shaft energy out
-        processed[d2df(system,"Cyl","Power_out","Wdot")] = processed[d2df(system,"Cyl","FuelPh_in","mdot")] / bsfc * 1000 * 3600
+        processed[d2df(system,"Cyl","Power_out","Edot")] = processed[d2df(system,"Cyl","FuelPh_in","mdot")] / bsfc * 1000 * 3600
         # Chemical energy in the fuel
-        processed[d2df(system,"Cyl","FuelCh_in","Wdot")] = processed[d2df(system,"Cyl","FuelPh_in","mdot")] * LHV
+        processed[d2df(system,"Cyl","FuelCh_in","Edot")] = processed[d2df(system,"Cyl","FuelPh_in","mdot")] * LHV
     print("...done!")
     return processed
 
@@ -163,6 +168,15 @@ def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
         processed[d2df(system,"BPmerge","Mix_out","mdot")] = processed[d2df(system,"BPsplit","BP_out","mdot")] + processed[d2df(system,"Cyl","EG_out","mdot")]
         processed[system+":CP_MIX"] = (processed[d2df(system,"BPsplit","BP_out","mdot")] * CONSTANTS["General"]["CP_AIR"] +
             processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_AIR"]) / processed[d2df(system,"BPmerge","Mix_out","mdot")]
+        # Calculating the turbine's power output to the compressor
+        processed[d2df(system, "Turbine", "Power_out", "Edot")] = processed[system+":CP_MIX"] * processed[d2df(system,"BPmerge","Mix_out","mdot")] * (
+            processed[d2df(system, "Turbine", "Mix_in", "T")] - processed[d2df(system,"Turbine","Mix_out","T")])
+        # Calculating the compressor's power input.
+        processed[d2df(system, "Comp", "Power_in", "Edot")] = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "BPsplit", "Air_in", "mdot")] * (
+            processed[d2df(system, "Comp", "Air_out", "T")] - processed[d2df(system, "Comp", "Air_in", "T")])
+        # Losses at the TC shaft level are calculated
+        processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] - processed[d2df(system, "Comp", "Power_in", "Edot")]
+
         # processed[system+":EG_Composition"] = ppo.mixtureComposition(
         #     processed[d2df(system,"Cyl","Air_in","mdot")],
         #     processed[d2df(system,"Cyl","FuelPh_in","mdot")],

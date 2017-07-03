@@ -41,6 +41,8 @@ do_energy_analysis = "yes"
 import sys
 import os
 import pandas as pd
+import matplotlib.pylab as plt
+import numpy as np
 project_path = os.getcwd()
 path_files = project_path + os.sep + 'Python files' + os.sep
 sys.path.append(path_files)
@@ -55,6 +57,7 @@ import preprocessingAE as ppa
 import preprocessingME as ppm
 import preprocessingO as ppo
 import energyanalysis as ea
+import auxiliaryDemand as aux
 import coolingsystems as cs
 
 #%%
@@ -80,8 +83,6 @@ CONSTANTS = kk.constantsSetting()
 CONSTANTS["filenames"] = filenames
 (dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"], do_processed_data_preparation)
 
-# Running the pre-processing required for filling in the data structures:
-
 # First updating the "CONSTANTS" dictionary with the some additional information
 processed = ppo.assumptions(dataset_raw, processed, CONSTANTS, header_names)
 # Updating the fields of the MainEngines and the auxiliary engines
@@ -90,14 +91,18 @@ if do_main_engines_analysis == "yes":
 if do_aux_engines_analysis == "yes":
     processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
 processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
+# Calculating the auxiliary power demands: heating and electric power
+processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure)
+# Calculating the central cooling systems
+processed = cs.centralCoolingSystems(processed, CONSTANTS)
+# Filling in
 processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
-
-
-
+processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
 # Assigning defined values to all flows for engines off
-
 processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS, do_energy_analysis)
-
+# Re-doing the calculation of the connected points
+processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
+processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-5")
 
 ######################################
 ## RESULTS CHECK                	##

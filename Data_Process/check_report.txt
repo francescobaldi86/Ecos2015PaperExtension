@@ -1,5 +1,53 @@
 === STARTING THE REPORT FILE === 
  
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:h and ME2:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:b and ME2:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:h and ME3:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:b and ME3:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:h and AE1:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:b and AE1:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:h and AE2:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:b and AE2:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:h and AE3:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:b and AE3:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:h and AE4:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:b and AE4:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:h and ME2:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:b and ME2:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:h and ME3:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:b and ME3:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:h and AE1:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:b and AE1:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:h and AE2:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:b and AE2:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:h and AE3:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:b and AE3:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:h and AE4:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:b and AE4:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:h and ME2:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:b and ME2:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:h and ME3:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:b and ME3:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:h and AE1:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:b and AE1:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:h and AE2:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:b and AE2:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:h and AE3:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:b and AE3:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:h and AE4:HRSG:Steam_in:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:b and AE4:HRSG:Steam_in:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:h and ME2:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:b and ME2:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:h and ME3:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:b and ME3:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:h and AE1:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:b and AE1:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:h and AE2:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:b and AE2:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:h and AE3:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:b and AE3:HRSG:Steam_out:b should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:h and AE4:HRSG:Steam_out:h should be the same, they are not. 
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:b and AE4:HRSG:Steam_out:b should be the same, they are not. 
 
  *** CONSISTENTCY CHECK FOR ENGINES *** 
 ME1 Compressor temperatures are consistent for 100.0 % of the datapoints 
@@ -76,110 +124,336 @@ AE4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints
 WARNING AE4 CAC_HT temperatures (HT water side) are consistent for 54.6907928203 % of the datapoints 
 
  *** LIST OF MISSING VALUES *** 
-The field ME1:Cyl:FuelCh_in:omega is still empty 
-The field ME1:HTsplit:HTWater_out:mdot is still empty 
-The field ME1:HTsplit:LTWater_out:mdot is still empty 
-The field ME1:HTmerge:HTWater_in:mdot is still empty 
-The field ME1:HTmerge:LTWater_in:mdot is still empty 
-The field ME1:LTsplit:HTWater_out:mdot is still empty 
-The field ME1:LTsplit:LTWater_out:mdot is still empty 
-The field ME2:Cyl:FuelCh_in:omega is still empty 
-The field ME2:HTsplit:HTWater_out:mdot is still empty 
-The field ME2:HTsplit:LTWater_out:mdot is still empty 
-The field ME2:HTmerge:HTWater_in:mdot is still empty 
-The field ME2:HTmerge:LTWater_in:mdot is still empty 
-The field ME2:LTsplit:HTWater_out:mdot is still empty 
-The field ME2:LTsplit:LTWater_out:mdot is still empty 
-The field ME3:Cyl:FuelCh_in:omega is still empty 
-The field ME3:HTsplit:HTWater_out:mdot is still empty 
-The field ME3:HTsplit:LTWater_out:mdot is still empty 
-The field ME3:HTmerge:HTWater_in:mdot is still empty 
-The field ME3:HTmerge:LTWater_in:mdot is still empty 
-The field ME3:LTsplit:HTWater_out:mdot is still empty 
-The field ME3:LTsplit:LTWater_out:mdot is still empty 
-The field ME4:Cyl:FuelCh_in:omega is still empty 
-The field ME4:HTsplit:HTWater_out:mdot is still empty 
-The field ME4:HTsplit:LTWater_out:mdot is still empty 
-The field ME4:HTmerge:HTWater_in:mdot is still empty 
-The field ME4:HTmerge:LTWater_in:mdot is still empty 
-The field ME4:LTsplit:HTWater_out:mdot is still empty 
-The field ME4:LTsplit:LTWater_out:mdot is still empty 
-The field AE1:Cyl:FuelCh_in:omega is still empty 
-The field AE1:HTsplit:HTWater_out:mdot is still empty 
-The field AE1:HTsplit:LTWater_out:mdot is still empty 
-The field AE1:HTmerge:HTWater_in:mdot is still empty 
-The field AE1:HTmerge:LTWater_in:mdot is still empty 
-The field AE1:LTsplit:HTWater_out:mdot is still empty 
-The field AE1:LTsplit:LTWater_out:mdot is still empty 
-The field AE1:AG:Power_out:omega is still empty 
-The field AE2:Cyl:FuelCh_in:omega is still empty 
-The field AE2:HTsplit:HTWater_out:mdot is still empty 
-The field AE2:HTsplit:LTWater_out:mdot is still empty 
-The field AE2:HTmerge:HTWater_in:mdot is still empty 
-The field AE2:HTmerge:LTWater_in:mdot is still empty 
-The field AE2:LTsplit:HTWater_out:mdot is still empty 
-The field AE2:LTsplit:LTWater_out:mdot is still empty 
-The field AE2:AG:Power_out:omega is still empty 
-The field AE3:Cyl:FuelCh_in:omega is still empty 
-The field AE3:HTsplit:HTWater_out:mdot is still empty 
-The field AE3:HTsplit:LTWater_out:mdot is still empty 
-The field AE3:HTmerge:HTWater_in:mdot is still empty 
-The field AE3:HTmerge:LTWater_in:mdot is still empty 
-The field AE3:LTsplit:HTWater_out:mdot is still empty 
-The field AE3:LTsplit:LTWater_out:mdot is still empty 
-The field AE3:AG:Power_out:omega is still empty 
-The field AE4:Cyl:FuelCh_in:omega is still empty 
-The field AE4:HTsplit:HTWater_out:mdot is still empty 
-The field AE4:HTsplit:LTWater_out:mdot is still empty 
-The field AE4:HTmerge:HTWater_in:mdot is still empty 
-The field AE4:HTmerge:LTWater_in:mdot is still empty 
-The field AE4:LTsplit:HTWater_out:mdot is still empty 
-The field AE4:LTsplit:LTWater_out:mdot is still empty 
-The field AE4:AG:Power_out:omega is still empty 
-The field Other:Boiler:Air_in:T is still empty 
-The field Other:Boiler:Air_in:p is still empty 
-The field Other:Boiler:EG_out:T is still empty 
-The field Other:Boiler:EG_out:p is still empty 
-The field Other:Boiler:Steam_in:mdot is still empty 
-The field Other:Boiler:Steam_in:T is still empty 
-The field Other:Boiler:Steam_in:p is still empty 
-The field Other:Boiler:Steam_out:mdot is still empty 
-The field Other:Boiler:Steam_out:T is still empty 
-The field Other:Boiler:Steam_out:p is still empty 
-The field Other:SWC13:SeaWater_in:mdot is still empty 
-The field Other:SWC13:SeaWater_in:T is still empty 
-The field Other:SWC13:SeaWater_in:p is still empty 
-The field Other:SWC13:LTWater_in:T is still empty 
-The field Other:SWC13:SeaWater_out:mdot is still empty 
-The field Other:SWC13:SeaWater_out:p is still empty 
-The field Other:SWC13:LTWater_out:T is still empty 
-The field Other:SWC24:SeaWater_in:mdot is still empty 
-The field Other:SWC24:SeaWater_in:T is still empty 
-The field Other:SWC24:SeaWater_in:p is still empty 
-The field Other:SWC24:LTWater_in:T is still empty 
-The field Other:SWC24:SeaWater_out:mdot is still empty 
-The field Other:SWC24:SeaWater_out:p is still empty 
-The field Other:SWC24:LTWater_out:T is still empty 
-The field Other:LTcollector13:LTWater_AE1_in:mdot is still empty 
-The field Other:LTcollector13:HTWater_AE1_in:mdot is still empty 
-The field Other:LTcollector13:LTWater_AE3_in:mdot is still empty 
-The field Other:LTcollector13:HTWater_AE3_in:mdot is still empty 
-The field Other:LTcollector13:LTWater_ME1_in:mdot is still empty 
-The field Other:LTcollector13:HTWater_ME1_in:mdot is still empty 
-The field Other:LTcollector13:LTWater_ME3_in:mdot is still empty 
-The field Other:LTcollector13:HTWater_ME3_in:mdot is still empty 
-The field Other:LTcollector13:LTWater_out:T is still empty 
-The field Other:LTcollector24:LTWater_AE2_in:mdot is still empty 
-The field Other:LTcollector24:HTWater_AE2_in:mdot is still empty 
-The field Other:LTcollector24:LTWater_AE4_in:mdot is still empty 
-The field Other:LTcollector24:HTWater_AE4_in:mdot is still empty 
-The field Other:LTcollector24:LTWater_ME2_in:mdot is still empty 
-The field Other:LTcollector24:HTWater_ME2_in:mdot is still empty 
-The field Other:LTcollector24:LTWater_ME4_in:mdot is still empty 
-The field Other:LTcollector24:HTWater_ME4_in:mdot is still empty 
-The field Other:LTcollector24:LTWater_out:T is still empty 
-The field Other:LTdistribution13:LTWater_in:T is still empty 
-The field Other:LTdistribution24:LTWater_in:T is still empty 
+The field AE1:TCshaft:Losses_out:Edot is still empty 
+The field AE1:TCshaft:Losses_out:Bdot is still empty 
+The field AE1:AG:Losses_out:Edot is still empty 
+The field AE1:AG:Losses_out:Bdot is still empty 
+The field AE2:TCshaft:Losses_out:Edot is still empty 
+The field AE2:TCshaft:Losses_out:Bdot is still empty 
+The field AE2:AG:Losses_out:Edot is still empty 
+The field AE2:AG:Losses_out:Bdot is still empty 
+The field AE3:TCshaft:Losses_out:Edot is still empty 
+The field AE3:TCshaft:Losses_out:Bdot is still empty 
+The field AE3:AG:Losses_out:Edot is still empty 
+The field AE3:AG:Losses_out:Bdot is still empty 
+The field AE4:TCshaft:Losses_out:Edot is still empty 
+The field AE4:TCshaft:Losses_out:Bdot is still empty 
+The field AE4:AG:Losses_out:Edot is still empty 
+The field AE4:AG:Losses_out:Bdot is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:mdot is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:T is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:h is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:b is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:Edot is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:Bdot is still empty 
+The field CoolingSystems:SWC13:LTWater_in:mdot is still empty 
+The field CoolingSystems:SWC13:LTWater_in:T is still empty 
+The field CoolingSystems:SWC13:LTWater_in:h is still empty 
+The field CoolingSystems:SWC13:LTWater_in:b is still empty 
+The field CoolingSystems:SWC13:LTWater_in:Edot is still empty 
+The field CoolingSystems:SWC13:LTWater_in:Bdot is still empty 
+The field CoolingSystems:SWC13:SeaWater_out:mdot is still empty 
+The field CoolingSystems:SWC13:SeaWater_out:Edot is still empty 
+The field CoolingSystems:SWC13:SeaWater_out:Bdot is still empty 
+The field CoolingSystems:SWC13:LTWater_out:mdot is still empty 
+The field CoolingSystems:SWC13:LTWater_out:T is still empty 
+The field CoolingSystems:SWC13:LTWater_out:h is still empty 
+The field CoolingSystems:SWC13:LTWater_out:b is still empty 
+The field CoolingSystems:SWC13:LTWater_out:Edot is still empty 
+The field CoolingSystems:SWC13:LTWater_out:Bdot is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:mdot is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:T is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:h is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:b is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:Edot is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:Bdot is still empty 
+The field CoolingSystems:SWC24:LTWater_in:mdot is still empty 
+The field CoolingSystems:SWC24:LTWater_in:T is still empty 
+The field CoolingSystems:SWC24:LTWater_in:h is still empty 
+The field CoolingSystems:SWC24:LTWater_in:b is still empty 
+The field CoolingSystems:SWC24:LTWater_in:Edot is still empty 
+The field CoolingSystems:SWC24:LTWater_in:Bdot is still empty 
+The field CoolingSystems:SWC24:SeaWater_out:mdot is still empty 
+The field CoolingSystems:SWC24:SeaWater_out:Edot is still empty 
+The field CoolingSystems:SWC24:SeaWater_out:Bdot is still empty 
+The field CoolingSystems:SWC24:LTWater_out:mdot is still empty 
+The field CoolingSystems:SWC24:LTWater_out:T is still empty 
+The field CoolingSystems:SWC24:LTWater_out:h is still empty 
+The field CoolingSystems:SWC24:LTWater_out:b is still empty 
+The field CoolingSystems:SWC24:LTWater_out:Edot is still empty 
+The field CoolingSystems:SWC24:LTWater_out:Bdot is still empty 
+The field CoolingSystems:LTcollector13:LTWater_out:mdot is still empty 
+The field CoolingSystems:LTcollector13:LTWater_out:Edot is still empty 
+The field CoolingSystems:LTcollector13:LTWater_out:Bdot is still empty 
+The field CoolingSystems:LTcollector13:HTWater_in:mdot is still empty 
+The field CoolingSystems:LTcollector13:HTWater_in:T is still empty 
+The field CoolingSystems:LTcollector13:HTWater_in:h is still empty 
+The field CoolingSystems:LTcollector13:HTWater_in:b is still empty 
+The field CoolingSystems:LTcollector13:HTWater_in:Edot is still empty 
+The field CoolingSystems:LTcollector13:HTWater_in:Bdot is still empty 
+The field CoolingSystems:LTcollector24:LTWater_out:mdot is still empty 
+The field CoolingSystems:LTcollector24:LTWater_out:Edot is still empty 
+The field CoolingSystems:LTcollector24:LTWater_out:Bdot is still empty 
+The field CoolingSystems:LTcollector24:HTWater_in:mdot is still empty 
+The field CoolingSystems:LTcollector24:HTWater_in:T is still empty 
+The field CoolingSystems:LTcollector24:HTWater_in:h is still empty 
+The field CoolingSystems:LTcollector24:HTWater_in:b is still empty 
+The field CoolingSystems:LTcollector24:HTWater_in:Edot is still empty 
+The field CoolingSystems:LTcollector24:HTWater_in:Bdot is still empty 
+The field HTHR:HTHR13:HTWater_in:mdot is still empty 
+The field HTHR:HTHR13:HTWater_in:T is still empty 
+The field HTHR:HTHR13:HTWater_in:h is still empty 
+The field HTHR:HTHR13:HTWater_in:b is still empty 
+The field HTHR:HTHR13:HTWater_in:Edot is still empty 
+The field HTHR:HTHR13:HTWater_in:Bdot is still empty 
+The field HTHR:HTHR13:HTWater_out:mdot is still empty 
+The field HTHR:HTHR13:HTWater_out:T is still empty 
+The field HTHR:HTHR13:HTWater_out:h is still empty 
+The field HTHR:HTHR13:HTWater_out:b is still empty 
+The field HTHR:HTHR13:HTWater_out:Edot is still empty 
+The field HTHR:HTHR13:HTWater_out:Bdot is still empty 
+The field HTHR:HTHR13:HRWater_in:mdot is still empty 
+The field HTHR:HTHR13:HRWater_in:T is still empty 
+The field HTHR:HTHR13:HRWater_in:h is still empty 
+The field HTHR:HTHR13:HRWater_in:b is still empty 
+The field HTHR:HTHR13:HRWater_in:Edot is still empty 
+The field HTHR:HTHR13:HRWater_in:Bdot is still empty 
+The field HTHR:HTHR13:HRWater_out:mdot is still empty 
+The field HTHR:HTHR13:HRWater_out:Edot is still empty 
+The field HTHR:HTHR13:HRWater_out:Bdot is still empty 
+The field HTHR:HTHR24:HTWater_in:mdot is still empty 
+The field HTHR:HTHR24:HTWater_in:T is still empty 
+The field HTHR:HTHR24:HTWater_in:h is still empty 
+The field HTHR:HTHR24:HTWater_in:b is still empty 
+The field HTHR:HTHR24:HTWater_in:Edot is still empty 
+The field HTHR:HTHR24:HTWater_in:Bdot is still empty 
+The field HTHR:HTHR24:HTWater_out:mdot is still empty 
+The field HTHR:HTHR24:HTWater_out:T is still empty 
+The field HTHR:HTHR24:HTWater_out:h is still empty 
+The field HTHR:HTHR24:HTWater_out:b is still empty 
+The field HTHR:HTHR24:HTWater_out:Edot is still empty 
+The field HTHR:HTHR24:HTWater_out:Bdot is still empty 
+The field HTHR:HTHR24:HRWater_in:mdot is still empty 
+The field HTHR:HTHR24:HRWater_in:Edot is still empty 
+The field HTHR:HTHR24:HRWater_in:Bdot is still empty 
+The field HTHR:HTHR24:HRWater_out:mdot is still empty 
+The field HTHR:HTHR24:HRWater_out:Edot is still empty 
+The field HTHR:HTHR24:HRWater_out:Bdot is still empty 
+The field HTHR:HTHRsplit:HRWater_in:mdot is still empty 
+The field HTHR:HTHRsplit:HRWater_in:T is still empty 
+The field HTHR:HTHRsplit:HRWater_in:h is still empty 
+The field HTHR:HTHRsplit:HRWater_in:b is still empty 
+The field HTHR:HTHRsplit:HRWater_in:Edot is still empty 
+The field HTHR:HTHRsplit:HRWater_in:Bdot is still empty 
+The field HTHR:HTHRsplit:HRWater_HWH_out:mdot is still empty 
+The field HTHR:HTHRsplit:HRWater_HWH_out:T is still empty 
+The field HTHR:HTHRsplit:HRWater_HWH_out:h is still empty 
+The field HTHR:HTHRsplit:HRWater_HWH_out:b is still empty 
+The field HTHR:HTHRsplit:HRWater_HWH_out:Edot is still empty 
+The field HTHR:HTHRsplit:HRWater_HWH_out:Bdot is still empty 
+The field HTHR:HTHRsplit:HRWater_PreH_out:mdot is still empty 
+The field HTHR:HTHRsplit:HRWater_PreH_out:T is still empty 
+The field HTHR:HTHRsplit:HRWater_PreH_out:h is still empty 
+The field HTHR:HTHRsplit:HRWater_PreH_out:b is still empty 
+The field HTHR:HTHRsplit:HRWater_PreH_out:Edot is still empty 
+The field HTHR:HTHRsplit:HRWater_PreH_out:Bdot is still empty 
+The field HTHR:HTHRsplit:HRWater_ReH_out:mdot is still empty 
+The field HTHR:HTHRsplit:HRWater_ReH_out:T is still empty 
+The field HTHR:HTHRsplit:HRWater_ReH_out:h is still empty 
+The field HTHR:HTHRsplit:HRWater_ReH_out:b is still empty 
+The field HTHR:HTHRsplit:HRWater_ReH_out:Edot is still empty 
+The field HTHR:HTHRsplit:HRWater_ReH_out:Bdot is still empty 
+The field HTHR:HTHRmerge:HRWater_out:mdot is still empty 
+The field HTHR:HTHRmerge:HRWater_out:T is still empty 
+The field HTHR:HTHRmerge:HRWater_out:h is still empty 
+The field HTHR:HTHRmerge:HRWater_out:b is still empty 
+The field HTHR:HTHRmerge:HRWater_out:Edot is still empty 
+The field HTHR:HTHRmerge:HRWater_out:Bdot is still empty 
+The field HTHR:HTHRmerge:HRWater_HWH_in:mdot is still empty 
+The field HTHR:HTHRmerge:HRWater_HWH_in:T is still empty 
+The field HTHR:HTHRmerge:HRWater_HWH_in:h is still empty 
+The field HTHR:HTHRmerge:HRWater_HWH_in:b is still empty 
+The field HTHR:HTHRmerge:HRWater_HWH_in:Edot is still empty 
+The field HTHR:HTHRmerge:HRWater_HWH_in:Bdot is still empty 
+The field HTHR:HTHRmerge:HRWater_PreH_in:mdot is still empty 
+The field HTHR:HTHRmerge:HRWater_PreH_in:T is still empty 
+The field HTHR:HTHRmerge:HRWater_PreH_in:h is still empty 
+The field HTHR:HTHRmerge:HRWater_PreH_in:b is still empty 
+The field HTHR:HTHRmerge:HRWater_PreH_in:Edot is still empty 
+The field HTHR:HTHRmerge:HRWater_PreH_in:Bdot is still empty 
+The field HTHR:HTHRmerge:HRWater_ReH_in:mdot is still empty 
+The field HTHR:HTHRmerge:HRWater_ReH_in:T is still empty 
+The field HTHR:HTHRmerge:HRWater_ReH_in:h is still empty 
+The field HTHR:HTHRmerge:HRWater_ReH_in:b is still empty 
+The field HTHR:HTHRmerge:HRWater_ReH_in:Edot is still empty 
+The field HTHR:HTHRmerge:HRWater_ReH_in:Bdot is still empty 
+The field HTHR:HVACpreheater:HRWater_in:T is still empty 
+The field HTHR:HVACpreheater:HRWater_in:h is still empty 
+The field HTHR:HVACpreheater:HRWater_in:b is still empty 
+The field HTHR:HVACpreheater:HRWater_in:Edot is still empty 
+The field HTHR:HVACpreheater:HRWater_in:Bdot is still empty 
+The field HTHR:HVACpreheater:HRWater_out:T is still empty 
+The field HTHR:HVACpreheater:HRWater_out:h is still empty 
+The field HTHR:HVACpreheater:HRWater_out:b is still empty 
+The field HTHR:HVACpreheater:HRWater_out:Edot is still empty 
+The field HTHR:HVACpreheater:HRWater_out:Bdot is still empty 
+The field HTHR:HVACpreheater:Qdot_out:T is still empty 
+The field HTHR:HVACpreheater:Qdot_out:h is still empty 
+The field HTHR:HVACpreheater:Qdot_out:b is still empty 
+The field HTHR:HVACpreheater:Qdot_out:Edot is still empty 
+The field HTHR:HVACpreheater:Qdot_out:Bdot is still empty 
+The field HTHR:HVACreheater:HRWater_in:T is still empty 
+The field HTHR:HVACreheater:HRWater_in:h is still empty 
+The field HTHR:HVACreheater:HRWater_in:b is still empty 
+The field HTHR:HVACreheater:HRWater_in:Edot is still empty 
+The field HTHR:HVACreheater:HRWater_in:Bdot is still empty 
+The field HTHR:HVACreheater:HRWater_out:T is still empty 
+The field HTHR:HVACreheater:HRWater_out:h is still empty 
+The field HTHR:HVACreheater:HRWater_out:b is still empty 
+The field HTHR:HVACreheater:HRWater_out:Edot is still empty 
+The field HTHR:HVACreheater:HRWater_out:Bdot is still empty 
+The field HTHR:HVACreheater:Qdot_out:T is still empty 
+The field HTHR:HVACreheater:Qdot_out:h is still empty 
+The field HTHR:HVACreheater:Qdot_out:b is still empty 
+The field HTHR:HVACreheater:Qdot_out:Edot is still empty 
+The field HTHR:HVACreheater:Qdot_out:Bdot is still empty 
+The field HTHR:SteamHeater:HRWater_in:T is still empty 
+The field HTHR:SteamHeater:HRWater_in:h is still empty 
+The field HTHR:SteamHeater:HRWater_in:b is still empty 
+The field HTHR:SteamHeater:HRWater_in:Edot is still empty 
+The field HTHR:SteamHeater:HRWater_in:Bdot is still empty 
+The field HTHR:HotWaterHeater:HRWater_in:T is still empty 
+The field HTHR:HotWaterHeater:HRWater_in:h is still empty 
+The field HTHR:HotWaterHeater:HRWater_in:b is still empty 
+The field HTHR:HotWaterHeater:HRWater_in:Edot is still empty 
+The field HTHR:HotWaterHeater:HRWater_in:Bdot is still empty 
+The field HTHR:HotWaterHeater:HRWater_out:T is still empty 
+The field HTHR:HotWaterHeater:HRWater_out:h is still empty 
+The field HTHR:HotWaterHeater:HRWater_out:b is still empty 
+The field HTHR:HotWaterHeater:HRWater_out:Edot is still empty 
+The field HTHR:HotWaterHeater:HRWater_out:Bdot is still empty 
+The field HTHR:HotWaterHeater:Qdot_out:T is still empty 
+The field HTHR:HotWaterHeater:Qdot_out:h is still empty 
+The field HTHR:HotWaterHeater:Qdot_out:b is still empty 
+The field HTHR:HotWaterHeater:Qdot_out:Edot is still empty 
+The field HTHR:HotWaterHeater:Qdot_out:Bdot is still empty 
+The field Steam:Boiler1:Air_in:T is still empty 
+The field Steam:Boiler1:Air_in:p is still empty 
+The field Steam:Boiler1:Air_in:h is still empty 
+The field Steam:Boiler1:Air_in:b is still empty 
+The field Steam:Boiler1:Air_in:Edot is still empty 
+The field Steam:Boiler1:Air_in:Bdot is still empty 
+The field Steam:Boiler1:EG_out:T is still empty 
+The field Steam:Boiler1:EG_out:p is still empty 
+The field Steam:Boiler1:EG_out:h is still empty 
+The field Steam:Boiler1:EG_out:b is still empty 
+The field Steam:Boiler1:EG_out:Edot is still empty 
+The field Steam:Boiler1:EG_out:Bdot is still empty 
+The field Steam:Boiler1:Steam_in:mdot is still empty 
+The field Steam:Boiler1:Steam_in:Edot is still empty 
+The field Steam:Boiler1:Steam_in:Bdot is still empty 
+The field Steam:Boiler1:Steam_out:mdot is still empty 
+The field Steam:Boiler1:Steam_out:Edot is still empty 
+The field Steam:Boiler1:Steam_out:Bdot is still empty 
+The field Steam:Boiler2:Air_in:T is still empty 
+The field Steam:Boiler2:Air_in:p is still empty 
+The field Steam:Boiler2:Air_in:h is still empty 
+The field Steam:Boiler2:Air_in:b is still empty 
+The field Steam:Boiler2:Air_in:Edot is still empty 
+The field Steam:Boiler2:Air_in:Bdot is still empty 
+The field Steam:Boiler2:EG_out:T is still empty 
+The field Steam:Boiler2:EG_out:p is still empty 
+The field Steam:Boiler2:EG_out:h is still empty 
+The field Steam:Boiler2:EG_out:b is still empty 
+The field Steam:Boiler2:EG_out:Edot is still empty 
+The field Steam:Boiler2:EG_out:Bdot is still empty 
+The field Steam:Boiler2:Steam_in:mdot is still empty 
+The field Steam:Boiler2:Steam_in:Edot is still empty 
+The field Steam:Boiler2:Steam_in:Bdot is still empty 
+The field Steam:Boiler2:Steam_out:mdot is still empty 
+The field Steam:Boiler2:Steam_out:Edot is still empty 
+The field Steam:Boiler2:Steam_out:Bdot is still empty 
+The field Steam:SteamCollector:Steam_AB1_out:mdot is still empty 
+The field Steam:SteamCollector:Steam_AB1_out:Edot is still empty 
+The field Steam:SteamCollector:Steam_AB1_out:Bdot is still empty 
+The field Steam:SteamCollector:Steam_AB2_out:mdot is still empty 
+The field Steam:SteamCollector:Steam_AB2_out:Edot is still empty 
+The field Steam:SteamCollector:Steam_AB2_out:Bdot is still empty 
+The field Steam:SteamCollector:Steam_TH_in:mdot is still empty 
+The field Steam:SteamCollector:Steam_TH_in:Edot is still empty 
+The field Steam:SteamCollector:Steam_TH_in:Bdot is still empty 
+The field Steam:SteamCollector:Steam_MSH_in:mdot is still empty 
+The field Steam:SteamCollector:Steam_MSH_in:Edot is still empty 
+The field Steam:SteamCollector:Steam_MSH_in:Bdot is still empty 
+The field Steam:SteamCollector:Steam_HH_in:mdot is still empty 
+The field Steam:SteamCollector:Steam_HH_in:Edot is still empty 
+The field Steam:SteamCollector:Steam_HH_in:Bdot is still empty 
+The field Steam:SteamCollector:Steam_G_in:mdot is still empty 
+The field Steam:SteamCollector:Steam_G_in:Edot is still empty 
+The field Steam:SteamCollector:Steam_G_in:Bdot is still empty 
+The field Steam:SteamDistribution:Steam_AB1_in:mdot is still empty 
+The field Steam:SteamDistribution:Steam_AB1_in:Edot is still empty 
+The field Steam:SteamDistribution:Steam_AB1_in:Bdot is still empty 
+The field Steam:SteamDistribution:Steam_AB2_in:mdot is still empty 
+The field Steam:SteamDistribution:Steam_AB2_in:Edot is still empty 
+The field Steam:SteamDistribution:Steam_AB2_in:Bdot is still empty 
+The field Steam:SteamDistribution:Steam_TH_out:mdot is still empty 
+The field Steam:SteamDistribution:Steam_TH_out:Edot is still empty 
+The field Steam:SteamDistribution:Steam_TH_out:Bdot is still empty 
+The field Steam:SteamDistribution:Steam_MSH_out:mdot is still empty 
+The field Steam:SteamDistribution:Steam_MSH_out:Edot is still empty 
+The field Steam:SteamDistribution:Steam_MSH_out:Bdot is still empty 
+The field Steam:SteamDistribution:Steam_HH_out:mdot is still empty 
+The field Steam:SteamDistribution:Steam_HH_out:Edot is still empty 
+The field Steam:SteamDistribution:Steam_HH_out:Bdot is still empty 
+The field Steam:SteamDistribution:Steam_G_out:mdot is still empty 
+The field Steam:SteamDistribution:Steam_G_out:Edot is still empty 
+The field Steam:SteamDistribution:Steam_G_out:Bdot is still empty 
+The field Steam:TankHeating:Qdot_out:T is still empty 
+The field Steam:TankHeating:Qdot_out:Edot is still empty 
+The field Steam:TankHeating:Qdot_out:Bdot is still empty 
+The field Steam:OtherTanks:Qdot_out:T is still empty 
+The field Steam:OtherTanks:Qdot_out:Edot is still empty 
+The field Steam:OtherTanks:Qdot_out:Bdot is still empty 
+The field Steam:HFOtankHeating:Steam_out:mdot is still empty 
+The field Steam:HFOtankHeating:Steam_out:Edot is still empty 
+The field Steam:HFOtankHeating:Steam_out:Bdot is still empty 
+The field Steam:HFOtankHeating:Steam_in:mdot is still empty 
+The field Steam:HFOtankHeating:Steam_in:Edot is still empty 
+The field Steam:HFOtankHeating:Steam_in:Bdot is still empty 
+The field Steam:HFOtankHeating:Qdot_out:T is still empty 
+The field Steam:HFOtankHeating:Qdot_out:Edot is still empty 
+The field Steam:HFOtankHeating:Qdot_out:Bdot is still empty 
+The field Steam:MachinerySpaceHeaters:Qdot_out:T is still empty 
+The field Steam:MachinerySpaceHeaters:Qdot_out:Edot is still empty 
+The field Steam:MachinerySpaceHeaters:Qdot_out:Bdot is still empty 
+The field Steam:HFOheater:Qdot_out:T is still empty 
+The field Steam:HFOheater:Qdot_out:Edot is still empty 
+The field Steam:HFOheater:Qdot_out:Bdot is still empty 
+The field Steam:Galley:Qdot_out:T is still empty 
+The field Steam:Galley:Qdot_out:Edot is still empty 
+The field Steam:Galley:Qdot_out:Bdot is still empty 
+The field Demands:Mechanical:Propellers:Edot is still empty 
+The field Demands:Mechanical:Propellers:Bdot is still empty 
+The field Demands:Heat:HotWaterHeater:T is still empty 
+The field Demands:Heat:HotWaterHeater:Bdot is still empty 
+The field Demands:Heat:HVACpreheater:T is still empty 
+The field Demands:Heat:HVACpreheater:Bdot is still empty 
+The field Demands:Heat:HVACreheater:T is still empty 
+The field Demands:Heat:HVACreheater:Bdot is still empty 
+The field Demands:Heat:TankHeating:T is still empty 
+The field Demands:Heat:TankHeating:Bdot is still empty 
+The field Demands:Heat:OtherTanks:T is still empty 
+The field Demands:Heat:OtherTanks:Bdot is still empty 
+The field Demands:Heat:HFOtankHeating:T is still empty 
+The field Demands:Heat:HFOtankHeating:Edot is still empty 
+The field Demands:Heat:HFOtankHeating:Bdot is still empty 
+The field Demands:Heat:MachinerySpaceHeaters:T is still empty 
+The field Demands:Heat:MachinerySpaceHeaters:Bdot is still empty 
+The field Demands:Heat:HFOheater:T is still empty 
+The field Demands:Heat:HFOheater:Bdot is still empty 
+The field Demands:Heat:Galley:T is still empty 
+The field Demands:Heat:Galley:Bdot is still empty 
 
  *** CHECKING THE MASS BALANCE *** 
 Mass balance for ME1_Comp unit is not respected 100.0% of the times, with 0.0 average error 
@@ -192,9 +466,10 @@ Mass balance for ME1_CAC_LT unit is not respected 99.5318523958% of the times, w
 Mass balance for ME1_LOC unit is not respected 99.5318523958% of the times, with -1.471600924874909e-17 average error 
 Mass balance for ME1_JWC unit is not respected 99.219753993% of the times, with 0.0 average error 
 Mass balance for ME1_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for ME1_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME1_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME1_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME1_HTsplit unit is not respected 99.2013952634% of the times, with -0.012236211496809521 average error 
+Mass balance for ME1_HTmerge unit is not respected 99.1554984395% of the times, with 0.00538034989549698 average error 
+Mass balance for ME1_LTsplit unit is not respected 99.2013952634% of the times, with -0.006757686202647421 average error 
+Mass balance for ME1_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
 Mass balance for ME2_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME2_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME2_BPsplit unit is not respected 100.0% of the times, with 1.0963358097728942e-18 average error 
@@ -205,10 +480,11 @@ Mass balance for ME2_CAC_LT unit is not respected 99.702810563% of the times, wi
 Mass balance for ME2_LOC unit is not respected 99.702810563% of the times, with -3.278726058967729e-17 average error 
 Mass balance for ME2_JWC unit is not respected 99.0744671818% of the times, with 0.0 average error 
 Mass balance for ME2_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for ME2_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME2_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME2_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME2_HRSG unit is not respected 100.0% of the times, with -5.120042730215087e-05 average error 
+Mass balance for ME2_HTsplit unit is not respected 98.9980470408% of the times, with -1.954087640205726e-05 average error 
+Mass balance for ME2_HTmerge unit is not respected 98.9895559141% of the times, with 0.0003321944230185669 average error 
+Mass balance for ME2_LTsplit unit is not respected 98.9980470408% of the times, with -0.0009203191441537358 average error 
+Mass balance for ME2_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME2_HRSG unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME3_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME3_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME3_BPsplit unit is not respected 100.0% of the times, with 2.4558583428386184e-18 average error 
@@ -219,10 +495,11 @@ Mass balance for ME3_CAC_LT unit is not respected 99.653522521% of the times, wi
 Mass balance for ME3_LOC unit is not respected 99.653522521% of the times, with -3.562751662920194e-17 average error 
 Mass balance for ME3_JWC unit is not respected 99.7855139416% of the times, with 0.0 average error 
 Mass balance for ME3_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for ME3_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME3_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME3_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME3_HRSG unit is not respected 100.0% of the times, with -0.0003198790938907562 average error 
+Mass balance for ME3_HTsplit unit is not respected 99.5957762745% of the times, with -0.1208727043262054 average error 
+Mass balance for ME3_HTmerge unit is not respected 99.5545289556% of the times, with 0.08252710555883305 average error 
+Mass balance for ME3_LTsplit unit is not respected 99.5957762745% of the times, with -0.08765096685430972 average error 
+Mass balance for ME3_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME3_HRSG unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME4_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME4_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for ME4_BPsplit unit is not respected 100.0% of the times, with -8.278006549666517e-19 average error 
@@ -233,9 +510,10 @@ Mass balance for ME4_CAC_LT unit is not respected 99.1427040543% of the times, w
 Mass balance for ME4_LOC unit is not respected 99.1427040543% of the times, with -2.4825847951968137e-17 average error 
 Mass balance for ME4_JWC unit is not respected 96.552955885% of the times, with 0.0 average error 
 Mass balance for ME4_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for ME4_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME4_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for ME4_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for ME4_HTsplit unit is not respected 96.4815145562% of the times, with -0.13601636516931245 average error 
+Mass balance for ME4_HTmerge unit is not respected 96.463654224% of the times, with 0.010877844973469239 average error 
+Mass balance for ME4_LTsplit unit is not respected 96.4815145562% of the times, with -0.012697118893991555 average error 
+Mass balance for ME4_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
 Mass balance for AE1_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE1_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE1_BPsplit unit is not respected 100.0% of the times, with 0.0 average error 
@@ -246,10 +524,11 @@ Mass balance for AE1_CAC_LT unit is not respected 97.4666330899% of the times, w
 Mass balance for AE1_LOC unit is not respected 97.4666330899% of the times, with 1.9324758363659235e-16 average error 
 Mass balance for AE1_JWC unit is not respected 0.0% of the times, with 0.0 average error 
 Mass balance for AE1_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for AE1_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE1_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE1_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE1_HRSG unit is not respected 100.0% of the times, with -0.00019917234122469573 average error 
+Mass balance for AE1_HTsplit unit is not respected 0.47343238479% of the times, with -0.0015375141704659634 average error 
+Mass balance for AE1_HTmerge unit is not respected 10.3953664064% of the times, with 2.6018886323575073e-18 average error 
+Mass balance for AE1_LTsplit unit is not respected 22.9060690003% of the times, with 0.0 average error 
+Mass balance for AE1_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE1_HRSG unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE1_AG unit is not respected 0.0% of the times, with 0.0 average error 
 Mass balance for AE2_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE2_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
@@ -261,10 +540,11 @@ Mass balance for AE2_CAC_LT unit is not respected 94.3863975599% of the times, w
 Mass balance for AE2_LOC unit is not respected 94.3863975599% of the times, with 6.3750102679495e-17 average error 
 Mass balance for AE2_JWC unit is not respected 92.2123434357% of the times, with 0.0 average error 
 Mass balance for AE2_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for AE2_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE2_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE2_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE2_HRSG unit is not respected 100.0% of the times, with -0.00020850150921073934 average error 
+Mass balance for AE2_HTsplit unit is not respected 91.5049646311% of the times, with -0.0031677913630724034 average error 
+Mass balance for AE2_HTmerge unit is not respected 91.5049646311% of the times, with 1.1227279728309333e-17 average error 
+Mass balance for AE2_LTsplit unit is not respected 91.5049646311% of the times, with 0.0 average error 
+Mass balance for AE2_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE2_HRSG unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE2_AG unit is not respected 0.0% of the times, with 0.0 average error 
 Mass balance for AE3_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE3_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
@@ -276,10 +556,11 @@ Mass balance for AE3_CAC_LT unit is not respected 100.0% of the times, with -1.0
 Mass balance for AE3_LOC unit is not respected 100.0% of the times, with 1.689439616999362e-17 average error 
 Mass balance for AE3_JWC unit is not respected 6.5323488925% of the times, with 0.0 average error 
 Mass balance for AE3_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for AE3_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE3_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE3_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE3_HRSG unit is not respected 100.0% of the times, with -0.000383590555006691 average error 
+Mass balance for AE3_HTsplit unit is not respected 6.5323488925% of the times, with -0.0009470992680589099 average error 
+Mass balance for AE3_HTmerge unit is not respected 6.5323488925% of the times, with 2.8085869917806202e-18 average error 
+Mass balance for AE3_LTsplit unit is not respected 6.5323488925% of the times, with 0.0 average error 
+Mass balance for AE3_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE3_HRSG unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE3_AG unit is not respected 0.0% of the times, with 0.0 average error 
 Mass balance for AE4_Comp unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE4_Turbine unit is not respected 100.0% of the times, with 0.0 average error 
@@ -291,138 +572,38 @@ Mass balance for AE4_CAC_LT unit is not respected 94.4190102463% of the times, w
 Mass balance for AE4_LOC unit is not respected 94.4190102463% of the times, with -1.306353550957818e-16 average error 
 Mass balance for AE4_JWC unit is not respected 54.6907928203% of the times, with 0.0 average error 
 Mass balance for AE4_Cyl unit is not respected 100.0% of the times, with 0.0 average error 
-Mass balance for AE4_HTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE4_HTmerge unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE4_LTsplit unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for AE4_HRSG unit is not respected 100.0% of the times, with -0.00027188385081439815 average error 
+Mass balance for AE4_HTsplit unit is not respected 54.2911125645% of the times, with -0.000584137961241813 average error 
+Mass balance for AE4_HTmerge unit is not respected 54.2911125645% of the times, with -4.3809378692755786e-18 average error 
+Mass balance for AE4_LTsplit unit is not respected 54.2911125645% of the times, with 0.0 average error 
+Mass balance for AE4_TCshaft unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for AE4_HRSG unit is not respected 100.0% of the times, with 0.0 average error 
 Mass balance for AE4_AG unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_Boiler unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_SWC13 unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_SWC24 unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_LTcollector13 unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_LTcollector24 unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_LTdistribution13 unit is not respected 0.0% of the times, with 0.0 average error 
-Mass balance for Other_LTdistribution24 unit is not respected 0.0% of the times, with 0.0 average error 
-
- *** CHECKING THE ENERGY BALANCE *** 
-Energy balance for ME1_Comp unit is respected 100.0% of the times, with -566416.2495691142 average error 
-Energy balance for ME1_Turbine unit is respected 0.376353956306% of the times, with 524093.2176971922 average error 
-Energy balance for ME1_BPsplit unit is respected 100.0% of the times, with -1.1050459244185329e-14 average error 
-Energy balance for ME1_BPmerge unit is respected 4.17661097852% of the times, with 51513.411699595235 average error 
-Energy balance for ME1_BPvalve unit is respected 100.0% of the times, with -350.48876381937487 average error 
-Energy balance for ME1_CAC_HT unit is respected 28.5386451258% of the times, with 695766.554425959 average error 
-Energy balance for ME1_CAC_LT unit is respected 99.5318523958% of the times, with -570988.7958827403 average error 
-Energy balance for ME1_LOC unit is respected 99.5318523958% of the times, with 7.794237686572478e-13 average error 
-Energy balance for ME1_JWC unit is respected 21.7091977235% of the times, with 227.50795811418033 average error 
-Energy balance for ME1_Cyl unit is respected 100.0% of the times, with -2596108.3524758243 average error 
-Energy balance for ME1_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME1_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME1_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME2_Comp unit is respected 100.0% of the times, with -536966.3588974561 average error 
-Energy balance for ME2_Turbine unit is respected 1.06139084657% of the times, with 487807.4584988455 average error 
-Energy balance for ME2_BPsplit unit is respected 100.0% of the times, with -3.1183034040259513e-13 average error 
-Energy balance for ME2_BPmerge unit is respected 2.14825507345% of the times, with 59039.400431709684 average error 
-Energy balance for ME2_BPvalve unit is respected 100.0% of the times, with -1.6147728551494904 average error 
-Energy balance for ME2_CAC_HT unit is respected 31.4935891993% of the times, with 591047.4759812235 average error 
-Energy balance for ME2_CAC_LT unit is respected 99.1593784495% of the times, with -536203.9938602226 average error 
-Energy balance for ME2_LOC unit is respected 99.702810563% of the times, with -1.197162848508443e-12 average error 
-Energy balance for ME2_JWC unit is respected 98.0640230959% of the times, with 278.1896759184712 average error 
-Energy balance for ME2_Cyl unit is respected 100.0% of the times, with -2669519.8946872847 average error 
-Energy balance for ME2_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME2_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME2_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME2_HRSG unit is respected 0.13585802836% of the times, with 800548.9380133866 average error 
-Energy balance for ME3_Comp unit is respected 100.0% of the times, with -526199.1534825726 average error 
-Energy balance for ME3_Turbine unit is respected 0.164989275697% of the times, with 483798.01261457277 average error 
-Energy balance for ME3_BPsplit unit is respected 100.0% of the times, with 7.035205430737398e-14 average error 
-Energy balance for ME3_BPmerge unit is respected 1.02293350932% of the times, with 52079.16078958071 average error 
-Energy balance for ME3_BPvalve unit is respected 100.0% of the times, with -3682.9731750675246 average error 
-Energy balance for ME3_CAC_HT unit is respected 32.4121432107% of the times, with 650061.1175043504 average error 
-Energy balance for ME3_CAC_LT unit is respected 99.579277347% of the times, with -546416.87072452 average error 
-Energy balance for ME3_LOC unit is respected 99.653522521% of the times, with -1.622414901100297e-12 average error 
-Energy balance for ME3_JWC unit is respected 10.5675631084% of the times, with 328.8871056117018 average error 
-Energy balance for ME3_Cyl unit is respected 100.0% of the times, with -2468912.3033002876 average error 
-Energy balance for ME3_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME3_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME3_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME3_HRSG unit is respected 0.808447450916% of the times, with 689863.9298704872 average error 
-Energy balance for ME4_Comp unit is respected 100.0% of the times, with -555087.5466883105 average error 
-Energy balance for ME4_Turbine unit is respected 0.0267904983033% of the times, with 538646.4424709728 average error 
-Energy balance for ME4_BPsplit unit is respected 100.0% of the times, with -7.718703531506605e-13 average error 
-Energy balance for ME4_BPmerge unit is respected 2.47365601% of the times, with 49641.56959352845 average error 
-Energy balance for ME4_BPvalve unit is respected 100.0% of the times, with -8095.506027613441 average error 
-Energy balance for ME4_CAC_HT unit is respected 26.4422218253% of the times, with 609825.7720810497 average error 
-Energy balance for ME4_CAC_LT unit is respected 97.9907126273% of the times, with -465814.1939012179 average error 
-Energy balance for ME4_LOC unit is respected 99.1427040543% of the times, with 1.1693561322357327e-12 average error 
-Energy balance for ME4_JWC unit is respected 12.6004643686% of the times, with 256.93428050796894 average error 
-Energy balance for ME4_Cyl unit is respected 100.0% of the times, with -2546380.5663413615 average error 
-Energy balance for ME4_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME4_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for ME4_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE1_Comp unit is respected 100.0% of the times, with -166876.73645213392 average error 
-Energy balance for AE1_Turbine unit is respected 0.0705112062453% of the times, with 297196.8885709685 average error 
-Energy balance for AE1_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
-Energy balance for AE1_BPmerge unit is respected 100.0% of the times, with 5.951223956400848e-13 average error 
-Energy balance for AE1_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE1_CAC_HT unit is respected 16.7615210274% of the times, with 16981.370103033147 average error 
-Energy balance for AE1_CAC_LT unit is respected 97.4666330899% of the times, with -1223439.4539744747 average error 
-Energy balance for AE1_LOC unit is respected 97.4666330899% of the times, with -6.522893252705363e-12 average error 
-Energy balance for AE1_JWC unit is respected 0.47343238479% of the times, with 51.17562558744302 average error 
-Energy balance for AE1_Cyl unit is respected 100.0% of the times, with -1289242.3728135068 average error 
-Energy balance for AE1_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE1_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE1_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE1_HRSG unit is respected 1.60664819945% of the times, with 381512.2783991214 average error 
-Energy balance for AE1_AG unit is respected 0.16620498615% of the times, with 126.9348371434719 average error 
-Energy balance for AE2_Comp unit is respected 100.0% of the times, with -201578.5066081868 average error 
-Energy balance for AE2_Turbine unit is respected 0.00648971380362% of the times, with 284202.2177086618 average error 
-Energy balance for AE2_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
-Energy balance for AE2_BPmerge unit is respected 100.0% of the times, with -8.801599709804598e-13 average error 
-Energy balance for AE2_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE2_CAC_HT unit is respected 57.9336751249% of the times, with 230023.6084386355 average error 
-Energy balance for AE2_CAC_LT unit is respected 94.3863975599% of the times, with -1095196.6298691505 average error 
-Energy balance for AE2_LOC unit is respected 94.3863975599% of the times, with 4.544345257894821e-12 average error 
-Energy balance for AE2_JWC unit is respected 92.2123434357% of the times, with 184.9736999274142 average error 
-Energy balance for AE2_Cyl unit is respected 100.0% of the times, with -1397911.8184284782 average error 
-Energy balance for AE2_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE2_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE2_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE2_HRSG unit is respected 0.992926211954% of the times, with 365431.61894130794 average error 
-Energy balance for AE2_AG unit is respected 0.181711986501% of the times, with 126.88917055595967 average error 
-Energy balance for AE3_Comp unit is respected 100.0% of the times, with -226293.6651190451 average error 
-Energy balance for AE3_Turbine unit is respected 2.12739331748% of the times, with 372277.88237484195 average error 
-Energy balance for AE3_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
-Energy balance for AE3_BPmerge unit is respected 100.0% of the times, with -2.8335352390612967e-12 average error 
-Energy balance for AE3_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE3_CAC_HT unit is respected 6.51983481417% of the times, with 30.43480364824432 average error 
-Energy balance for AE3_CAC_LT unit is respected 24.5150794644% of the times, with 79281.1027988867 average error 
-Energy balance for AE3_LOC unit is respected 98.2855712677% of the times, with -17008.04652722375 average error 
-Energy balance for AE3_JWC unit is respected 6.5323488925% of the times, with 6.399045252532438 average error 
-Energy balance for AE3_Cyl unit is respected 100.0% of the times, with -1480152.0956481502 average error 
-Energy balance for AE3_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE3_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE3_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE3_HRSG unit is respected 1.98973845576% of the times, with 451734.49359715346 average error 
-Energy balance for AE3_AG unit is respected 0.125140783381% of the times, with 130.70984630988914 average error 
-Energy balance for AE4_Comp unit is respected 100.0% of the times, with -145563.24194791666 average error 
-Energy balance for AE4_Turbine unit is respected 0.00726691374173% of the times, with 252956.21581038527 average error 
-Energy balance for AE4_BPsplit unit is respected 100.0% of the times, with 0.0 average error 
-Energy balance for AE4_BPmerge unit is respected 100.0% of the times, with -1.7384891094713397e-12 average error 
-Energy balance for AE4_BPvalve unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE4_CAC_HT unit is respected 40.62931473% of the times, with 43191.75784567426 average error 
-Energy balance for AE4_CAC_LT unit is respected 94.4190102463% of the times, with -1015016.5986021789 average error 
-Energy balance for AE4_LOC unit is respected 94.4190102463% of the times, with -8.861641567743203e-12 average error 
-Energy balance for AE4_JWC unit is respected 54.6907928203% of the times, with 136.67936884633684 average error 
-Energy balance for AE4_Cyl unit is respected 100.0% of the times, with -1178442.9819393938 average error 
-Energy balance for AE4_HTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE4_HTmerge unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE4_LTsplit unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for AE4_HRSG unit is respected 2.45621684471% of the times, with 352946.126150495 average error 
-Energy balance for AE4_AG unit is respected 0.109003706126% of the times, with 126.04951980532493 average error 
-Energy balance for Other_Boiler unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for Other_SWC13 unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for Other_SWC24 unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for Other_LTcollector13 unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for Other_LTcollector24 unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for Other_LTdistribution13 unit is respected 0.0% of the times, with 0.0 average error 
-Energy balance for Other_LTdistribution24 unit is respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_SWC13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_SWC24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_HTcollector13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_HTcollector24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_LTcollector13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_LTcollector24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_LTdistribution13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for CoolingSystems_LTdistribution24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HTHR13 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HTHR24 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HTHRsplit unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HTHRmerge unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HVACpreheater unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HVACreheater unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_SteamHeater unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for HTHR_HotWaterHeater unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_Boiler1 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_Boiler2 unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_SteamCollector unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_SteamDistribution unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_TankHeating unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_OtherTanks unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_HFOtankHeating unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_MachinerySpaceHeaters unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_HFOheater unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Steam_Galley unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Demands_Electricity unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Demands_Mechanical unit is not respected 0.0% of the times, with 0.0 average error 
+Mass balance for Demands_Heat unit is not respected 0.0% of the times, with 0.0 average error 

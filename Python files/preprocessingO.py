@@ -6,6 +6,55 @@ import CoolProp.CoolProp as cp
 
 
 
+def assumptions(raw, processed, CONSTANTS, hd):
+    # This function includes generic assumed values in the main structure
+    # ALL ENGINES
+    for system in {"ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4"}:
+        # The pressure at the turbocharger air inlet and exhaust outlet is equal to the atmospheric pressure
+        processed[d2df(system,"Comp","Air_in","p")][:] = CONSTANTS["General"]["P_ATM"]
+        processed[d2df(system, "Turbine", "Mix_out", "p")][:] = CONSTANTS["General"]["P_ATM"]
+        # Temperature in the engine room, i.e. inlet to the compressor of the TC
+        processed[d2df(system, "Comp", "Air_in", "T")] = raw[hd["ER_AIR_T_"]] + 273.15
+        # Assuming that the pressure in the exhaust gas is 90% of the pressure in the inlet manifold. Somewhat reasonable
+        processed[d2df(system, "Cyl", "EG_out", "p")] = (0.9 * raw[hd[system + "-CAC_AIR_P_OUT"]] + 1.01325) * 100000
+        # Assuming the pressure of the fuel to be around 9 barg, based on measurements from ME4
+        processed[d2df(system, "Cyl", "FuelPh_in", "p")][:] = (9 + 1.01325) * 10e5
+        # Assuming the temperature of the cylinder wall to be 150 degC
+        processed[d2df(system, "Cyl", "QdotJW_out", "T")][:] = 150 + 273.15
+        processed[d2df(system, "JWC", "QdotJW_in", "T")][:] = 150 + 273.15
+        # Assuming a temperature of 100 degC for heat losses from the TC shaft
+        processed[d2df(system, "TCshaft", "Losses_out", "T")][:] = 100 + 273.15
+        # Assuming the steam pressure and temperature in the HRSG to be constant...
+        hrsg_pressure_assumption = (6 + 1.01325) * 100000
+        #if system in {"AE1", "AE2", "AE3", "AE4", "ME2", "ME3"}:
+        #    processed[d2df(system, "HRSG", "Steam_in", "T")][:] = cp.PropsSI('T', 'P', hrsg_pressure_assumption, 'Q', 0.5, "Water")
+        #    processed[d2df(system, "HRSG", "Steam_in", "p")][:] = hrsg_pressure_assumption
+        #    processed[d2df(system, "HRSG", "Steam_out", "T")] = processed[d2df(system, "HRSG", "Steam_in", "T")]
+        #    processed[d2df(system, "HRSG", "Steam_out", "p")] = processed[d2df(system, "HRSG", "Steam_in", "p")]
+        if system in {"AE1", "AE2", "AE3", "AE4"}:
+            processed[d2df(system, "AG", "Losses_out", "T")][:] = 100 + 273.15
+            processed[d2df(system, "Cyl", "Power_out", "omega")][:] = 750
+    # Others
+    processed["T_0"] = raw[hd["SEA_SW_T_"]] + 273.15
+    processed["T_air"] = raw[hd["OUTSIDE_AIR_T_"]] + 273.15
+    processed[d2df("CoolingSystems","SWC13","SeaWater_out","T")] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    processed[d2df("CoolingSystems","SWC24","SeaWater_out","T")] = raw[hd["SWC24_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    # HTHR system
+    processed.loc[:,"HTHR:SteamHeater:HRWater_out:T"] = 90 + 273.15 # From the heat balance, the temperature needs to rise at 90 degrees
+    processed.loc[:,"HTHR:SteamHeater:HRWater_out:mdot"] = 298 / 3600 * CONSTANTS["General"]["RHO_W"] # the original value is in m3/h
+    # It is here assumed that the water flow is split equally among the three consumers. In practice, it does not matter
+    processed.loc[:, "HTHR:HVACpreheater:HRWater_in:mdot"] = processed.loc[:,"HTHR:SteamHeater:HRWater_out:mdot"] / 3
+    processed.loc[:, "HTHR:HVACreheater:HRWater_in:mdot"] = processed.loc[:, "HTHR:SteamHeater:HRWater_out:mdot"] / 3
+    processed.loc[:, "HTHR:HotWaterHeater:HRWater_in:mdot"] = processed.loc[:, "HTHR:SteamHeater:HRWater_out:mdot"] / 3
+    return processed
+
+
+
+
+
+
+
+
 def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
     print("Started filling the gaps in the dataframe...", end="", flush=True)
     if system_type == "MainEngines":
@@ -13,7 +62,7 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
     elif system_type == "AuxEngines":
         system_set = {"AE1", "AE2", "AE3", "AE4"}
     elif system_type == "Other":
-        system_set = {"Other"}
+        system_set = {"CoolingSystems", "Steam", "HTHR"}
     else:
         print("Error in the definition of the system type. Only MainEngines, AuxEngines and Other are accepter. Given {}".format(system_type))
     counter_mdot_tot = 0
@@ -25,8 +74,8 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
         for unit in dict_structure["systems"][system]["units"]:
             # (counter_c, processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, call_ID)
             for equation in dict_structure["systems"][system]["units"][unit]["equations"]:
+                streams = dict_structure["systems"][system]["units"][unit]["streams"]
                 if equation == "MassBalance":
-                    streams = dict_structure["systems"][system]["units"][unit]["streams"]
                     (counter_mdot,processed) = massFill(processed, dict_structure, CONSTANTS, system, unit, streams, call_ID)
                     counter_mdot_tot = counter_mdot_tot + counter_mdot
                 elif equation == "ConstantPressure":
@@ -134,11 +183,17 @@ def constantProperty(property, processed, dict_structure, CONSTANTS, system, uni
     if system + ":" + unit + ":" + property == "ME4:HTsplit:T":
         a = 0
     for stream in streams:
-        # If there is only one flow, something is tricky...
-        # If there are only two flows associated to the stream, things are rather easy
+        # First, we check that the pressure is defined for this flow
+
         flow_nan = []
         for flow in streams[stream]:
-            flow_nan.append(processed[flow+property].isnull().sum() == len(processed[flow+property]))
+            # If the property is not defined for one of the flows, then we simply skip the whole stream for that property
+            if flow+property not in processed.keys():
+                flow_nan = [0 , 0]
+                break
+            else:
+                # Otherwise, we check whether it is full of NaNs or not.
+                flow_nan.append(processed[flow+property].isnull().sum() == len(processed[flow+property]))
         if sum(flow_nan) == 0:
             # All flows have a value, just do nothing
             pass
@@ -155,37 +210,7 @@ def constantProperty(property, processed, dict_structure, CONSTANTS, system, uni
 
 
 
-def assumptions(raw, processed, CONSTANTS, hd):
-    # This function includes generic assumed values in the main structure
-    # ALL ENGINES
-    for system in {"ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4"}:
-        # The pressure at the turbocharger air inlet and exhaust outlet is equal to the atmospheric pressure
-        processed[d2df(system,"Comp","Air_in","p")][:] = CONSTANTS["General"]["P_ATM"]
-        processed[d2df(system, "Turbine", "Mix_out", "p")][:] = CONSTANTS["General"]["P_ATM"]
-        # Temperature in the engine room, i.e. inlet to the compressor of the TC
-        processed[d2df(system, "Comp", "Air_in", "T")] = raw[hd["ER_AIR_T_"]] + 273.15
-        # Assuming that the pressure in the exhaust gas is 90% of the pressure in the inlet manifold. Somewhat reasonable
-        processed[d2df(system, "Cyl", "EG_out", "p")] = (0.9 * raw[hd[system + "-CAC_AIR_P_OUT"]] + 1.01325) * 100000
-        # Assuming the pressure of the fuel to be around 9 barg, based on measurements from ME4
-        processed[d2df(system, "Cyl", "FuelPh_in", "p")][:] = (9 + 1.01325) * 10e5
-        # Assuming the temperature of the cylinder wall to be 150 degC
-        processed[d2df(system, "Cyl", "QdotJW_out", "T")][:] = 150 + 273.15
-        processed[d2df(system, "JWC", "QdotJW_in", "T")][:] = 150 + 273.15
-        # Assuming the steam pressure and temperature in the HRSG to be constant...
-        hrsg_pressure_assumption = (6 + 1.01325) * 100000
-        if system in {"AE1", "AE2", "AE3", "AE4", "ME2", "ME3"}:
-            processed[d2df(system, "HRSG", "Steam_in", "T")][:] = cp.PropsSI('T', 'P', hrsg_pressure_assumption, 'Q', 0.5, "Water")
-            processed[d2df(system, "HRSG", "Steam_in", "p")][:] = hrsg_pressure_assumption
-            processed[d2df(system, "HRSG", "Steam_out", "T")] = processed[d2df(system, "HRSG", "Steam_in", "T")]
-            processed[d2df(system, "HRSG", "Steam_out", "p")] = processed[d2df(system, "HRSG", "Steam_in", "p")]
-        if system in {"AE1", "AE2", "AE3", "AE4"}:
-            processed[d2df(system, "AG", "Losses", "T")][:] = 100 + 273.15
-            processed[d2df(system, "Cyl", "Power_out", "omega")][:] = 750
-    # Others
-    processed["T_0"] = raw[hd["SEA_SW_T_"]] + 273.15
-    processed[d2df("Other","SWC13","SeaWater_out","T")] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
-    processed[d2df("Other","SWC24","SeaWater_out","T")] = raw[hd["SWC24_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
-    return processed
+
 
 
 def engineStatusCalculation(type, raw, processed, CONSTANTS, hd):
@@ -197,7 +222,7 @@ def engineStatusCalculation(type, raw, processed, CONSTANTS, hd):
 
 def engineLoadCalculation(type, raw, processed, CONSTANTS, hd):
     for system in CONSTANTS["General"]["NAMES"][type]:
-        processed[system+":"+"load"] = processed[d2df(system,"Cyl","Power_out","Wdot")] / CONSTANTS[type]["MCR"]
+        processed[system+":"+"load"] = processed[d2df(system,"Cyl","Power_out","Edot")] / CONSTANTS[type]["MCR"]
     return processed
 
 

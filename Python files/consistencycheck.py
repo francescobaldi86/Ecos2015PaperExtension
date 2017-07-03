@@ -55,9 +55,8 @@ def missingValues(processed, dict_structure, CONSTANTS):
         for unit in dict_structure["systems"][system]["units"]:
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
                 for property in dict_structure["systems"][system]["units"][unit]["flows"][flow]["properties"]:
-                    if property not in {"h", "b", "Edot", "Bdot"}:
-                        if processed[d2df(system,unit,flow,property)].isnull().sum() == len(processed[system + ":" + "on"]):
-                            text_file.write("The field {}:{}:{}:{} is still empty \n".format(system,unit,flow,property))
+                    if processed[d2df(system,unit,flow,property)].isnull().sum() == len(processed[system + ":" + "on"]):
+                        text_file.write("The field {}:{}:{}:{} is still empty \n".format(system,unit,flow,property))
     text_file.close()
     print("...done!")
 

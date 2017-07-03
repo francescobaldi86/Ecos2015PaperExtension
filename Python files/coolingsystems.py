@@ -9,8 +9,8 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
     # This function calculates the different flows related to the cooling systems of the main engines.
     for system in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
-        energy_2_cooling = (processed[d2df(system,"Cyl","FuelCh_in","Wdot")] -
-            processed[d2df(system,"Cyl","Power_out","Wdot")] +
+        energy_2_cooling = (processed[d2df(system,"Cyl","FuelCh_in","Edot")] -
+            processed[d2df(system,"Cyl","Power_out","Edot")] +
             CONSTANTS["General"]["HFO"]["CP"] * processed[d2df(system,"Cyl","FuelPh_in","mdot")] *
                 (processed[d2df(system,"Cyl","FuelPh_in","T")] - processed["T_0"]) -
             CONSTANTS["General"]["CP_EG"] * processed[d2df(system,"Turbine","Mix_in","mdot")] *
@@ -34,8 +34,8 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
         energy_2_cac_lt = energy_2_cac - energy_2_cac_ht
         # The energy to the JWC results as a balance over the HT cooling systems
         energy_2_jwc = energy_2_ht - energy_2_cac_ht
-        processed[d2df(system,"JWC","QdotJW_in","Qdot")] = energy_2_jwc
-        processed[d2df(system, "Cyl", "QdotJW_out", "Qdot")] = energy_2_jwc
+        processed[d2df(system,"JWC","QdotJW_in","Edot")] = energy_2_jwc
+        processed[d2df(system, "Cyl", "QdotJW_out", "Edot")] = energy_2_jwc
         # The energy to the LOC results as a balance over the LT cooling systems
         energy_2_loc = energy_2_lt - energy_2_cac_lt
         # Finally, the temperatures in the flows are calculated based on the calculated energy and mass flow values
@@ -55,6 +55,10 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
             processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","T")] - processed[d2df(system,"HRSG","Mix_out","T")]) *
                 processed[d2df(system, "HRSG", "Mix_in", "mdot")] * processed[system+":CP_MIX"] /
                 (CONSTANTS["Steam"]["H_STEAM_VS"] - CONSTANTS["Steam"]["H_STEAM_LS"]))
+        # Calculation of the mass recirculating from the LT outlet to the HT inlet
+        processed[d2df(system,"HTmerge","LTWater_in","mdot")] = processed[d2df(system,"JWC","HTWater_out","mdot")] * (
+            processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - processed[d2df(system,"JWC","HTWater_in","T")]) / (
+            processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - processed[d2df(system,"LOC","LTWater_out","T")])
     print("...done!")
     return processed
 
@@ -63,17 +67,32 @@ def centralCoolingSystems(processed, CONSTANTS):
     # Doing the calculations for the 1-3 engine room
     ER13set = {"AE1", "AE3", "ME1", "ME3"}
     # Calculating the temperature at the LT collector outlet
-    processed[d2df("Other", "LTcollector", "LTWater_out", "T")] = (
-        sum(processed[d2df("Other", "LTcollector13", "LTWater_"+idx+"_in", "T")] *
-            processed[d2df("Other", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) /
-        sum(processed[d2df("Other", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set))
+    processed[d2df("CoolingSystems", "LTcollector13", "LTWater_out", "T")] = (
+        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "T")] *
+            processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) /
+        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set))
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
-    processed[d2df("Other", "LTdistribution13", "LTWater_in", "T")] = (
-        sum(processed[d2df("Other", "LTdistribution13", "LTWater_" + idx + "_out", "T")] *
-            processed[d2df("Other", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set) /
-        sum(processed[d2df("Other", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set))
+    processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")] = (
+        sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "T")] *
+            processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set) /
+        sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set))
     # The temperature at the Sea water cooler outlet is then equal to the inlet to the distribution systems
-    processed[d2df("Other", "SWC13", "LTWater_out", "T")] = processed[d2df("Other", "LTdistribution13", "LTWater_in", "T")]
+    #processed[d2df("CoolingSystems", "SWC13", "LTWater_out", "T")] = processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")]
+
+    # Doing the calculations for the "2-4 engine room
+    ER24set = {"AE2", "AE4", "ME2", "ME4"}
+    # Calculating the temperature at the LT collector outlet
+    processed[d2df("CoolingSystems", "LTcollector24", "LTWater_out", "T")] = (
+        sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "T")] *
+            processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) /
+        sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set))
+    # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
+    processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")] = (
+        sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "T")] *
+            processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set) /
+        sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set))
+    # The temperature at the Sea water cooler outlet is then equal to the inlet to the distribution systems
+    #processed[d2df("CoolingSystems", "SWC24", "LTWater_out", "T")] = processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")]
     return processed
 
 

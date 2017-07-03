@@ -56,15 +56,16 @@ def structurePreparation(CONSTANTS, index, empty_dataset_filesystem, data_struct
 
 def flowStructure():
     print("Started preparing the dataset_processed multi-level dictionary...", end="", flush=True)
-    structure = {"systems": {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {}, "Other": {}}}
+    structure = {"systems": {"ME1": {}, "ME2": {}, "ME3": {}, "ME4": {}, "AE1": {}, "AE2": {}, "AE3": {}, "AE4": {},
+                             "CoolingSystems": {}, "HTHR":{}, "Steam":{}, "Demands":{}}}
     for system in structure["systems"]:
         structure["systems"][system]["equations"] = {}
         if system[1] == "E":  # This basically means that this operation is only done if the system is an engine
             structure["systems"][system]["units"] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "BPvalve": {},
                                                      "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {},
-                                                     "HTsplit": {}, "HTmerge": {}, "LTsplit": {}}
+                                                     "HTsplit": {}, "HTmerge": {}, "LTsplit": {}, "TCshaft": {}}
             # Compressor
-            structure["systems"][system]["units"]["Comp"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}} # TC compressor
+            structure["systems"][system]["units"]["Comp"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "Power_in": {"type": "Wdot"}} # TC compressor
             structure["systems"][system]["units"]["Comp"]["equations"] = ["MassBalance"]
             # Bypass Split
             structure["systems"][system]["units"]["BPsplit"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "BP_out": {"type": "CPF"}}  # Bypass valve
@@ -76,8 +77,11 @@ def flowStructure():
             structure["systems"][system]["units"]["BPvalve"]["flows"] = {"BP_in": {"type": "CPF"}, "BP_out": {"type": "CPF"}}
             structure["systems"][system]["units"]["BPvalve"]["equations"] = ["MassBalance", "ConstantTemperature"]
             # Turbine
-            structure["systems"][system]["units"]["Turbine"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}}  # Turbocharger turbine
+            structure["systems"][system]["units"]["Turbine"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"}, "Power_out": {"type": "Wdot"}}  # Turbocharger turbine
             structure["systems"][system]["units"]["Turbine"]["equations"] = ["MassBalance"]
+            # Turbocharge shaft
+            structure["systems"][system]["units"]["TCshaft"]["flows"] = {"Power_in": {"type": "Wdot"}, "Power_out": {"type": "Wdot"}, "Losses_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["TCshaft"]["equations"] = []
             # Charge air cooler, HT side
             structure["systems"][system]["units"]["CAC_HT"]["flows"] = {"Air_in": {"type": "CPF"}, "HTWater_in": {"type": "IPF"},
                                         "Air_out": {"type": "CPF"}, "HTWater_out": {"type": "IPF"}}  # Charge air
@@ -89,77 +93,154 @@ def flowStructure():
             # Lubricating oil cooler
             structure["systems"][system]["units"]["LOC"]["flows"] = {"LubOil_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                      "LubOil_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}  # Lubricating oil
-            structure["systems"][system]["units"]["LOC"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["LOC"]["equations"] = ["MassBalance"]
             # Jacket water cooler
             structure["systems"][system]["units"]["JWC"]["flows"] = {"QdotJW_in": {"type": "Qdot"}, "HTWater_in": {"type": "IPF"},
                                                                     "HTWater_out": {"type": "IPF"}}  # Jacket water
-            structure["systems"][system]["units"]["JWC"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["JWC"]["equations"] = ["MassBalance"]
             # Engine cylinders
             structure["systems"][system]["units"]["Cyl"]["flows"] = {"Air_in": {"type": "CPF"},  "FuelPh_in": {"type": "CPF"}, "EG_out": {"type":"CPF"},
-                                     "Power_out": {"type": "Wdot"}, "FuelCh_in": {"type": "Wdot"}, "QdotJW_out": {"type":"Qdot"},
+                                     "Power_out": {"type": "Wdot"}, "FuelCh_in": {"type": "CEF"}, "QdotJW_out": {"type":"Qdot"},
                                      "LubOil_in": {"type": "IPF"}, "LubOil_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["Cyl"]["equations"] = ["MassBalance"]
             # HT cooling systems split
             structure["systems"][system]["units"]["HTsplit"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}  # Bypass valve
-            structure["systems"][system]["units"]["HTsplit"]["equations"] = ["MassBalance", "ConstantPressure", "ConstantTemperature"]
+            structure["systems"][system]["units"]["HTsplit"]["equations"] = ["MassBalance", "ConstantTemperature"]
             # HT cooling systems merge
             structure["systems"][system]["units"]["HTmerge"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_in": {"type": "IPF"}}
-            structure["systems"][system]["units"]["HTmerge"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["HTmerge"]["equations"] = ["MassBalance"]
             # LT cooling systems split
             structure["systems"][system]["units"]["LTsplit"]["flows"] = {"LTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}  # Bypass valve
-            structure["systems"][system]["units"]["LTsplit"]["equations"] = ["MassBalance", "ConstantPressure", "ConstantTemperature"]
+            structure["systems"][system]["units"]["LTsplit"]["equations"] = ["MassBalance", "ConstantTemperature"]
             # Only auxiliary engines AND main engines 2/3 have the exhaust gas boiler
             if system[0] == "A" or system[2] == "2" or system[2] == "3":
                 # Heat recovery steam generator
                 structure["systems"][system]["units"].update({"HRSG": {}})
                 structure["systems"][system]["units"]["HRSG"]["flows"] = {"Mix_in": {"type": "CPF"}, "Mix_out": {"type": "CPF"},
-                                          "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
+                                          "Steam_in": {"type": "SF", "state": "SL"}, "Steam_out": {"type": "SF", "state": "SV"}}
                 structure["systems"][system]["units"]["HRSG"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Auxiliary engines also have electric generators connected
             if system[0] == "A":
                 structure["systems"][system]["units"].update({"AG": {}})
-                structure["systems"][system]["units"]["AG"]["flows"] = {"Power_in": {"type": "Wdot"}, "Power_out": {"type": "Wdot"}, "Losses": {"type": "Qdot"}}
+                structure["systems"][system]["units"]["AG"]["flows"] = {"Power_in": {"type": "Wdot"}, "Power_out": {"type": "CEF"}, "Losses_out": {"type": "Qdot"}}
                 structure["systems"][system]["units"]["AG"]["equations"] = []
-        elif system == "Other":
-            structure["systems"][system]["units"] = {"Boiler": {}, "SWC13": {}, "SWC24": {},
+        elif system == "CoolingSystems":
+            structure["systems"][system]["units"] = { "SWC13": {}, "SWC24": {}, "HTcollector13": {}, "HTcollector24": {},
                                                      "LTcollector13": {}, "LTcollector24": {}, "LTdistribution13": {}, "LTdistribution24": {}}
-            # Auxiliary boiler
-            structure["systems"][system]["units"]["Boiler"]["flows"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
-                                        "Steam_in": {"type": "CPF"}, "Steam_out": {"type": "CPF"}}
-            structure["systems"][system]["units"]["Boiler"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Seawater cooler, ER 1/3
             structure["systems"][system]["units"]["SWC13"]["flows"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                      "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["SWC13"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["SWC13"]["equations"] = ["MassBalance"]
             # Seawater cooler, ER 2/4
             structure["systems"][system]["units"]["SWC24"]["flows"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
                                        "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["SWC24"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["SWC24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector13"]["flows"] = {
-                "LTWater_AE1_in": {"type": "IPF"}, "HTWater_AE1_in": {"type": "IPF"},
-                "LTWater_AE3_in": {"type": "IPF"}, "HTWater_AE3_in": {"type": "IPF"},
-                "LTWater_ME1_in": {"type": "IPF"}, "HTWater_ME1_in": {"type": "IPF"},
-                "LTWater_ME3_in": {"type": "IPF"}, "HTWater_ME3_in": {"type": "IPF"},
-                "LTWater_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["LTcollector13"]["equations"] = ["MassBalance", "ConstantPressure"]
+                "LTWater_AE1_in": {"type": "IPF"}, "LTWater_AE3_in": {"type": "IPF"},
+                "LTWater_ME1_in": {"type": "IPF"}, "LTWater_ME3_in": {"type": "IPF"},
+                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}}
+            structure["systems"][system]["units"]["LTcollector13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector24"]["flows"] = {
-                "LTWater_AE2_in": {"type": "IPF"}, "HTWater_AE2_in": {"type": "IPF"},
-                "LTWater_AE4_in": {"type": "IPF"}, "HTWater_AE4_in": {"type": "IPF"},
-                "LTWater_ME2_in": {"type": "IPF"}, "HTWater_ME2_in": {"type": "IPF"},
-                "LTWater_ME4_in": {"type": "IPF"}, "HTWater_ME4_in": {"type": "IPF"},
-                "LTWater_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["LTcollector24"]["equations"] = ["MassBalance", "ConstantPressure"]
+                "LTWater_AE2_in": {"type": "IPF"}, "LTWater_AE4_in": {"type": "IPF"},
+                "LTWater_ME2_in": {"type": "IPF"}, "LTWater_ME4_in": {"type": "IPF"},
+                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}}
+            structure["systems"][system]["units"]["LTcollector24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTdistribution13"]["flows"] = {
                 "LTWater_in": {"type": "IPF"},
                 "LTWater_AE3_out": {"type": "IPF"}, "LTWater_AE1_out": {"type": "IPF"},
                 "LTWater_ME1_out": {"type": "IPF"}, "LTWater_ME3_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["LTdistribution13"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["LTdistribution13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTdistribution24"]["flows"] = {
                 "LTWater_in": {"type": "IPF"},
                 "LTWater_AE2_out": {"type": "IPF"}, "LTWater_AE4_out": {"type": "IPF"},
                 "LTWater_ME2_out": {"type": "IPF"}, "LTWater_ME4_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["LTdistribution24"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["LTdistribution24"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HTcollector13"]["flows"] = {
+                "HTWater_AE1_in": {"type": "IPF"}, "HTWater_AE3_in": {"type": "IPF"},
+                "HTWater_ME1_in": {"type": "IPF"}, "HTWater_ME3_in": {"type": "IPF"},
+                "HTWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTcollector13"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HTcollector24"]["flows"] = {
+                "HTWater_AE2_in": {"type": "IPF"}, "HTWater_AE4_in": {"type": "IPF"},
+                "HTWater_ME2_in": {"type": "IPF"}, "HTWater_ME4_in": {"type": "IPF"},
+                "HTWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTcollector24"]["equations"] = ["MassBalance"]
+        elif system == "HTHR":
+            structure["systems"][system]["units"] = {"HTHR13": {}, "HTHR24": {}, "HTHRsplit": {}, "HTHRmerge": {},
+                            "HVACpreheater": {}, "HVACreheater": {}, "SteamHeater": {}, "HotWaterHeater": {}}
+            structure["systems"][system]["units"]["HTHR13"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"},
+                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTHR13"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HTHR24"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"},
+                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTHR24"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["SteamHeater"]["flows"] = {"Steam_in": {"type": "SF", "state": "SV"}, "Steam_out": {"type": "SF", "state": "SL"},
+                                                                             "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["SteamHeater"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["HotWaterHeater"]["flows"] = {"HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"},
+                                                                                "Qdot_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HotWaterHeater"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HVACpreheater"]["flows"] = {"HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"},
+                                                                                "Qdot_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HVACpreheater"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HVACreheater"]["flows"] = {"HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"},
+                                                                               "Qdot_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HVACreheater"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HTHRsplit"]["flows"] = {
+                "HRWater_in": {"type": "IPF"}, "HRWater_HWH_out": {"type": "IPF"}, "HRWater_PreH_out": {"type": "IPF"}, "HRWater_ReH_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTHRsplit"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HTHRmerge"]["flows"] = {
+                "HRWater_out": {"type": "IPF"}, "HRWater_HWH_in": {"type": "IPF"}, "HRWater_PreH_in": {"type": "IPF"}, "HRWater_ReH_in": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTHRmerge"]["equations"] = ["MassBalance"]
             # HT - LT central mixer
+        elif system == "Steam":
+            structure["systems"][system]["units"] = {"Boiler1": {}, "Boiler2": {}, "SteamCollector": {}, "SteamDistribution": {},
+                                                     "TankHeating": {}, "OtherTanks": {}, "HFOtankHeating": {}, "MachinerySpaceHeaters": {},
+                                                     "HFOheater": {}, "Galley": {}}
+            # Auxiliary boiler
+            structure["systems"][system]["units"]["Boiler1"]["flows"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
+                            "Steam_in": {"type": "SF", "state": "SL"}, "Steam_out": {"type": "SF", "state": "SV"}}
+            structure["systems"][system]["units"]["Boiler1"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["Boiler2"]["flows"] = {"Air_in": {"type": "CPF"}, "EG_out": {"type": "CPF"},
+                            "Steam_in": {"type": "SF", "state": "SL"}, "Steam_out": {"type": "SF", "state": "SV"}}
+            structure["systems"][system]["units"]["Boiler2"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Steam collector (collects steam in form of saturated liquid from all users)
+            structure["systems"][system]["units"]["SteamDistribution"]["flows"] = {
+                "Steam_HRSG_ME2_in": {"type": "SF", "state": "SV"}, "Steam_HRSG_ME3_in": {"type": "SF", "state": "SV"}, "Steam_AB1_in": {"type": "SF", "state": "SV"}, "Steam_AB2_in": {"type": "SF", "state": "SV"},
+                "Steam_HRSG_AE1_in": {"type": "SF", "state": "SV"}, "Steam_HRSG_AE2_in": {"type": "SF", "state": "SV"}, "Steam_HRSG_AE3_in": {"type": "SF", "state": "SV"}, "Steam_HRSG_AE4_in": {"type": "SF", "state": "SV"},
+                "Steam_TH_out": {"type": "SF", "state": "SV"}, "Steam_MSH_out": {"type": "SF", "state": "SV"}, "Steam_HH_out": {"type": "SF", "state": "SV"}, "Steam_G_out": {"type": "SF", "state": "SV"}}
+            structure["systems"][system]["units"]["SteamDistribution"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Steam distribution, sending around saturated vapor to all users
+            structure["systems"][system]["units"]["SteamCollector"]["flows"] = {
+                "Steam_HRSG_ME2_out": {"type": "SF", "state": "SL"}, "Steam_HRSG_ME3_out": {"type": "SF", "state": "SL"}, "Steam_AB1_out": {"type": "SF", "state": "SL"}, "Steam_AB2_out": {"type": "SF", "state": "SL"},
+                "Steam_HRSG_AE1_out": {"type": "SF", "state": "SL"}, "Steam_HRSG_AE2_out": {"type": "SF", "state": "SL"}, "Steam_HRSG_AE3_out": {"type": "SF", "state": "SL"}, "Steam_HRSG_AE4_out": {"type": "SF", "state": "SL"},
+                "Steam_TH_in": {"type": "SF", "state": "SL"}, "Steam_MSH_in": {"type": "SF", "state": "SL"}, "Steam_HH_in": {"type": "SF", "state": "SL"}, "Steam_G_in": {"type": "SF", "state": "SL"}}
+            structure["systems"][system]["units"]["SteamCollector"]["equations"] = ["MassBalance", "ConstantPressure"]
+            # Users
+            structure["systems"][system]["units"]["TankHeating"]["flows"] = {"Steam_out": {"type": "SF", "state": "SL"}, "Steam_in": {"type": "SF", "state": "SV"}, "Qdot_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["TankHeating"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["OtherTanks"]["flows"] = {"Steam_out": {"type": "SF", "state": "SL"}, "Steam_in": {"type": "SF", "state": "SV"}, "Qdot_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["OtherTanks"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["HFOtankHeating"]["flows"] = {"Steam_out": {"type": "SF", "state": "SL"}, "Steam_in": {"type": "SF", "state": "SV"}, "Qdot_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["HFOtankHeating"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["MachinerySpaceHeaters"]["flows"] = {"Steam_out": {"type": "SF", "state": "SL"}, "Steam_in": {"type": "SF", "state": "SV"}, "Qdot_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["MachinerySpaceHeaters"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["HFOheater"]["flows"] = {"Steam_out": {"type": "SF", "state": "SL"}, "Steam_in": {"type": "SF", "state": "SV"}, "Qdot_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["HFOheater"]["equations"] = ["MassBalance", "ConstantPressure"]
+            structure["systems"][system]["units"]["Galley"]["flows"] = {"Steam_out": {"type": "SF", "state": "SL"}, "Steam_in": {"type": "SF", "state": "SV"}, "Qdot_out": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["Galley"]["equations"] = ["MassBalance", "ConstantPressure"]
+
+        elif system == "Demands":
+            structure["systems"][system]["units"] = {"Electricity": {}, "Mechanical": {}, "Heat": {}}
+            structure["systems"][system]["units"]["Electricity"]["flows"] = {"Thrusters": {"type": "CEF"}, "HVAC": {"type": "CEF"}, "Other": {"type": "CEF"}}
+            structure["systems"][system]["units"]["Mechanical"]["flows"] = {"Propellers": {"type": "CEF"}}
+            structure["systems"][system]["units"]["Heat"]["flows"] = {
+                "HotWaterHeater": {"type": "Qdot"}, "HVACpreheater": {"type": "Qdot"}, "HVACreheater": {"type": "Qdot"},
+                "TankHeating": {"type": "Qdot"}, "OtherTanks": {"type": "Qdot"}, "HFOtankHeating": {"type": "Qdot"},
+                "MachinerySpaceHeaters": {"type": "Qdot"}, "HFOheater": {"type": "Qdot"}, "Galley": {"type": "Qdot"}}
+            structure["systems"][system]["units"]["Electricity"]["equations"] = []
+            structure["systems"][system]["units"]["Mechanical"]["equations"] = []
+            structure["systems"][system]["units"]["Heat"]["equations"] = []
         else:
             print("Error! There is an unrecognized element in the unit system structure at system level")
     print("...done!")
@@ -190,7 +271,7 @@ def streamsAssignment(dict_structure):
                     streams["Total"].append(d2df(system, unit, flow, ""))
             else:
                 for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
-                    if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF", "IPF"}:
+                    if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF", "IPF", "SF"}:
                         temp = flow.split(sep="_")
                         if temp[0] not in streams:
                             streams[temp[0]] = [d2df(system, unit, flow, "")]
@@ -243,6 +324,11 @@ def connectionAssignment(structure):
     print("Start assigning connections between components...", end="", flush=True)
     for system in structure["systems"]:
         if system[1] == "E":  # This basically means that this operation is only done if the system is an engine
+            # The turbocharger shaft is connected both to the turbine and to the compressor
+            structure["systems"][system]["units"]["Comp"]["flows"]["Power_in"]["Connections"] = [system + ":" + "TCshaft" + ":" + "Power_out"]
+            structure["systems"][system]["units"]["TCshaft"]["flows"]["Power_out"]["Connections"] = [system + ":" + "Comp" + ":" + "Power_in"]
+            structure["systems"][system]["units"]["Turbine"]["flows"]["Power_out"]["Connections"] = [system + ":" + "TCshaft" + ":" + "Power_in"]
+            structure["systems"][system]["units"]["TCshaft"]["flows"]["Power_in"]["Connections"] = [system + ":" + "Turbine" + ":" + "Power_out"]
             # The compressor is connected to the BP valve
             structure["systems"][system]["units"]["Comp"]["flows"]["Air_out"]["Connections"] = [system + ":" + "BPsplit" + ":" + "Air_in"]
             structure["systems"][system]["units"]["BPsplit"]["flows"]["Air_in"]["Connections"] = [system + ":" + "Comp" + ":" + "Air_out"]
@@ -293,42 +379,89 @@ def connectionAssignment(structure):
             # Inserting connections to the central components: LT collector and LT splitter. Separated for different engine rooms
             if system[2] in {"1","3"}:
                 # HT water from the HT splitter goes into the LT collector
-                structure["systems"][system]["units"]["HTsplit"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "LTcollector13" + ":" + "HTWater_"+system+"_in"]
-                structure["systems"]["Other"]["units"]["LTcollector13"]["flows"]["HTWater_"+system+"_in"]["Connections"] = [system + ":" + "HTsplit" + ":" + "LTWater_out"]
+                structure["systems"][system]["units"]["HTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector13" + ":" + "HTWater_"+system+"_in"]
+                structure["systems"]["CoolingSystems"]["units"]["HTcollector13"]["flows"]["HTWater_"+system+"_in"]["Connections"] = [system + ":" + "HTsplit" + ":" + "LTWater_out"]
                 # LT water from the LT split goes into the LT collector
-                structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "LTcollector13" + ":" + "LTWater_"+system+"_in"]
-                structure["systems"]["Other"]["units"]["LTcollector13"]["flows"]["LTWater_"+system+"_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_out"]
+                structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "LTWater_"+system+"_in"]
+                structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["LTWater_"+system+"_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_out"]
                 # LT water from the LT distribution goes into the charge air cooler
-                structure["systems"]["Other"]["units"]["LTdistribution13"]["flows"]["LTWater_"+system+"_out"]["Connections"] = [system + ":" + "CAC_LT" + ":" + "LTWater_in"]
-                structure["systems"][system]["units"]["CAC_LT"]["flows"]["LTWater_in"]["Connections"] = ["Other" + ":" + "LTdistribution13" + ":" + "LTWater_"+system+"_out"]
+                structure["systems"]["CoolingSystems"]["units"]["LTdistribution13"]["flows"]["LTWater_"+system+"_out"]["Connections"] = [system + ":" + "CAC_LT" + ":" + "LTWater_in"]
+                structure["systems"][system]["units"]["CAC_LT"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution13" + ":" + "LTWater_"+system+"_out"]
             if system[2] in {"2", "4"}:
                 # HT water from the HT splitter goes into the LT collector
-                structure["systems"][system]["units"]["HTsplit"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "LTcollector24" + ":" + "HTWater_" + system + "_in"]
-                structure["systems"]["Other"]["units"]["LTcollector24"]["flows"]["HTWater_" + system + "_in"]["Connections"] = [system + ":" + "HTsplit" + ":" + "LTWater_out"]
+                structure["systems"][system]["units"]["HTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector24" + ":" + "HTWater_" + system + "_in"]
+                structure["systems"]["CoolingSystems"]["units"]["HTcollector24"]["flows"]["HTWater_" + system + "_in"]["Connections"] = [system + ":" + "HTsplit" + ":" + "LTWater_out"]
                 # LT water from the LT split goes into the LT collector
-                structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "LTcollector24" + ":" + "LTWater_" + system + "_in"]
-                structure["systems"]["Other"]["units"]["LTcollector24"]["flows"]["LTWater_" + system + "_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_out"]
+                structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "LTWater_" + system + "_in"]
+                structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["LTWater_" + system + "_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_out"]
                 # LT water from the LT distribution goes into the charge air cooler
-                structure["systems"]["Other"]["units"]["LTdistribution24"]["flows"]["LTWater_" + system + "_out"]["Connections"] = [system + ":" + "CAC_LT" + ":" + "LTWater_in"]
-                structure["systems"][system]["units"]["CAC_LT"]["flows"]["LTWater_in"]["Connections"] = ["Other" + ":" + "LTdistribution24" + ":" + "LTWater_" + system + "_out"]
+                structure["systems"]["CoolingSystems"]["units"]["LTdistribution24"]["flows"]["LTWater_" + system + "_out"]["Connections"] = [system + ":" + "CAC_LT" + ":" + "LTWater_in"]
+                structure["systems"][system]["units"]["CAC_LT"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution24" + ":" + "LTWater_" + system + "_out"]
             if system[0] == "A" or system[2] == "2" or system[2] == "3":
                 # The HRSG inlet is connected to the engine turbine outlet
                 structure["systems"][system]["units"]["HRSG"]["flows"]["Mix_in"]["Connections"] = [system + ":" + "Turbine" + ":" + "Mix_out"]
                 structure["systems"][system]["units"]["Turbine"]["flows"]["Mix_out"]["Connections"] = [system + ":" + "HRSG" + ":" + "Mix_in"]
+                # On the steam side, the HRSG is connected to the Steam distribution and steam collector
+                structure["systems"][system]["units"]["HRSG"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_HRSG_" + system + "_out"]
+                structure["systems"][system]["units"]["HRSG"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_HRSG_" + system + "_in"]
+                structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_HRSG_" + system + "_out"]["Connections"] = [system + ":" + "HRSG" + ":" + "Steam_in"]
+                structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_HRSG_" + system + "_in"]["Connections"] = [system + ":" + "HRSG" + ":" + "Steam_out"]
             if system[0] == "A":
                 structure["systems"][system]["units"]["AG"]["flows"]["Power_in"]["Connections"] = [system + ":" + "Cyl" + ":" + "Power_out"]
                 structure["systems"][system]["units"]["Cyl"]["flows"]["Power_out"]["Connections"] = [system + ":" + "AG" + ":" + "Power_in"]
         elif system == "Other":
+            ############    HIGH TEMPERATURE WATER HEAT RECOVERY  ##########
+            # Including the connection between HT collectors and HTHR
+            structure["systems"]["HTHR"]["units"]["HTHR13"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector13" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTcollector13"]["flows"]["HTWater_out"]["Connections"] = ["HTHR" + ":" + "HTHR13" + ":" + "HTWater_in"]
+            structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector24" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTcollector24"]["flows"]["HTWater_out"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HTWater_in"]
+            # Then, the outlet of the HTHR is connected to the LT collector
+            structure["systems"]["HTHR"]["units"]["HTHR13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "HTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["HTWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR13" + ":" + "HTWater_out"]
+            structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "HTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["HTWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HTWater_out"]
+            # On the other side, the HTHR on the HR water side is connected to the rest of the HR systems.
+            structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_out"]
+            structure["systems"]["HTHR"]["units"]["HTHRmerge"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HRWater_in"]
+            structure["systems"]["HTHR"]["units"]["HTHR13"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HRWater_out"]
+            structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHR13" + ":" + "HRWater_in"]
+            structure["systems"]["HTHR"]["units"]["HTHR13"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "HRWater_in"]
+            structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR13" + ":" + "HRWater_out"]
+            # On the other side, the Steam heater is connected to the steam distribution system
+            structure["systems"]["HTHR"]["units"]["SteamDistribution"]["flows"]["Steam_SH__out"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "Steam_in"]
+            structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["Steam_in"]["Connections"] = ["HTHR" + ":" + "SteamDistribution" + ":" + "Steam_out"]
+            # Following the HR water, we get to the splitter
+            structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRsplit" + ":" + "HTWater_in"]
+            structure["systems"]["HTHR"]["units"]["HTHRsplit"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "HRWater_out"]
+            # The splitter is connected to the HVAC preheater, the HVAC reheater, and the Hot water heater
+            structure["systems"]["HTHR"]["units"]["HTHRsplit"]["flows"]["HRWater_PreH_out"]["Connections"] = ["HTHR" + ":" + "HVACpreheater" + ":" + "HRWater_in"]
+            structure["systems"]["HTHR"]["units"]["HVACpreheater"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHRsplit" + ":" + "HRWater_PreH_out"]
+            structure["systems"]["HTHR"]["units"]["HTHRsplit"]["flows"]["HRWater_ReH_out"]["Connections"] = ["HTHR" + ":" + "HVACreheater" + ":" + "HRWater_in"]
+            structure["systems"]["HTHR"]["units"]["HVACreheater"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHRsplit" + ":" + "HRWater_ReH_out"]
+            structure["systems"]["HTHR"]["units"]["HTHRsplit"]["flows"]["HRWater_HWH_out"]["Connections"] = ["HTHR" + ":" + "HotWaterHeater" + ":" + "HRWater_in"]
+            structure["systems"]["HTHR"]["units"]["HotWaterHeater"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHRsplit" + ":" + "HRWater_HWH_out"]
+            # After each of the three above, they are connected to the HTHR merge
+            structure["systems"]["HTHR"]["units"]["HTHRmerge"]["flows"]["HRWater_PreH_in"]["Connections"] = ["HTHR" + ":" + "HVACpreheater" + ":" + "HRWater_out"]
+            structure["systems"]["HTHR"]["units"]["HVACpreheater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_PreH_in"]
+            structure["systems"]["HTHR"]["units"]["HTHRmerge"]["flows"]["HRWater_ReH_in"]["Connections"] = ["HTHR" + ":" + "HVACreheater" + ":" + "HRWater_out"]
+            structure["systems"]["HTHR"]["units"]["HVACreheater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_ReH_in"]
+            structure["systems"]["HTHR"]["units"]["HTHRmerge"]["flows"]["HRWater_HWH_in"]["Connections"] = ["HTHR" + ":" + "HotWaterHeater" + ":" + "HRWater_out"]
+            structure["systems"]["HTHR"]["units"]["HotWaterHeater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_HWH_in"]
+            ############    CENTRAL COOLING SYSTEMS  ##########
             # The LT water from the collector goes to the sea water cooler, for both engine rooms
-            structure["systems"]["Other"]["units"]["SWC13"]["flows"]["LTWater_in"]["Connections"] = ["Other" + ":" + "LTcollector13" + ":" + "LTWater_out"]
-            structure["systems"]["Other"]["units"]["LTcollector13"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "SWC13" + ":" + "LTWater_in"]
-            structure["systems"]["Other"]["units"]["SWC24"]["flows"]["LTWater_in"]["Connections"] = ["Other" + ":" + "LTcollector24" + ":" + "LTWater_out"]
-            structure["systems"]["Other"]["units"]["LTcollector24"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "SWC24" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["SWC13"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "LTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "SWC13" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["SWC24"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "LTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "SWC24" + ":" + "LTWater_in"]
             # The LT water from the sea water cooler goes to the LT distribution, for both engine rooms
-            structure["systems"]["Other"]["units"]["SWC13"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "LTdistribution13" + ":" + "LTWater_in"]
-            structure["systems"]["Other"]["units"]["LTdistribution13"]["flows"]["LTWater_in"]["Connections"] = ["Other" + ":" + "SWC13" + ":" + "LTWater_out"]
-            structure["systems"]["Other"]["units"]["SWC24"]["flows"]["LTWater_out"]["Connections"] = ["Other" + ":" + "LTdistribution24" + ":" + "LTWater_in"]
-            structure["systems"]["Other"]["units"]["LTdistribution24"]["flows"]["LTWater_in"]["Connections"] = ["Other" + ":" + "SWC24" + ":" + "LTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["SWC13"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution13" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTdistribution13"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "SWC13" + ":" + "LTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["SWC24"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution24" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTdistribution24"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "SWC24" + ":" + "LTWater_out"]
+            ############    STEAM SYSTEMS  ##########
+            # here we set the connection between the steam collector and the different steam generators
+
     print("...done!")
     return structure
 
