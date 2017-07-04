@@ -111,6 +111,7 @@ df_out = pd.DataFrame() # Make a new DataFrame so the process of converting to n
 for i in range(len(list(df))):
     df_out[list(df)[i]] = pd.to_numeric(df[list(df)[i]],errors='ignore')
 
+
 print('Saving database...\n')
 #df_out.to_hdf(database_path + 'all_data_1year.h5','table')
 df_out.to_hdf(database_path + 'all_data_1year_comp.h5','table',complevel=9,complib='blosc') # compressed version
@@ -122,4 +123,20 @@ print('All done!')
 # In[12]:
 
 df = pd.read_hdf(database_path + 'all_data_1year_comp.h5','table')
-df.describe()
+
+df['ME2 TC INL EXH TEMP:2161:C:Average:900']
+
+s= s.dropna()
+s.index=pd.to_datetime(s.index)
+
+s2 = s.resample('15min').mean()
+
+s2.to_excel(database_path+'s2.xlsx')
+s.to_excel(database_path+'s.xlsx')
+
+
+#%%
+headers = open(database_path + 'headers.csv','w')
+a = list(df)
+for item in a:
+    headers.write('\n' + item)

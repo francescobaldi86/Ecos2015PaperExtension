@@ -22,10 +22,20 @@ headers_name = df_headers_chosen['ORIGINAL_HEADER'].tolist()
 
 
 #%%
+# Do a resample of the data to 15-min interval. This will give a -49s offset from the original dataset.
+
 
 selected_df = pd.DataFrame()
 for i in headers_name:
     selected_df[i] = pd.to_numeric(df[i],errors='ignore')
+
+selected_df.index=pd.to_datetime(selected_df.index)
+df2 = selected_df.resample('15min').mean()
+
+df2.to_hdf(database_path + 'resampled_selected_df.h5','table',complevel=9,complib='blosc')
+
+#%%
+# This section is not needed anymore as it is covered by the .resample method above...
 
 df_out = pd.DataFrame()
 for i in list(selected_df):
@@ -39,5 +49,7 @@ df_out.to_hdf(database_path + 'selected_df.h5','table',complevel=9,complib='blos
 
 #%%
 
-load_df = pd.read_hdf(database_path + 'selected_df.h5','table')
-load_df
+load_df = pd.read_hdf(database_path + 'resampled_selected_df.h5','table')
+load_df['Boiler_starbord']['2014-04-01'].mean()
+
+df['Boiler_starbord']['2014-03-07']
