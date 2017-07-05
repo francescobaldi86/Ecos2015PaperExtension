@@ -118,25 +118,38 @@ df_out.to_hdf(database_path + 'all_data_1year_comp.h5','table',complevel=9,compl
 
 print('All done!')
 
-# Load the data and see if it can be used..
+#%%
 
-# In[12]:
+# For saving headers, which is only done once.
+
+
+headers = open(database_path + 'headers.csv','w')
+a = list(df_out)
+for item in a:
+    headers.write('\n' + item)
+headers.close()
+
+##
+#%%
+##
+# Load the data and see if it can be used..
+# Just for testing ..
+#
+#
+
 
 df = pd.read_hdf(database_path + 'all_data_1year_comp.h5','table')
 
-df['ME2 TC INL EXH TEMP:2161:C:Average:900']
+df['ME2 TC INL EXH TEMP:2161:C:Average:900'].resample('15min')
+
+s = df['ME2 TC INL EXH TEMP:2161:C:Average:900']
 
 s= s.dropna()
 s.index=pd.to_datetime(s.index)
 
 s2 = s.resample('15min').mean()
 
+s2
+
 s2.to_excel(database_path+'s2.xlsx')
 s.to_excel(database_path+'s.xlsx')
-
-
-#%%
-headers = open(database_path + 'headers.csv','w')
-a = list(df)
-for item in a:
-    headers.write('\n' + item)
