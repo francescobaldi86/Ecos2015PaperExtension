@@ -64,6 +64,11 @@ load_df['Boiler_starbord']['2014-02-01'].mean()
 
 load_df.describe()
 
+
+
+
+load_df['Crew']['2014-02']
+
 #newdf = load_df['2013-12-02':'2014-12-02']
 
 newdf.describe()

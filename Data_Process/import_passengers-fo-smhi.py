@@ -44,7 +44,7 @@ def remove_non_ascii(text):
 # Doing some manual import of the passengers and crew-lists, so it can be included
 # in the DB from a CSV.
 
-df = pd.read_excel(xls_data_path+'2014_crew_pass.xlsx',index_col=0)
+df = pd.read_excel(xls_data_path+'2014_crew_passengers.xlsx',index_col=0)
 df.index = pd.to_datetime(df.index)
 df2 = df.resample('15min').pad()
 df2.to_csv(csv_data_path+'passengers_2014.csv')
@@ -54,7 +54,6 @@ a = list(df)
 for item in a:
     headers.write('\n' + item)
 headers.close()
-
 
 
 #%%
@@ -74,6 +73,24 @@ a = list(df)
 for item in a:
     headers.write('\n' + item)
 headers.close()
+
+
+
+#%%
+# Doing some manual import of the passengers and crew-lists, so it can be included
+# in the DB from a CSV.
+
+df = pd.read_excel(xls_data_path+'2014_fw_gw_distance.xlsx',index_col=0)
+df.index = pd.to_datetime(df.index)
+df2 = df.resample('15min').pad()
+df2.to_csv(csv_data_path+'2014_fw_gw_distance.csv')
+
+headers = open(database_path + '3_headers.csv','w')
+a = list(df)
+for item in a:
+    headers.write('\n' + item)
+headers.close()
+
 
 
 #%%
