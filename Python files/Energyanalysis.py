@@ -8,26 +8,9 @@ import os
 
 
 
-def energyAnalysisLauncher(processed, dict_structure, CONSTANTS, run_decision):
-    try:
-        # Checking first if the file exists
-        processed_temp = pd.read_hdf(CONSTANTS["filenames"]["dataset_output"], 'processed')
-        if run_decision == "no":
-            # If the file exists AND we want to use it, we just assign the "processed" variable to it
-            processed = processed_temp
-        elif run_decision == "yes":
-            # Otherwise, we simply do as if it didn't exist
-            del processed_temp
-            os.remove(CONSTANTS["filenames"]["dataset_output"])
-            processed = propertyCalculator(processed, dict_structure, CONSTANTS)
-            processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
-        else:
-            print("The data_structure_preparation value should either be yes or no")
-    except FileNotFoundError:
-        processed = propertyCalculator(processed, dict_structure, CONSTANTS)
-        processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
+def energyAnalysisLauncher(processed, dict_structure, CONSTANTS):
+    processed = propertyCalculator(processed, dict_structure, CONSTANTS)
     return processed
-
 
 def propertyCalculator(processed, dict_structure, CONSTANTS):
     print("Started calculating flow properties...", end="", flush=True)
@@ -42,7 +25,7 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                             temp = processed[d2df(system,unit,flow,"T")]  # .values()
                             # If the specific enthalpy is available already, it needs to be calculated
                             if ("Air" in flow) or ("BP" in flow):
-                                print("Calculating properties for " + system + "_" + unit + "_" + flow)
+                                # print("Calculating properties for " + system + "_" + unit + "_" + flow)
                                 # dh = pd.Series(cp.PropsSI('H','T',np.array(temp),'P',np.array(press), 'Air.mix'), index=df_index) - pd.Series(cp.PropsSI('H', 'T', np.array(processed["T_0"]), 'P', CONSTANTS["General"]["P_ATM"], 'Air.mix'), index=df_index)
                                 # ds = pd.Series(cp.PropsSI('S', 'T', np.array(temp), 'P', np.array(press), 'Air.mix'), index=df_index) - pd.Series(cp.PropsSI('S', 'T', np.array(processed["T_0"]), 'P', CONSTANTS["General"]["P_ATM"], 'Air.mix'), index=df_index)
                                 dh = pd.Series(enthalpyCalculator(np.array(temp), CONSTANTS), index=df_index) - pd.Series(enthalpyCalculator(np.array(processed["T_0"]), CONSTANTS), index=df_index)
@@ -88,7 +71,8 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                             processed[d2df(system, unit, flow, "Edot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "h")]
                             processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "b")]
                         else:
-                            print("Couldn't calculate the properties for the {} flow, didn't have all what I needed, {}% of the values are NaN".format(system+":"+unit+":"+flow, processed[d2df(system,unit,flow,"T")].isnull().sum()/len(processed[d2df(system,unit,flow,"T")])*100))
+                            pass
+                            # print("Couldn't calculate the properties for the {} flow, didn't have all what I needed, {}% of the values are NaN".format(system+":"+unit+":"+flow, processed[d2df(system,unit,flow,"T")].isnull().sum()/len(processed[d2df(system,unit,flow,"T")])*100))
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "IPF":
                         if processed[d2df(system,unit,flow,"T")].isnull().sum() != len(processed[d2df(system,unit,flow,"T")]):
                             if "Water" in flow:
@@ -105,7 +89,8 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                             processed[d2df(system, unit, flow, "Edot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "h")]
                             processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "b")]
                         else:
-                            print("Couldn't calculate the properties for the {} flow, didn't have all what I needed, {}% of the values are NaN".format(system + ":" + unit + ":" + flow, processed[d2df(system,unit,flow,"T")].isnull().sum()/len(processed[d2df(system,unit,flow,"T")])*100))
+                            pass
+                            #print("Couldn't calculate the properties for the {} flow, didn't have all what I needed, {}% of the values are NaN".format(system + ":" + unit + ":" + flow, processed[d2df(system,unit,flow,"T")].isnull().sum()/len(processed[d2df(system,unit,flow,"T")])*100))
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "SF":
                         if dict_structure["systems"][system]["units"][unit]["flows"][flow]["state"] == "SL":
                             dh = CONSTANTS["Steam"]["H_STEAM_LS"] - CONSTANTS["General"]["CP_WATER"] * (processed["T_0"] - 273.15)

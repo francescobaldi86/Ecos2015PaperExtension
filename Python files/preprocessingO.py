@@ -11,19 +11,19 @@ def assumptions(raw, processed, CONSTANTS, hd):
     # ALL ENGINES
     for system in {"ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4"}:
         # The pressure at the turbocharger air inlet and exhaust outlet is equal to the atmospheric pressure
-        processed[d2df(system,"Comp","Air_in","p")][:] = CONSTANTS["General"]["P_ATM"]
-        processed[d2df(system, "Turbine", "Mix_out", "p")][:] = CONSTANTS["General"]["P_ATM"]
+        processed.loc[:,d2df(system,"Comp","Air_in","p")] = CONSTANTS["General"]["P_ATM"]
+        processed.loc[:,d2df(system, "Turbine", "Mix_out", "p")] = CONSTANTS["General"]["P_ATM"]
         # Temperature in the engine room, i.e. inlet to the compressor of the TC
         processed[d2df(system, "Comp", "Air_in", "T")] = raw[hd["ER_AIR_T_"]] + 273.15
         # Assuming that the pressure in the exhaust gas is 90% of the pressure in the inlet manifold. Somewhat reasonable
         processed[d2df(system, "Cyl", "EG_out", "p")] = (0.9 * raw[hd[system + "-CAC_AIR_P_OUT"]] + 1.01325) * 100000
         # Assuming the pressure of the fuel to be around 9 barg, based on measurements from ME4
-        processed[d2df(system, "Cyl", "FuelPh_in", "p")][:] = (9 + 1.01325) * 10e5
+        processed.loc[:,d2df(system, "Cyl", "FuelPh_in", "p")] = (9 + 1.01325) * 10e5
         # Assuming the temperature of the cylinder wall to be 150 degC
-        processed[d2df(system, "Cyl", "QdotJW_out", "T")][:] = 150 + 273.15
-        processed[d2df(system, "JWC", "QdotJW_in", "T")][:] = 150 + 273.15
+        processed.loc[:,d2df(system, "Cyl", "QdotJW_out", "T")] = 150 + 273.15
+        processed.loc[:,d2df(system, "JWC", "QdotJW_in", "T")] = 150 + 273.15
         # Assuming a temperature of 100 degC for heat losses from the TC shaft
-        processed[d2df(system, "TCshaft", "Losses_out", "T")][:] = 100 + 273.15
+        processed.loc[:,d2df(system, "TCshaft", "Losses_out", "T")] = 100 + 273.15
         # Assuming the steam pressure and temperature in the HRSG to be constant...
         hrsg_pressure_assumption = (6 + 1.01325) * 100000
         #if system in {"AE1", "AE2", "AE3", "AE4", "ME2", "ME3"}:
@@ -32,8 +32,8 @@ def assumptions(raw, processed, CONSTANTS, hd):
         #    processed[d2df(system, "HRSG", "Steam_out", "T")] = processed[d2df(system, "HRSG", "Steam_in", "T")]
         #    processed[d2df(system, "HRSG", "Steam_out", "p")] = processed[d2df(system, "HRSG", "Steam_in", "p")]
         if system in {"AE1", "AE2", "AE3", "AE4"}:
-            processed[d2df(system, "AG", "Losses_out", "T")][:] = 100 + 273.15
-            processed[d2df(system, "Cyl", "Power_out", "omega")][:] = 750
+            processed.loc[:,d2df(system, "AG", "Losses_out", "T")] = 100 + 273.15
+            processed.loc[:,d2df(system, "Cyl", "Power_out", "omega")] = 750
     # Others
     processed["T_0"] = raw[hd["SEA_SW_T_"]] + 273.15
     processed["T_air"] = raw[hd["OUTSIDE_AIR_T_"]] + 273.15
@@ -42,10 +42,15 @@ def assumptions(raw, processed, CONSTANTS, hd):
     # HTHR system
     processed.loc[:,"HTHR:SteamHeater:HRWater_out:T"] = 90 + 273.15 # From the heat balance, the temperature needs to rise at 90 degrees
     processed.loc[:,"HTHR:SteamHeater:HRWater_out:mdot"] = 298 / 3600 * CONSTANTS["General"]["RHO_W"] # the original value is in m3/h
-    # It is here assumed that the water flow is split equally among the three consumers. In practice, it does not matter
-    processed.loc[:, "HTHR:HVACpreheater:HRWater_in:mdot"] = processed.loc[:,"HTHR:SteamHeater:HRWater_out:mdot"] / 3
-    processed.loc[:, "HTHR:HVACreheater:HRWater_in:mdot"] = processed.loc[:, "HTHR:SteamHeater:HRWater_out:mdot"] / 3
-    processed.loc[:, "HTHR:HotWaterHeater:HRWater_in:mdot"] = processed.loc[:, "HTHR:SteamHeater:HRWater_out:mdot"] / 3
+    processed.loc[:, "HTHR:HVACpreheater:Qdot_out:T"] = (50 - 23) / np.log((50+273.15)/(23+273.15))
+    processed.loc[:, "HTHR:HVACreheater:Qdot_out:T"] = (80 - 60) / np.log((80 + 273.15) / (60 + 273.15))
+    processed.loc[:, "HTHR:HotWaterHeater:Qdot_out:T"] = 70 + 273.15
+    processed.loc[:, "Steam:TankHeating:Qdot_out:T"] = 60 + 273.15
+    processed.loc[:, "Steam:MachinerySpaceHeaters:Qdot_out:T"] = processed["HTHR:HVACpreheater:Qdot_out:T"]
+    processed.loc[:, "Steam:Galley:Qdot_out:T"] = 90 + 273.15
+    processed.loc[:, "Steam:OtherTanks:Qdot_out:T"] = 60 + 273.15
+    processed.loc[:, "Steam:HFOtankHeating:Qdot_out:T"] = 75 + 273.15 # some sort of average value...
+    processed.loc[:, "Steam:HFOheater:Qdot_out:T"] = (110 - 75) / np.log((110 + 273.15) / (75 + 273.15))
     return processed
 
 
@@ -63,6 +68,8 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
         system_set = {"AE1", "AE2", "AE3", "AE4"}
     elif system_type == "Other":
         system_set = {"CoolingSystems", "Steam", "HTHR"}
+    elif system_type == "Demands":
+        system_set = {"Demands"}
     else:
         print("Error in the definition of the system type. Only MainEngines, AuxEngines and Other are accepter. Given {}".format(system_type))
     counter_mdot_tot = 0
@@ -88,7 +95,7 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
                     print("Equation not recognized")
                         # Trivial assignment: doing this if the flow is connected with other flows
     processed = unitOffCheck(processed, dict_structure, CONSTANTS, call_ID)
-    for system in dict_structure["systems"]:
+    for system in system_set:
         for unit in dict_structure["systems"][system]["units"]:
             (counter_c,processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, call_ID)
             counter_c_tot = counter_c_tot + counter_c
@@ -112,7 +119,7 @@ def unitOffCheck(processed, dict_structure, CONSTANTS, call_ID):
                             else:
                                 processed.loc[~processed[system + ":" + "on"], d2df(system, unit, flow, property)] = CONSTANTS["General"]["PROPERTY_LIST"]["REF"][property]
                     except KeyError:
-                        a = 0
+                        print("Something went wrong when checking the engine on/off")
         elif processed[system + ":" + "on"].isnull().sum() < len(processed[system + ":" + "on"]):
             print("Something went wrong here, the system -on- field has NaNs for system {}".format(system))
         else:
@@ -125,15 +132,15 @@ def connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, cal
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
     counter = 0
     for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
-        if system+":"+unit+":"+flow == "ME2:LTsplit:LTWater_out":
-            pass
+        if system+":"+unit+":"+flow == "CoolingSystems:HTcollector13:HTWater_out":
+            a = 0
         if "Connections" in dict_structure["systems"][system]["units"][unit]["flows"][flow]:
             for connected_flow in dict_structure["systems"][system]["units"][unit]["flows"][flow]["Connections"]:
                 for property in CONSTANTS["General"]["PROPERTY_LIST"][dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"]]:
                     ID = d2df(system,unit,flow,property)
                     ID_c = connected_flow + ":" + property
                     if processed[ID].isnull().sum() != len(processed[ID]):
-                        if processed[ID_c].isnull().sum() == len(processed[ID_c]):
+                        if (processed[ID_c].isnull().sum() == len(processed[ID_c])) or (sum(processed[ID_c]) == 0):
                             processed[ID_c] = processed[ID]
                             counter = counter + 1
                         elif (processed[ID] - processed[ID_c]).sum() > processed[ID].max():

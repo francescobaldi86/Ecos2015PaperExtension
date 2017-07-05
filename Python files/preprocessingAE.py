@@ -78,7 +78,7 @@ def auxEnginePowerCalculation(processed, CONSTANTS):
         eta_AG =  CONSTANTS["AuxEngines"]["AG"]["ETA_DES"] - CONSTANTS["AuxEngines"]["AG"]["A"] * np.exp(
             -CONSTANTS["AuxEngines"]["AG"]["k"] * (load))
         processed[d2df(system,"AG","Power_in","Edot")] = processed[d2df(system,"AG","Power_out","Edot")] / eta_AG
-        processed[d2df(system,"AG","Losses","Qdot")] = processed[d2df(system,"AG","Power_in","Edot")] - processed[d2df(system,"AG","Power_out","Edot")]
+        processed[d2df(system,"AG","Losses_out","Edot")] = processed[d2df(system,"AG","Power_in","Edot")] - processed[d2df(system,"AG","Power_out","Edot")]
         processed[d2df(system,"Cyl","Power_out","Edot")] = processed[d2df(system,"AG","Power_in","Edot")]
     print("...done!")
     return processed
@@ -153,7 +153,7 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
         processed[d2df(system, "Comp", "Power_in", "Edot")] = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "BPsplit", "Air_in", "mdot")] * (
             processed[d2df(system, "Comp", "Air_out", "T")] - processed[d2df(system, "Comp", "Air_in", "T")])
         # Losses at the TC shaft level are calculated
-        processed[d2df(system, "TCshaft", "Losses_out", "Qdot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] - processed[d2df(system, "Comp", "Power_in", "Edot")]
+        processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] - processed[d2df(system, "Comp", "Power_in", "Edot")]
 
         # processed[system + ":EG_Composition"] = ppo.mixtureComposition(
         #     processed[d2df(system, "Cyl", "Air_in", "mdot")],

@@ -2,6 +2,16 @@ import pandas as pd
 import numpy as np
 from helpers import d2df
 
+def systemCheck(processed, CONSTANTS, dict_structure):
+    enginesCheck(processed, CONSTANTS)
+    HTHRcheck(processed, CONSTANTS)
+    SteamCheck(processed, CONSTANTS, dict_structure)
+    missingValues(processed, dict_structure, CONSTANTS)
+    massBalance(processed, dict_structure, CONSTANTS)
+    energyBalance(processed, dict_structure, CONSTANTS)
+
+
+
 def enginesCheck(processed, CONSTANTS):
     # This function checks that all relative values are consistent
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
@@ -46,6 +56,65 @@ def enginesCheck(processed, CONSTANTS):
     text_file.close()
     print("...done!")
 
+
+def HTHRcheck(processed, CONSTANTS):
+    # This function checks that all relative values are consistent
+    tot = len(processed.index)
+    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
+    print("Started consistency check...")
+    text_file.write("\n *** CONSISTENTCY CHECK FOR THE HTHR SYSTEM *** \n")
+    # Checking that the temperature at the end of the circuit is lower than 90 degC
+    temp = sum(processed["HTHR:HTHR13:HTWater_in:T"] <= 90 + 273.15) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HTHR-13 inlet temperatures on the HR side are consistent for " + str(temp) + " % of the datapoints \n")
+    # HTHR 13 Temperature consistency (HT side)
+    temp = sum(processed["HTHR:HTHR13:HTWater_in:T"] >= processed["HTHR:HTHR13:HTWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HTHR-13 (HT side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # HTHR 13 Temperature consistency (HR side)
+    temp = sum(processed["HTHR:HTHR13:HRWater_in:T"] <= processed["HTHR:HTHR13:HRWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HTHR-13 (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # HTHR 24 Temperature consistency (HT side)
+    temp = sum(processed["HTHR:HTHR24:HTWater_in:T"] >= processed["HTHR:HTHR24:HTWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HTHR-24 (HT side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # HTHR 24 Temperature consistency (HR side)
+    temp = sum(processed["HTHR:HTHR24:HRWater_in:T"] <= processed["HTHR:HTHR24:HRWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HTHR-24 (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # Steam heater Temperature consistency (HR side)
+    temp = sum(processed["HTHR:SteamHeater:HRWater_in:T"] <= processed["HTHR:SteamHeater:HRWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " Steam heater (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # Demands on the HTHR system: HVAC Preheater
+    temp = sum(processed["HTHR:HVACpreheater:HRWater_in:T"] >= processed["HTHR:HVACpreheater:HRWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HVAC-Preheater (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # Demands on the HTHR system: HVAC Reheater
+    temp = sum(processed["HTHR:HVACreheater:HRWater_in:T"] >= processed["HTHR:HVACreheater:HRWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " HVAC-Reheater (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+    # Demands on the HTHR system: Hot water heater
+    temp = sum(processed["HTHR:HotWaterHeater:HRWater_in:T"] >= processed["HTHR:HotWaterHeater:HRWater_out:T"]) / tot * 100
+    warn = "WARNING " if temp < 95 else ""
+    text_file.write(warn + " Hot Water Heater (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
+
+    text_file.close()
+
+def SteamCheck(processed, CONSTANTS, dict_structure):
+    # This function checks that all relative values are consistent
+    tot = len(processed.index)
+    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
+    print("Started consistency check...")
+    text_file.write("\n *** CONSISTENTCY CHECK FOR THE STEAM SYSTEMS *** \n")
+    for unit in dict_structure["systems"]["Steam"]["units"]:
+        if unit in {"TankHeating", "OtherTanks", "HFOtankHeating", "MachinerySpaceHeaters", "HFOheater", "Galley"}:
+            temp = sum(processed[d2df("Steam", unit, "Steam_in", "mdot")] > 0) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn + unit + "Steam mass flows are consistent for " + str(temp) + " % of the datapoints \n")
+
+    text_file.close()
 
 def missingValues(processed, dict_structure, CONSTANTS):
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")

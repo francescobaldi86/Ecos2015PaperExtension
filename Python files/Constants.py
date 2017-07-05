@@ -90,7 +90,7 @@ def mainEngines(CONSTANTS):
     #                                                 np.array([0.922, 0.902, 0.876, 0.871]), 1)
     output["POLY_LOAD_2_QDOT_HT"] = np.array([0.7826 , 0.2204 , 0])
     output["POLY_LOAD_2_QDOT_LT"] = np.array([-0.1206 , 1.0978 , 0])
-    output["POLY_H_2_QDOT"] = np.array([-1.74E-3, -1.36E-2, 3.48E1])
+    output["POLY_H_2_QDOT"] = np.array([-3.65E-4, +3.17E-2, 2.85E1])
 # output["POLY_FUEL_RACK_2_MASS_FUEL_CYCLE"] = polyfit([0.233333, 0.5, 0.7, 0.8, 1],[0.01726, 0.02435, 0.03081, 0.03397, 0.03869],1)  
     output["BSFC_ISO_DES"] = np.polyval(output["POLY_LOAD_2_ISO_BSFC"], 1)
 # Function handle that allows to calculate the fuel load
@@ -111,7 +111,7 @@ def mainEngines(CONSTANTS):
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
     output["FRP_DES"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}  # Value of the fuel rack position at 100% load
     # output["BYPASS_FLOW"] = 1.1
-    output["STATIC_HEAD"] = 19.2
+    output["STATIC_HEAD"] = 19
     return output
     
     
@@ -137,7 +137,7 @@ def auxiliaryEngines(CONSTANTS):
 # Assuming that the amount of heat from the engine to the HT cooling systems behaves in the same way as that of the main engines.
     output["POLY_LOAD_2_QDOT_HT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_HT"]
     output["POLY_LOAD_2_QDOT_LT"] = CONSTANTS["MainEngines"]["POLY_LOAD_2_QDOT_LT"]
-    output["POLY_H_2_QDOT"] = np.array([-3.65E-4, +3.17E-2, 2.85E1])
+    output["POLY_H_2_QDOT"] = np.array([-1.74E-3, -1.36E-2, 3.48E1])
 # Assuming that the sare of the charge air cooling heat going to the HT stage is linearly increasing from 0 to its value at the engine design point.
     output["POLY_LOAD_2_SHARE_CAC"] = np.polyfit([0, 1], [0, output["QDOT_2_CAC_HT_DES"]/(output["QDOT_2_CAC_HT_DES"]+output["QDOT_2_CAC_LT_DES"])], 1)
     output["MFR_LT"] = 60.0 * CONSTANTS["General"]["RHO_W"] / 3600.0  # Mass flow rate of LT cooling water, in [kg/s]
@@ -149,7 +149,7 @@ def auxiliaryEngines(CONSTANTS):
     output["AG"]["A"] = 0.18
     output["AG"]["k"] = 5
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
-    output["STATIC_HEAD"] = 10
+    output["STATIC_HEAD"] = 15
     return output
 
 

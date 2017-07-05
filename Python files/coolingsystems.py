@@ -68,9 +68,11 @@ def centralCoolingSystems(processed, CONSTANTS):
     ER13set = {"AE1", "AE3", "ME1", "ME3"}
     # Calculating the temperature at the LT collector outlet
     processed[d2df("CoolingSystems", "LTcollector13", "LTWater_out", "T")] = (
-        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "T")] *
-            processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) /
-        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set))
+        (sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "T")] *
+            processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) +
+        processed["HTHR:HTHR13:HTWater_out:mdot"] * processed["HTHR:HTHR13:HTWater_out:T"]) / (
+        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) +
+        processed["HTHR:HTHR13:HTWater_out:mdot"]))
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
     processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")] = (
         sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "T")] *
@@ -83,9 +85,11 @@ def centralCoolingSystems(processed, CONSTANTS):
     ER24set = {"AE2", "AE4", "ME2", "ME4"}
     # Calculating the temperature at the LT collector outlet
     processed[d2df("CoolingSystems", "LTcollector24", "LTWater_out", "T")] = (
-        sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "T")] *
-            processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) /
-        sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set))
+        (sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "T")] *
+             processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) +
+         processed["HTHR:HTHR24:HTWater_out:mdot"] * processed["HTHR:HTHR24:HTWater_out:T"]) / (
+            sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) +
+            processed["HTHR:HTHR24:HTWater_out:mdot"]))
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
     processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")] = (
         sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "T")] *
@@ -102,16 +106,20 @@ def coolingFlows(processed, CONSTANTS, engine_type):
     print("Started calculating cooling flows for the {}...".format(engine_type), end="", flush=True)
     # This function calculates the different flows related to the cooling systems of the main engines.
     for system in CONSTANTS["General"]["NAMES"][engine_type]:
+        processed.loc[processed[d2df(system, "JWC", "HTWater_in", "p")] < 150000,d2df(system, "JWC", "HTWater_in", "p")] = 190000
+        processed.loc[processed[d2df(system, "CAC_LT", "LTWater_in", "p")] < 150000, d2df(system, "CAC_LT", "LTWater_in", "p")] = 190000
+        head_HT = processed[d2df(system, "JWC", "HTWater_in", "p")][~processed[system+":on"]].mean()
+        heat_LT = processed[d2df(system, "CAC_LT", "LTWater_in", "p")][~processed[system+":on"]].mean()
         processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
-                       processed[d2df(system, "CAC_LT", "LTWater_in", "p")], CONSTANTS, engine_type)
+                       processed[d2df(system, "CAC_LT", "LTWater_in", "p")], heat_LT, CONSTANTS, engine_type)
         processed[d2df(system, "JWC", "HTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
-                       processed[d2df(system, "JWC", "HTWater_in", "p")], CONSTANTS, engine_type)
+                       processed[d2df(system, "JWC", "HTWater_in", "p")], head_HT, CONSTANTS, engine_type)
         processed.loc[:, d2df(system, "LOC", "LubOil_out", "mdot")] = CONSTANTS[engine_type]["MFR_LO"]
     print("done!")
     return processed
 
 
-def pumpFlow(rpm, pressure, CONSTANTS, engine_type):
+def pumpFlow(rpm, pressure, static_head, CONSTANTS, engine_type):
     "Engine driven cooling water pump HT/LT for ME. Inputs engine-rpm and gauge-pressure [bar] CW."
     # The equation was derived from the pump diagram in the engine project manual at 500 rpm
     # H = -0.0004 Q^2 + 0.0317 Q + 28.47
@@ -121,8 +129,8 @@ def pumpFlow(rpm, pressure, CONSTANTS, engine_type):
     #    print('Out of domain, P')
     # The pump formula is for 500 rpm. So the pressure input must be scaled so
     # it "fits" the right rpm using the affinity laws
-    static_head = CONSTANTS[engine_type]["STATIC_HEAD"]
-    H = (pressure / (9.81 * 1000) - static_head) * (CONSTANTS[engine_type]["RPM_DES"]/(rpm+1))**2
+    # static_head = CONSTANTS[engine_type]["STATIC_HEAD"]
+    H = (pressure - static_head) / (9.81 * 1000) * (CONSTANTS[engine_type]["RPM_DES"]/(rpm+1))**2
 
     a = CONSTANTS[engine_type]["POLY_H_2_QDOT"][0]
     b = CONSTANTS[engine_type]["POLY_H_2_QDOT"][1]
@@ -133,5 +141,5 @@ def pumpFlow(rpm, pressure, CONSTANTS, engine_type):
     # The value which is calculated is for if the pump was running on 500 rpm
     # Account for the affinity laws
     Q_out = Q * (rpm/CONSTANTS[engine_type]["RPM_DES"]) * 1000 / 3600 # Also converting from m3/h to kg/s
-    Q_out[Q_out<0] = 1
+    Q_out[Q_out.isnull()] = -b/(2*a)
     return Q_out

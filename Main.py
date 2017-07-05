@@ -24,10 +24,8 @@
 # - EXERGY ANALYSIS
 
 
-do_processed_data_preparation = "yes"
-do_main_engines_analysis = "yes"
-do_aux_engines_analysis = "yes"
-do_energy_analysis = "yes"
+do_processed_data_preparation = "no"
+do_data_processing = "yes"
 
 
 
@@ -83,34 +81,49 @@ CONSTANTS = kk.constantsSetting()
 CONSTANTS["filenames"] = filenames
 (dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"], do_processed_data_preparation)
 
-# First updating the "CONSTANTS" dictionary with the some additional information
-processed = ppo.assumptions(dataset_raw, processed, CONSTANTS, header_names)
-# Updating the fields of the MainEngines and the auxiliary engines
-if do_main_engines_analysis == "yes":
+erase_old_file = "yes"
+try:
+    processed_temp = pd.read_hdf(CONSTANTS["filenames"]["dataset_output"], 'processed')
+except FileNotFoundError:
+    if do_data_processing == "no":
+        do_data_processing = "yes"
+    erase_old_file = "no"
+
+# Running the code
+if do_data_processing == "no":
+    # If the file exists AND we want to use it, we just assign the "processed" variable to it
+    processed = processed_temp
+elif do_data_processing == "yes":
+    # Otherwise, we simply do as if it didn't exist
+    if erase_old_file != "no":
+        os.remove(CONSTANTS["filenames"]["dataset_output"])
+    # First updating the "CONSTANTS" dictionary with the some additional information
+    processed = ppo.assumptions(dataset_raw, processed, CONSTANTS, header_names)
+    # Updating the fields of the MainEngines and the auxiliary engines
     processed = ppm.mainEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
-if do_aux_engines_analysis == "yes":
     processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
-processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
-# Calculating the auxiliary power demands: heating and electric power
-processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure)
-# Calculating the central cooling systems
-processed = cs.centralCoolingSystems(processed, CONSTANTS)
-# Filling in
-processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
-processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
-# Assigning defined values to all flows for engines off
-processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS, do_energy_analysis)
-# Re-doing the calculation of the connected points
-processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
-processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-5")
+    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
+    # Calculating the auxiliary power demands: heating and electric power
+    processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure)
+    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
+    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Demands", "Demands-1")
+    # Calculating the central cooling systems
+    processed = cs.centralCoolingSystems(processed, CONSTANTS)
+    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
+    # Assigning defined values to all flows for engines off
+    processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS)
+    # Re-doing the calculation of the connected points
+    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
+    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
+    processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
+
+
 
 ######################################
 ## RESULTS CHECK                	##
 ######################################
-cc.enginesCheck(processed, CONSTANTS)
-cc.missingValues(processed, dict_structure, CONSTANTS)
-cc.massBalance(processed, dict_structure, CONSTANTS)
-cc.energyBalance(processed, dict_structure, CONSTANTS)
+cc.systemCheck(processed, CONSTANTS, dict_structure)
+
 #%%
 ######################################
 ## EXPLORATORY DATA ANALYSIS	##
