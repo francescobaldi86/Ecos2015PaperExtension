@@ -2,13 +2,18 @@ import pandas as pd
 import numpy as np
 from helpers import d2df
 
-def systemCheck(processed, CONSTANTS, dict_structure):
+def systemCheck(processed, CONSTANTS, dict_structure, dataset_raw):
     enginesCheck(processed, CONSTANTS)
     HTHRcheck(processed, CONSTANTS)
     SteamCheck(processed, CONSTANTS, dict_structure)
     missingValues(processed, dict_structure, CONSTANTS)
     massBalance(processed, dict_structure, CONSTANTS)
     energyBalance(processed, dict_structure, CONSTANTS)
+
+    # Checking the boilers
+    boilers_measured = (dataset_raw["Boiler_Port"].resample("D").mean() + dataset_raw["Boiler_starbord"].resample("D").mean()) * CONSTANTS["General"]["HFO"]["LHV"]
+    boilers_calculated = processed["Steam:Boiler1:FuelPh_in:mdot"].resample("D").sum() * 60 * 15 * CONSTANTS["General"]["HFO"]["LHV"]
+    ((boilers_calculated - boilers_measured) / boilers_measured * 100).describe()
 
 
 

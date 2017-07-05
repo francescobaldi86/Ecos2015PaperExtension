@@ -55,10 +55,10 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
             processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","T")] - processed[d2df(system,"HRSG","Mix_out","T")]) *
                 processed[d2df(system, "HRSG", "Mix_in", "mdot")] * processed[system+":CP_MIX"] /
                 (CONSTANTS["Steam"]["H_STEAM_VS"] - CONSTANTS["Steam"]["H_STEAM_LS"]))
-        # Calculation of the mass recirculating from the LT outlet to the HT inlet
-        processed[d2df(system,"HTmerge","LTWater_in","mdot")] = processed[d2df(system,"JWC","HTWater_out","mdot")] * (
+        # Calculation of the mass recirculating from the LT outlet to the HT inlet (not exactly...)
+        processed[d2df(system, "HTmerge", "LTWater_in", "mdot")] = processed[d2df(system,"JWC","HTWater_out","mdot")] * (
             processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - processed[d2df(system,"JWC","HTWater_in","T")]) / (
-            processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - processed[d2df(system,"LOC","LTWater_out","T")])
+            processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - CONSTANTS[engine_type]["T_COOLING_MIX"])
     print("...done!")
     return processed
 
@@ -112,8 +112,10 @@ def coolingFlows(processed, CONSTANTS, engine_type):
         heat_LT = processed[d2df(system, "CAC_LT", "LTWater_in", "p")][~processed[system+":on"]].mean()
         processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
                        processed[d2df(system, "CAC_LT", "LTWater_in", "p")], heat_LT, CONSTANTS, engine_type)
+        processed.loc[:,d2df(system, "CAC_LT", "LTWater_in", "mdot")] = processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] / max(processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")]) * CONSTANTS[engine_type]["MFR_LT"]
         processed[d2df(system, "JWC", "HTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
                        processed[d2df(system, "JWC", "HTWater_in", "p")], head_HT, CONSTANTS, engine_type)
+        processed.loc[:, d2df(system, "JWC", "HTWater_in", "mdot")] = processed[d2df(system, "JWC", "HTWater_in","mdot")] / max(processed[d2df(system, "JWC", "HTWater_in", "mdot")]) * CONSTANTS[engine_type]["MFR_HT"]
         processed.loc[:, d2df(system, "LOC", "LubOil_out", "mdot")] = CONSTANTS[engine_type]["MFR_LO"]
     print("done!")
     return processed

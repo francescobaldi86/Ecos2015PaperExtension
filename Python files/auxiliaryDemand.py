@@ -131,14 +131,14 @@ def HTHR(processed, CONSTANTS):
             processed[d2df("CoolingSystems", "HTcollector13", "HTWater_" + idx + "_in", "mdot")] for idx in ER13set) /
         sum(processed[d2df("CoolingSystems", "HTcollector13", "HTWater_" + idx + "_in", "mdot")] for idx in ER13set))
     # When all engines are off, there is no flow, so the temperature calculated above is NaN. Hence, we set it to T0
-    processed.loc[ER13off,"CoolingSystems:HTcollector24:HTWater_out:T"] = processed["T_0"][ER13on]
+    processed.loc[ER13off,"CoolingSystems:HTcollector13:HTWater_out:T"] = processed["T_0"][ER13off]
 
     # Same thing for the HT collector, ER 2/4
     processed["CoolingSystems:HTcollector24:HTWater_out:T"] = (
         sum(processed[d2df("CoolingSystems", "HTcollector24", "HTWater_" + idx + "_in", "T")] *
             processed[d2df("CoolingSystems", "HTcollector24", "HTWater_" + idx + "_in", "mdot")] for idx in ER24set) /
         sum(processed[d2df("CoolingSystems", "HTcollector24", "HTWater_" + idx + "_in", "mdot")] for idx in ER24set))
-    processed.loc[ER24off, "CoolingSystems:HTcollector24:HTWater_out:T"] = processed["T_0"][ER24on]
+    processed.loc[ER24off, "CoolingSystems:HTcollector24:HTWater_out:T"] = processed["T_0"][ER24off]
 
     # Now we need to calculate the conditions after the heat is given to the hot water heater, preheater, reheater
     processed["HTHR:HTHR24:HRWater_in:T"] = processed["HTHR:SteamHeater:HRWater_out:T"] - (
@@ -150,6 +150,7 @@ def HTHR(processed, CONSTANTS):
         processed["CoolingSystems:HTcollector24:HTWater_out:T"] - processed[d2df("HTHR", "HTHR24", "HRWater_in", "T")])
     # Once again, to avoid risks, when all engines of the ER 24 are off, the heat flow here is 0
     qdot_HTHR24[ER24off] = 0
+    qdot_HTHR24[qdot_HTHR24 < 0] = 0  # we assume that there is no possibility of back flow
     processed["HTHR:HTHR24:HRWater_out:T"] = processed["HTHR:HTHR24:HRWater_in:T"] + qdot_HTHR24 / processed["HTHR:SteamHeater:HRWater_out:mdot"] / CONSTANTS["General"]["CP_WATER"]
     processed["HTHR:HTHR24:HTWater_out:T"] = processed["CoolingSystems:HTcollector24:HTWater_out:T"] + qdot_HTHR24 / processed["HTHR:HTHR24:HTWater_in:mdot"] / CONSTANTS["General"]["CP_WATER"]
 
@@ -157,6 +158,7 @@ def HTHR(processed, CONSTANTS):
     qdot_HTHR13 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * processed["CoolingSystems:HTcollector13:HTWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (
         processed["CoolingSystems:HTcollector13:HTWater_out:T"] - processed[d2df("HTHR", "HTHR24", "HRWater_out", "T")])
     qdot_HTHR13[ER13off] = 0
+    qdot_HTHR13[qdot_HTHR13 < 0] = 0
     processed["HTHR:HTHR13:HRWater_out:T"] = processed["HTHR:HTHR24:HRWater_out:T"] + qdot_HTHR13 / processed["HTHR:SteamHeater:HRWater_out:mdot"] / CONSTANTS["General"]["CP_WATER"]
     processed["HTHR:HTHR13:HTWater_out:T"] = processed["CoolingSystems:HTcollector13:HTWater_out:T"] + qdot_HTHR13 / processed["HTHR:HTHR13:HTWater_in:mdot"] / CONSTANTS["General"]["CP_WATER"]
 

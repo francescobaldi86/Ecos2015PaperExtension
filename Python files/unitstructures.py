@@ -63,7 +63,7 @@ def flowStructure():
         if system[1] == "E":  # This basically means that this operation is only done if the system is an engine
             structure["systems"][system]["units"] = {"Comp": {}, "Turbine": {}, "BPsplit": {}, "BPmerge": {}, "BPvalve": {},
                                                      "CAC_HT": {}, "CAC_LT": {}, "LOC": {}, "JWC": {}, "Cyl": {},
-                                                     "HTsplit": {}, "HTmerge": {}, "LTsplit": {}, "TCshaft": {}}
+                                                     "HTsplit": {}, "HTmerge": {}, "TCshaft": {}}
             # Compressor
             structure["systems"][system]["units"]["Comp"]["flows"] = {"Air_in": {"type": "CPF"}, "Air_out": {"type": "CPF"}, "Power_in": {"type": "Wdot"}} # TC compressor
             structure["systems"][system]["units"]["Comp"]["equations"] = ["MassBalance"]
@@ -109,9 +109,6 @@ def flowStructure():
             # HT cooling systems merge
             structure["systems"][system]["units"]["HTmerge"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_in": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTmerge"]["equations"] = ["MassBalance"]
-            # LT cooling systems split
-            structure["systems"][system]["units"]["LTsplit"]["flows"] = {"LTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}  # Bypass valve
-            structure["systems"][system]["units"]["LTsplit"]["equations"] = ["MassBalance", "ConstantTemperature"]
             # Only auxiliary engines AND main engines 2/3 have the exhaust gas boiler
             if system[0] == "A" or system[2] == "2" or system[2] == "3":
                 # Heat recovery steam generator
@@ -128,24 +125,25 @@ def flowStructure():
 
         elif system == "CoolingSystems":
             structure["systems"][system]["units"] = { "SWC13": {}, "SWC24": {}, "HTcollector13": {}, "HTcollector24": {},
-                                                     "LTcollector13": {}, "LTcollector24": {}, "LTdistribution13": {}, "LTdistribution24": {}}
+                                                     "LTcollector13": {}, "LTcollector24": {}, "LTdistribution13": {}, "LTdistribution24": {},
+                                                      "LTHTmerge13": {}, "LTHTmerge24": {}, "HTsplit13": {}, "HTsplit24":{}}
             # Seawater cooler, ER 1/3
             structure["systems"][system]["units"]["SWC13"]["flows"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
-                                     "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+                                       "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}}
             structure["systems"][system]["units"]["SWC13"]["equations"] = ["MassBalance"]
             # Seawater cooler, ER 2/4
             structure["systems"][system]["units"]["SWC24"]["flows"] = {"SeaWater_in": {"type": "IPF"}, "LTWater_in": {"type": "IPF"},
-                                       "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+                                       "SeaWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}}
             structure["systems"][system]["units"]["SWC24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector13"]["flows"] = {
                 "LTWater_AE1_in": {"type": "IPF"}, "LTWater_AE3_in": {"type": "IPF"},
                 "LTWater_ME1_in": {"type": "IPF"}, "LTWater_ME3_in": {"type": "IPF"},
-                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}}
+                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTcollector13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector24"]["flows"] = {
                 "LTWater_AE2_in": {"type": "IPF"}, "LTWater_AE4_in": {"type": "IPF"},
                 "LTWater_ME2_in": {"type": "IPF"}, "LTWater_ME4_in": {"type": "IPF"},
-                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}}
+                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTcollector24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTdistribution13"]["flows"] = {
                 "LTWater_in": {"type": "IPF"},
@@ -157,6 +155,16 @@ def flowStructure():
                 "LTWater_AE2_out": {"type": "IPF"}, "LTWater_AE4_out": {"type": "IPF"},
                 "LTWater_ME2_out": {"type": "IPF"}, "LTWater_ME4_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTdistribution24"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["LTHTmerge13"]["flows"] = {
+                "LTWater_in": {"type": "IPF"}, "HTWater_in": {"type": "IPF"},
+                "HTWater_ME1_out": {"type": "IPF"}, "HTWater_ME3_out": {"type": "IPF"},
+                "HTWater_AE1_out": {"type": "IPF"}, "HTWater_AE3_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["LTHTmerge13"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["LTHTmerge24"]["flows"] = {
+                "LTWater_in": {"type": "IPF"}, "HTWater_in": {"type": "IPF"},
+                "HTWater_ME2_out": {"type": "IPF"}, "HTWater_ME4_out": {"type": "IPF"},
+                "HTWater_AE2_out": {"type": "IPF"}, "HTWater_AE4_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["LTHTmerge24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["HTcollector13"]["flows"] = {
                 "HTWater_AE1_in": {"type": "IPF"}, "HTWater_AE3_in": {"type": "IPF"},
                 "HTWater_ME1_in": {"type": "IPF"}, "HTWater_ME3_in": {"type": "IPF"},
@@ -167,16 +175,21 @@ def flowStructure():
                 "HTWater_ME2_in": {"type": "IPF"}, "HTWater_ME4_in": {"type": "IPF"},
                 "HTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTcollector24"]["equations"] = ["MassBalance"]
-
+            structure["systems"][system]["units"]["HTsplit13"]["flows"] = {
+                "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTsplit13"]["equations"] = ["MassBalance", "ConstantTemperature"]
+            structure["systems"][system]["units"]["HTsplit24"]["flows"] = {
+                "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HTsplit24"]["equations"] = ["MassBalance"]
 
         elif system == "HTHR":
             structure["systems"][system]["units"] = {"HTHR13": {}, "HTHR24": {}, "HTHRsplit": {}, "HTHRmerge": {},
                             "HVACpreheater": {}, "HVACreheater": {}, "SteamHeater": {}, "HotWaterHeater": {}}
             structure["systems"][system]["units"]["HTHR13"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"},
-                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
+                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTHR13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["HTHR24"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"},
-                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
+                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTHR24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["SteamHeater"]["flows"] = {"Steam_in": {"type": "SF", "state": "SV"}, "Steam_out": {"type": "SF", "state": "SL"},
                                                                              "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
@@ -196,7 +209,7 @@ def flowStructure():
             structure["systems"][system]["units"]["HTHRmerge"]["flows"] = {
                 "HRWater_out": {"type": "IPF"}, "HRWater_HWH_in": {"type": "IPF"}, "HRWater_PreH_in": {"type": "IPF"}, "HRWater_ReH_in": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTHRmerge"]["equations"] = ["MassBalance"]
-            # HT - LT central mixer
+
 
 
         elif system == "Steam":
@@ -380,33 +393,33 @@ def connectionAssignment(structure):
             structure["systems"][system]["units"]["CAC_HT"]["flows"]["HTWater_out"]["Connections"] = [system + ":" + "HTsplit" + ":" + "HTWater_in"]
             structure["systems"][system]["units"]["JWC"]["flows"]["HTWater_in"]["Connections"] = [system + ":" + "HTmerge" + ":" + "HTWater_out"]
             structure["systems"][system]["units"]["HTmerge"]["flows"]["HTWater_out"]["Connections"] = [system + ":" + "JWC" + ":" + "HTWater_in"]
-            # The other inlet of the HT water merge is from the "hotter" side of the LT water
-            structure["systems"][system]["units"]["HTmerge"]["flows"]["LTWater_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "HTWater_out"]
-            structure["systems"][system]["units"]["LTsplit"]["flows"]["HTWater_out"]["Connections"] = [system + ":" + "HTmerge" + ":" + "LTWater_in"]
-            # The LOC outlet goes into the LTsplit
-            structure["systems"][system]["units"]["LOC"]["flows"]["LTWater_out"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_in"]
-            structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_in"]["Connections"] = [system + ":" + "LOC" + ":" + "LTWater_out"]
             # Inserting connections to the central components: LT collector and LT splitter. Separated for different engine rooms
             if system[2] in {"1","3"}:
                 # HT water from the HT splitter goes into the LT collector
                 structure["systems"][system]["units"]["HTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector13" + ":" + "HTWater_"+system+"_in"]
                 structure["systems"]["CoolingSystems"]["units"]["HTcollector13"]["flows"]["HTWater_"+system+"_in"]["Connections"] = [system + ":" + "HTsplit" + ":" + "LTWater_out"]
-                # LT water from the LT split goes into the LT collector
-                structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "LTWater_"+system+"_in"]
-                structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["LTWater_"+system+"_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_out"]
+                # LT water from the LOC outlet goes into the LT collector
+                structure["systems"][system]["units"]["LOC"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "LTWater_"+system+"_in"]
+                structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["LTWater_"+system+"_in"]["Connections"] = [system + ":" + "LOC" + ":" + "LTWater_out"]
                 # LT water from the LT distribution goes into the charge air cooler
                 structure["systems"]["CoolingSystems"]["units"]["LTdistribution13"]["flows"]["LTWater_"+system+"_out"]["Connections"] = [system + ":" + "CAC_LT" + ":" + "LTWater_in"]
                 structure["systems"][system]["units"]["CAC_LT"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution13" + ":" + "LTWater_"+system+"_out"]
+                # The other inlet of the HT water merge is from the flow mixed between LT collected and HT
+                structure["systems"][system]["units"]["HTmerge"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge13" + ":" + "HTWater_" + system + "_out"]
+                structure["systems"]["CoolingSystems"]["units"]["LTHTmerge13"]["flows"]["HTWater_" + system + "_out"]["Connections"] = [system + ":" + "HTmerge" + ":" + "LTWater_in"]
             if system[2] in {"2", "4"}:
                 # HT water from the HT splitter goes into the LT collector
                 structure["systems"][system]["units"]["HTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector24" + ":" + "HTWater_" + system + "_in"]
                 structure["systems"]["CoolingSystems"]["units"]["HTcollector24"]["flows"]["HTWater_" + system + "_in"]["Connections"] = [system + ":" + "HTsplit" + ":" + "LTWater_out"]
                 # LT water from the LT split goes into the LT collector
-                structure["systems"][system]["units"]["LTsplit"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "LTWater_" + system + "_in"]
-                structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["LTWater_" + system + "_in"]["Connections"] = [system + ":" + "LTsplit" + ":" + "LTWater_out"]
+                structure["systems"][system]["units"]["LOC"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "LTWater_" + system + "_in"]
+                structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["LTWater_" + system + "_in"]["Connections"] = [system + ":" + "LOC" + ":" + "LTWater_out"]
                 # LT water from the LT distribution goes into the charge air cooler
                 structure["systems"]["CoolingSystems"]["units"]["LTdistribution24"]["flows"]["LTWater_" + system + "_out"]["Connections"] = [system + ":" + "CAC_LT" + ":" + "LTWater_in"]
                 structure["systems"][system]["units"]["CAC_LT"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution24" + ":" + "LTWater_" + system + "_out"]
+                # The other inlet of the HT water merge is from the flow mixed between LT collected and HT
+                structure["systems"][system]["units"]["HTmerge"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge24" + ":" + "HTWater_" + system + "_out"]
+                structure["systems"]["CoolingSystems"]["units"]["LTHTmerge24"]["flows"]["HTWater_" + system + "_out"]["Connections"] = [system + ":" + "HTmerge" + ":" + "LTWater_in"]
             if system[0] == "A" or system[2] == "2" or system[2] == "3":
                 # The HRSG inlet is connected to the engine turbine outlet
                 structure["systems"][system]["units"]["HRSG"]["flows"]["Mix_in"]["Connections"] = [system + ":" + "Turbine" + ":" + "Mix_out"]
@@ -437,10 +450,10 @@ def connectionAssignment(structure):
             structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTcollector24" + ":" + "HTWater_out"]
             structure["systems"]["CoolingSystems"]["units"]["HTcollector24"]["flows"]["HTWater_out"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HTWater_in"]
             # Then, the outlet of the HTHR is connected to the LT collector
-            structure["systems"]["HTHR"]["units"]["HTHR13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "HTWater_in"]
-            structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["HTWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR13" + ":" + "HTWater_out"]
-            structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "HTWater_in"]
-            structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["HTWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HTWater_out"]
+            structure["systems"]["HTHR"]["units"]["HTHR13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit13" + ":" + "HTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit13"]["flows"]["HTWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR13" + ":" + "HTWater_out"]
+            structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit24" + ":" + "HTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit24"]["flows"]["HTWater_in"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HTWater_out"]
             # On the other side, the HTHR on the HR water side is connected to the rest of the HR systems.
             structure["systems"]["HTHR"]["units"]["HTHR24"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_out"]
             structure["systems"]["HTHR"]["units"]["HTHRmerge"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHR24" + ":" + "HRWater_in"]
@@ -470,6 +483,8 @@ def connectionAssignment(structure):
             structure["systems"]["HTHR"]["units"]["HVACreheater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_ReH_in"]
             structure["systems"]["HTHR"]["units"]["HTHRmerge"]["flows"]["HRWater_HWH_in"]["Connections"] = ["HTHR" + ":" + "HotWaterHeater" + ":" + "HRWater_out"]
             structure["systems"]["HTHR"]["units"]["HotWaterHeater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRmerge" + ":" + "HRWater_HWH_in"]
+            # The Outlet of each HTHR exchanger is connected to the
+
             ############    CENTRAL COOLING SYSTEMS  ##########
             # The LT water from the collector goes to the sea water cooler, for both engine rooms
             structure["systems"]["CoolingSystems"]["units"]["SWC13"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "LTWater_out"]
@@ -481,6 +496,21 @@ def connectionAssignment(structure):
             structure["systems"]["CoolingSystems"]["units"]["LTdistribution13"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "SWC13" + ":" + "LTWater_out"]
             structure["systems"]["CoolingSystems"]["units"]["SWC24"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution24" + ":" + "LTWater_in"]
             structure["systems"]["CoolingSystems"]["units"]["LTdistribution24"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "SWC24" + ":" + "LTWater_out"]
+            # The "HT" water from the LT collector goes into the LTHT merge
+            structure["systems"]["CoolingSystems"]["units"]["LTHTmerge13"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge13" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTHTmerge24"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector24" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge24" + ":" + "LTWater_in"]
+            # The HT water from the HTsplit goes in the the LTHT merge
+            structure["systems"]["CoolingSystems"]["units"]["LTHTmerge13"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit13" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge13" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTHTmerge24"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit24" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge24" + ":" + "LTWater_in"]
+            # The LT water from the HTsplit goes directly to the SeaWater Cooler
+            structure["systems"]["CoolingSystems"]["units"]["SWC13"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit13" + ":" + "LTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit13"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "SWC13" + ":" + "HTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["SWC24"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit24" + ":" + "LTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit24"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "SWC24" + ":" + "HTWater_in"]
             ############    STEAM SYSTEMS  ##########
             # here we set the connection between the steam collector and the different steam generators
             # With the Auxiliary boiler 1

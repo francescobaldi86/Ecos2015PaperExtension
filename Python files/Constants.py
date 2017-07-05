@@ -112,6 +112,7 @@ def mainEngines(CONSTANTS):
     output["FRP_DES"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}  # Value of the fuel rack position at 100% load
     # output["BYPASS_FLOW"] = 1.1
     output["STATIC_HEAD"] = 19
+    output["T_COOLING_MIX"] = 71 + 273.15  # Temperature of the LT/HT mix before the mixing with the HT cooling systems
     return output
     
     
@@ -149,7 +150,8 @@ def auxiliaryEngines(CONSTANTS):
     output["AG"]["A"] = 0.18
     output["AG"]["k"] = 5
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
-    output["STATIC_HEAD"] = 15
+    # output["STATIC_HEAD"] = 15     # Now it is calculated instead
+    output["T_COOLING_MIX"] = 71 + 273.15  # Temperature of the LT/HT mix before the mixing with the HT cooling systems
     return output
 
 

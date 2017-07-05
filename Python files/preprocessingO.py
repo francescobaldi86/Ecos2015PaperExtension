@@ -35,10 +35,11 @@ def assumptions(raw, processed, CONSTANTS, hd):
             processed.loc[:,d2df(system, "AG", "Losses_out", "T")] = 100 + 273.15
             processed.loc[:,d2df(system, "Cyl", "Power_out", "omega")] = 750
     # Others
-    processed["T_0"] = raw[hd["SEA_SW_T_"]] + 273.15
-    processed["T_air"] = raw[hd["OUTSIDE_AIR_T_"]] + 273.15
+    processed.loc[:,"T_0"] = raw[hd["water_T_forsmark_smhi-opendata"]] + 273.15
+    processed.loc[:,"T_air"] = raw[hd["air_T_sv_hogarna_smhi-opendata"]] + 273.15
     processed[d2df("CoolingSystems","SWC13","SeaWater_out","T")] = raw[hd["SWC13_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
     processed[d2df("CoolingSystems","SWC24","SeaWater_out","T")] = raw[hd["SWC24_SW_T_OUT"]]  # CHECK IF IT IS IN OR OUT
+    processed.loc[:,"CoolingSystems:LTHTmixer:HTWater_out:T"] = CONSTANTS["MainEngines"]["T_COOLING_MIX"]
     # HTHR system
     processed.loc[:,"HTHR:SteamHeater:HRWater_out:T"] = 90 + 273.15 # From the heat balance, the temperature needs to rise at 90 degrees
     processed.loc[:,"HTHR:SteamHeater:HRWater_out:mdot"] = 298 / 3600 * CONSTANTS["General"]["RHO_W"] # the original value is in m3/h

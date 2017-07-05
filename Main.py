@@ -24,7 +24,7 @@
 # - EXERGY ANALYSIS
 
 
-do_processed_data_preparation = "no"
+do_processed_data_preparation = "yes"
 do_data_processing = "yes"
 
 
@@ -122,7 +122,7 @@ elif do_data_processing == "yes":
 ######################################
 ## RESULTS CHECK                	##
 ######################################
-cc.systemCheck(processed, CONSTANTS, dict_structure)
+cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
 
 #%%
 ######################################
