@@ -54,7 +54,7 @@ df_out.to_hdf(database_path + 'selected_df.h5','table',complevel=9,complib='blos
 #%%
 # For testing .
 # ...
-
+# 
 
 
 #load_df = pd.read_hdf(database_path + 'resampled_selected_df.h5','table')
@@ -63,6 +63,11 @@ load_df = pd.read_hdf(database_path + 'selected_df.h5','table')
 load_df['Boiler_starbord']['2014-02-01'].mean()
 
 load_df.describe()
+
+
+
+
+load_df['Crew']['2014-02']
 
 #newdf = load_df['2013-12-02':'2014-12-02']
 
