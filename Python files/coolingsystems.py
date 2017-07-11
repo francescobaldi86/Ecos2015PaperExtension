@@ -73,6 +73,8 @@ def centralCoolingSystems(processed, CONSTANTS):
         processed["HTHR:HTHR13:HTWater_out:mdot"] * processed["HTHR:HTHR13:HTWater_out:T"]) / (
         sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) +
         processed["HTHR:HTHR13:HTWater_out:mdot"]))
+    # The temperature at the other output of the collector is the same
+    processed["CoolingSystems:LTcollector13:HTWater_out:T"] = processed["CoolingSystems:LTcollector13:LTWater_out:T"]
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
     processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")] = (
         sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "T")] *
@@ -90,14 +92,34 @@ def centralCoolingSystems(processed, CONSTANTS):
          processed["HTHR:HTHR24:HTWater_out:mdot"] * processed["HTHR:HTHR24:HTWater_out:T"]) / (
             sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) +
             processed["HTHR:HTHR24:HTWater_out:mdot"]))
+    processed["CoolingSystems:LTcollector24:HTWater_out:T"] = processed["CoolingSystems:LTcollector24:LTWater_out:T"]
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
     processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")] = (
         sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "T")] *
             processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set) /
         sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set))
-    # The temperature at the Sea water cooler outlet is then equal to the inlet to the distribution systems
-    #processed[d2df("CoolingSystems", "SWC24", "LTWater_out", "T")] = processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")]
+
+    # We can now calculate the flows into the LTHT merge for the ER 13
+    mdot_HTHR13_tot = processed["CoolingSystems:LTHTmerge13:HTWater_ME1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_ME3_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE3_out:mdot"]
+    processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = mdot_HTHR13_tot * (
+        processed["CoolingSystems:LTHTmerge13:HTWater_ME1_out:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"]) / (
+        processed["CoolingSystems:LTHTmerge13:HTWater_in:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"])
+    processed["CoolingSystems:LTHTmerge13:LTWater_in:mdot"] = mdot_HTHR13_tot - processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"]
+    # We can now calculate the flows into the LTHT merge for the ER 24
+    mdot_HTHR24_tot = processed["CoolingSystems:LTHTmerge24:HTWater_ME2_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_ME4_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_AE2_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_AE4_out:mdot"]
+    processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"] = mdot_HTHR24_tot * (
+        processed["CoolingSystems:LTHTmerge24:HTWater_ME2_out:T"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"]) / (
+        processed["CoolingSystems:LTHTmerge24:HTWater_in:T"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"])
+    processed["CoolingSystems:LTHTmerge24:LTWater_in:mdot"] = mdot_HTHR24_tot - processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"]
+
     return processed
+
+
+
+
+
+def coolingSystemsPost(processed, CONSTANTS, dict_structure):
+    processed["CoolingSystems:LTHTmerge13:HTWater_in:T"]
 
 
 

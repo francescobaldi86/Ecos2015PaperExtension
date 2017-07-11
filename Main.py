@@ -126,10 +126,11 @@ cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
 
 #%%
 ######################################
-## EXPLORATORY DATA ANALYSIS	##
+## PLOTTING	##
 ######################################
 
-# Responsible: FB
+plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, ["TimeSeries:Heat_vs_time", "Pie:TotalEnergy", "Pie:Heat"])
+# plot.plotMain("prompt", dict_structure, processed)
 
 
 

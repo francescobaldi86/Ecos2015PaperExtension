@@ -6,6 +6,7 @@ from helpers import d2df
 def auxPowerAnalysis(processed, CONSTANTS, dict_structure):
     # Calculating the total auxiliary power demand
     processed = auxPowerTotalDemand(processed)
+    processed = propPowerDemand(processed, CONSTANTS)
     # Calculating the contribution from the thrusters
     #processed = thrusters(processed, CONSTANTS)  # The second method works better. But I still keep it
     processed = thrusters2(processed, CONSTANTS)
@@ -22,6 +23,32 @@ def auxPowerTotalDemand(processed):
     # We also need to store (for further use) a series made of the daily averages
     processed["Demands:Electricity:Total:Edot1D"] = processed["Demands:Electricity:Total:Edot"].resample('1D').mean().reindex(processed["Demands:Electricity:Total:Edot"].index, method='ffill')
     processed["Demands:Electricity:Other:Edot"] = processed["Demands:Electricity:Total:Edot"]
+    return processed
+
+
+def propPowerDemand(processed, CONSTANTS):
+    # Looking at the first propulsion line, for engines 1 and 2
+    processed["Propulsion:Gearbox1:Power_in1:Edot"] = processed["ME1:Cyl:Power_out:Edot"]
+    processed["Propulsion:Gearbox1:Power_in2:Edot"] = processed["ME2:Cyl:Power_out:Edot"]
+    processed["Propulsion:Gearbox1:Power_out:Edot"] = (processed["Propulsion:Gearbox1:Power_in1:Edot"] + processed["Propulsion:Gearbox1:Power_in2:Edot"]) * CONSTANTS["OtherUnits"]["PROPULSION"]["ETA_GB"]
+    processed["Propulsion:Gearbox1:Losses:Edot"] = (processed["Propulsion:Gearbox1:Power_in1:Edot"] + processed["Propulsion:Gearbox1:Power_in2:Edot"]) - processed["Propulsion:Gearbox1:Power_out:Edot"]
+    processed["Propulsion:Shaft1:Power_in:Edot"] = processed["Propulsion:Gearbox1:Power_out:Edot"]
+    processed["Propulsion:Shaft1:Power_out:Edot"] = processed["Propulsion:Gearbox1:Power_out:Edot"] * CONSTANTS["OtherUnits"]["PROPULSION"]["ETA_SH"]
+    processed["Propulsion:Shaft1:Losses:Edot"] = processed["Propulsion:Gearbox1:Power_out:Edot"] * (1- CONSTANTS["OtherUnits"]["PROPULSION"]["ETA_SH"])
+    processed["Propulsion:Propeller1:Power_in:Edot"] = processed["Propulsion:Shaft1:Power_out:Edot"]
+    processed["Demands:Mechanical:Propeller1:Edot"] = processed["Propulsion:Propeller1:Power_in:Edot"]
+    # And now we go to the second propulsion line, engines 3 and 4
+    processed["Propulsion:Gearbox2:Power_in1:Edot"] = processed["ME3:Cyl:Power_out:Edot"]
+    processed["Propulsion:Gearbox2:Power_in2:Edot"] = processed["ME4:Cyl:Power_out:Edot"]
+    processed["Propulsion:Gearbox2:Power_out:Edot"] = (processed["Propulsion:Gearbox2:Power_in1:Edot"] + processed["Propulsion:Gearbox2:Power_in2:Edot"]) * CONSTANTS["OtherUnits"]["PROPULSION"]["ETA_GB"]
+    processed["Propulsion:Gearbox2:Losses:Edot"] = (processed["Propulsion:Gearbox2:Power_in1:Edot"] + processed["Propulsion:Gearbox2:Power_in2:Edot"]) - processed["Propulsion:Gearbox2:Power_out:Edot"]
+    processed["Propulsion:Shaft2:Power_in:Edot"] = processed["Propulsion:Gearbox2:Power_out:Edot"]
+    processed["Propulsion:Shaft2:Power_out:Edot"] = processed["Propulsion:Gearbox2:Power_out:Edot"] * CONSTANTS["OtherUnits"]["PROPULSION"]["ETA_SH"]
+    processed["Propulsion:Shaft2:Losses:Edot"] = processed["Propulsion:Gearbox2:Power_out:Edot"] * (1 - CONSTANTS["OtherUnits"]["PROPULSION"]["ETA_SH"])
+    processed["Propulsion:Propeller2:Power_in:Edot"] = processed["Propulsion:Shaft2:Power_out:Edot"]
+    processed["Demands:Mechanical:Propeller2:Edot"] = processed["Propulsion:Propeller2:Power_in:Edot"]
+    # Finally, total mechanical power demand
+    processed["Demands:Mechanical:Total:Edot"] = processed["Propulsion:Propeller1:Power_in:Edot"] + processed["Propulsion:Propeller2:Power_in:Edot"]
     return processed
 
 
@@ -106,6 +133,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
         processed["ME1:Cyl:FuelPh_in:mdot"]+processed["ME2:Cyl:FuelPh_in:mdot"]+processed["ME3:Cyl:FuelPh_in:mdot"]+processed["ME4:Cyl:FuelPh_in:mdot"]) * 100
     processed["Demands:Heat:Galley:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY"] * pd.Series((round(len(processed) / 96) * np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY_HOURLY"], 4)))[:len(processed)],index=db_index)
     processed["Demands:Heat:Total:Edot"] = pd.Series(index=db_index)
+    processed.loc[:,"Demands:Heat:Total:Edot"] = 0
     for flow in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
         processed["Demands:Heat:Total:Edot"] = processed["Demands:Heat:Total:Edot"] + processed[d2df("Demands", "Heat", flow, "Edot")]
         if flow in dict_structure["systems"]["Steam"]["units"]:
@@ -152,7 +180,9 @@ def HTHR(processed, CONSTANTS):
     qdot_HTHR24[ER24off] = 0
     qdot_HTHR24[qdot_HTHR24 < 0] = 0  # we assume that there is no possibility of back flow
     processed["HTHR:HTHR24:HRWater_out:T"] = processed["HTHR:HTHR24:HRWater_in:T"] + qdot_HTHR24 / processed["HTHR:SteamHeater:HRWater_out:mdot"] / CONSTANTS["General"]["CP_WATER"]
-    processed["HTHR:HTHR24:HTWater_out:T"] = processed["CoolingSystems:HTcollector24:HTWater_out:T"] + qdot_HTHR24 / processed["HTHR:HTHR24:HTWater_in:mdot"] / CONSTANTS["General"]["CP_WATER"]
+    processed.loc[ER24off, "HTHR:HTHR24:HRWater_out:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
+    processed["HTHR:HTHR24:HTWater_out:T"] = processed["CoolingSystems:HTcollector24:HTWater_out:T"] - qdot_HTHR24 / processed["HTHR:HTHR24:HTWater_in:mdot"] / CONSTANTS["General"]["CP_WATER"]
+    processed.loc[ER24off, "HTHR:HTHR24:HTWater_out:T"] = processed["CoolingSystems:HTcollector24:HTWater_out:T"]
 
     # Finally, we can do the same for the HTHR 13 exchanger
     qdot_HTHR13 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * processed["CoolingSystems:HTcollector13:HTWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (
@@ -160,7 +190,9 @@ def HTHR(processed, CONSTANTS):
     qdot_HTHR13[ER13off] = 0
     qdot_HTHR13[qdot_HTHR13 < 0] = 0
     processed["HTHR:HTHR13:HRWater_out:T"] = processed["HTHR:HTHR24:HRWater_out:T"] + qdot_HTHR13 / processed["HTHR:SteamHeater:HRWater_out:mdot"] / CONSTANTS["General"]["CP_WATER"]
-    processed["HTHR:HTHR13:HTWater_out:T"] = processed["CoolingSystems:HTcollector13:HTWater_out:T"] + qdot_HTHR13 / processed["HTHR:HTHR13:HTWater_in:mdot"] / CONSTANTS["General"]["CP_WATER"]
+    processed.loc[ER13off, "HTHR:HTHR13:HRWater_out:T"] = processed["HTHR:HTHR24:HRWater_out:T"]
+    processed["HTHR:HTHR13:HTWater_out:T"] = processed["CoolingSystems:HTcollector13:HTWater_out:T"] - qdot_HTHR13 / processed["HTHR:HTHR13:HTWater_in:mdot"] / CONSTANTS["General"]["CP_WATER"]
+    processed.loc[ER13off, "HTHR:HTHR13:HTWater_out:T"] = processed["CoolingSystems:HTcollector13:HTWater_out:T"]
 
     # Now, we know that the HR water before the users must be at 90 degrees
     processed["HTHR:SteamHeater:Steam_in:mdot"] = processed["HTHR:SteamHeater:HRWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (

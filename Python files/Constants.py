@@ -165,6 +165,9 @@ def otherUnits ():
     output["BOILER"]["ETA_REGR_Y"] = [0.8787, 0.8830, 0.8864, 0.8889, 0.8910, 0.8897, 0.8870, 0.8842, 0.8810, 0.8777, 0.8740, 0.8692, 0.86486, 0.8613, 0.8570, 0.8528, 0.8491, 0.8462, 0.8427, 0.8390, 0.8356, 0.8317]
     for idx in range(len(output["BOILER"]["ETA_REGR_Y"])):
         output["BOILER"]["ETA_REGR_Y"][idx] = output["BOILER"]["ETA_REGR_Y"][idx] / max(output["BOILER"]["ETA_REGR_Y"])
+    output["PROPULSION"] = {}
+    output["PROPULSION"]["ETA_GB"] = 0.98
+    output["PROPULSION"]["ETA_SH"] = 0.99
     output["HEAT_DEMAND"] = {}
     output["HEAT_DEMAND"]["HOT_WATER_HEATER"] = 1200
     output["HEAT_DEMAND"]["HVAC_PREHEATER"] = 3500

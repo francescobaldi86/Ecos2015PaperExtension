@@ -12,6 +12,13 @@ def energyAnalysisLauncher(processed, dict_structure, CONSTANTS):
     processed = propertyCalculator(processed, dict_structure, CONSTANTS)
     return processed
 
+
+def summaryEnergyFlows(processed, CONSTANTS):
+
+    return processed
+
+
+
 def propertyCalculator(processed, dict_structure, CONSTANTS):
     print("Started calculating flow properties...", end="", flush=True)
     df_index = processed.index

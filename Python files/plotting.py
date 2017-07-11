@@ -1,31 +1,30 @@
-#import numpy as np
-#import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
+from helpers import d2df
 
-def plotMain(type, structure, *args):
+def plotMain(type, dict_structure, processed, *args):
     # This function plots the contents of the analysed files.
     # Two input values for "type" are accepted:
     # - "off" [default]: does not print anything
     # - "prompt": prompts the user for what s/he wants to print
     # - "csv": reads info on what is to be read from a csv file
     if type == "prompt":
-        plot_info = plotPrompt(structure)
+        plot_info = plotPrompt(dict_structure)
         data_type = "processed"
     elif type == "prompt_raw":
         hd = args[0]
-        plot_info = plotPromptRaw(structure,hd)
+        plot_info = plotPromptRaw(dict_structure,hd)
         data_type = "raw"
     elif type == "csv":
         filename = args[0]
-        plot_info = plotFromCSV(filename)
+        plot_info = plotFromCSV(dict_structure)
         data_type = "processed"
     else:
         print("Either the -type- input was not correct, or you don't wish to print anything. No printout")
         return
-    plottingFunction(plot_info, structure, data_type)
+    plottingFunction(plot_info, processed, data_type)
 
 
-def plotPrompt(structure):
+def plotPrompt(dict_structure):
     # This function prompts the user for the required inputs to plot.
     # Two alternatives are available:
     # - The default is "automatic". It is the one that is set by default. The input needs to be provided using a
@@ -61,28 +60,28 @@ def plotPrompt(structure):
             line_info = {}
             while True:
                 plot_system = input("Now input what system you like to plot for. Available are choices are ""ME#"" (#=1,2,3,4), ""AE#"" (#=1,2,3,4), and ""Other"" ")
-                if plot_system in structure.keys():
+                if plot_system in dict_structure["systems"]:
                     line_info["system"] = plot_system
                     break
                 else:
                     print("The input you gave (" + plot_system + ") for the system name is not correct! Maybe there was a typo? Try again!")
             while True:
-                plot_component = input("Now input what component of the chosen system you like to plot for:")
-                if plot_component in structure[line_info["system"]].keys():
-                    line_info["component"] = plot_component
+                plot_unit = input("Now input what component of the chosen system you like to plot for:")
+                if plot_unit in dict_structure["systems"][line_info["system"]]["units"]:
+                    line_info["unit"] = plot_unit
                     break
                 else:
-                    print("The input you gave (" + plot_component + ") for the component name is not correct! Maybe there was a typo? Try again!")
+                    print("The input you gave (" + plot_unit + ") for the component name is not correct! Maybe there was a typo? Try again!")
             while True:
                 plot_flow = input("Now input what flow of the chosen component you like to plot for:")
-                if plot_flow in structure[line_info["system"]][line_info["component"]].keys():
+                if plot_flow in dict_structure["systems"][line_info["system"]]["untis"][line_info["unit"]]["flows"]:
                     line_info["flow"] = plot_flow
                     break
                 else:
                     print("The input you gave (" + plot_flow + ") for the flow name is not correct! Maybe there was a typo? Try again!")
             while True:
                 plot_property = input("Finally, input what property of the chosen flow you like to plot for:")
-                if plot_property in structure[line_info["system"]][line_info["component"]][line_info["flow"]].keys():
+                if plot_property in dict_structure["systems"][line_info["system"]]["untis"][line_info["unit"]]["flows"][line_info["flow"]]["properties"]:
                     line_info["property"] = plot_property
                     break
                 else:
@@ -97,7 +96,7 @@ def plotPrompt(structure):
     else:
         # The automatic reading is based on the following structure
         # - First you give the plot type, followed by "->"
-        # - Then you give the inputs in the order as above: system, component, flow, property. Separated by a comma "y"
+        # - Then you give the inputs in the order as above: system, component, flow, property. Separated by a comma ","
         # - To plot more than one variable in the same plot, a new entry is added with ";" as separator
         # - To add a new plot, the separator to be used is "%"
         # Example: "hist->ME1,TC,EG_in,T;ME1,TC,EG_out,T%timeSeries->ME1,TC,EG_in,T;ME1,TC,EG_out,T"
@@ -117,25 +116,25 @@ def plotPrompt(structure):
                 line_info = {}
                 split4 = line.split(",")
                 plot_system = split4[0]
-                plot_component = split4[1]
+                plot_unit = split4[1]
                 plot_flow = split4[2]
                 plot_property = split4[3]
-                if plot_system in structure.keys():
+                if plot_system in dict_structure["systems"]:
                     line_info["system"] = plot_system
                 else:
                     print("The input you gave (" + plot_system + ") for the system name is not correct! Maybe there was a typo? Try again!")
                     break
-                if plot_component in structure[line_info["system"]].keys():
-                    line_info["component"] = plot_component
+                if plot_unit in dict_structure["systems"][line_info["system"]]["units"]:
+                    line_info["unit"] = plot_unit
                 else:
-                    print("The input you gave (" + plot_component + ") for the component name is not correct! Maybe there was a typo? Try again!")
+                    print("The input you gave (" + plot_unit + ") for the component name is not correct! Maybe there was a typo? Try again!")
                     break
-                if plot_flow in structure[line_info["system"]][line_info["component"]].keys():
+                if plot_flow in dict_structure["systems"][line_info["system"]]["units"][line_info["unit"]]["flows"]:
                     line_info["flow"] = plot_flow
                 else:
                     print("The input you gave (" + plot_flow + ") for the flow name is not correct! Maybe there was a typo? Try again!")
                     break
-                if plot_property in structure[line_info["system"]][line_info["component"]][line_info["flow"]].keys():
+                if plot_property in dict_structure["systems"][line_info["system"]]["units"][line_info["unit"]]["flows"][line_info["flow"]]["properties"]:
                     line_info["property"] = plot_property
                 else:
                     print("The input you gave (" + plot_property + ") for the property name is not correct! Maybe there was a typo? Try again!")
@@ -185,7 +184,7 @@ def plotFromCSV(filename):
 
 
 
-def plottingFunction(plot_info, data, data_type):
+def plottingFunction(plot_info, processed, data_type):
     # Here we go
     if data_type == "processed":
         for figure in plot_info:
@@ -194,16 +193,20 @@ def plottingFunction(plot_info, data, data_type):
             else:
                 fig = plt.figure()
                 for plot in figure["variables"]:
-                    x = data[plot["system"]][plot["component"]][plot["flow"]][plot["property"]]
+                    x = processed[d2df(plot["system"], plot["unit"], plot["flow"], plot["property"])]
                     if figure["plot_mode"] == "hist":
                         num_bins = 50
                         # the histogram of the data
                         n, bins, patches = plt.hist(x, num_bins, normed=1, alpha=0.5)
                         # add a 'best fit' line
-                        plt.xlabel(plot["property"]+" of "+plot["flow"]+" of "+plot["component"]+" in "+plot["system"])
+                        plt.xlabel(plot["property"]+" of "+plot["flow"]+" of "+plot["unit"]+" in "+plot["system"])
                         plt.ylabel('Probability')
                     if figure["plot_mode"] == "timeSeries":
-                        x.plot()
+                        plt.plot(x)
+                        plt.ylabel("Time [YYY:MM]")
+                        plt.ylabel(plot["property"] + " of " + plot["flow"] + " of " + plot["unit"] + " in " + plot["system"])
+
+            plt.show()
     elif data_type == "raw":
         for figure in plot_info:
             if figure["plot_mode"] == "sankey":
@@ -223,6 +226,55 @@ def plottingFunction(plot_info, data, data_type):
                         x.plot()
     else:
         print("Data type is wrong. It should be either -raw- or -processed-")
+
+
+
+
+def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames):
+    for filename in filenames:
+        plt.figure()
+        if filename == "TimeSeries:Heat_vs_time":
+            # Contribution from the HRSGs
+            temp = (processed["ME2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["ME3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE1:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE4:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
+            hrsg = temp.resample("D").sum() * 60 * 15
+            # Contribution from the HTHR
+            temp = processed["HTHR:HTHR13:HRWater_in:mdot"] * CONSTANTS["General"]["CP_WATER"] * (processed["HTHR:HTHR13:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"])
+            hthr = temp.resample("D").sum() * 60 * 15
+            # Maximum theoretical contribution from the HT systems
+            engine_set = {"ME1" , "ME2" , "ME3" , "ME4" , "AE1" , "AE2" , "AE3" , "AE4"}
+            temp =  (sum((processed[d2df(idx, "CAC_HT", "HTWater_out", "T")] - processed[d2df(idx, "JWC", "HTWater_in", "T")]) *
+                     processed[d2df(idx, "CAC_HT", "HTWater_out", "mdot")] * CONSTANTS["General"]["CP_WATER"] for idx in engine_set))
+            hthr_max = temp.resample("D").sum() * 60 * 15
+            # Contribution from the auxiliary boilers
+            boilers_measured = (dataset_raw["Boiler_Port"].resample("D").mean() + dataset_raw["Boiler_starbord"].resample("D").mean()) * CONSTANTS["General"]["HFO"]["LHV"]
+            boilers_calculated = processed["Steam:Boiler1:FuelPh_in:mdot"].resample("D").sum() * 60 * 15 * CONSTANTS["General"]["HFO"]["LHV"]
+            plt.plot(hrsg, 'k-', label="HRSG")
+            plt.plot(hthr, 'b-', label="HTHR")
+            plt.plot(hthr_max, 'b:', label="HTHR max")
+            plt.plot(boilers_measured, 'r-', label="Boilers (M)")
+            plt.plot(boilers_calculated, 'r:', label="Boilers (C)")
+            plt.legend()
+        if filename == "Pie:TotalEnergy":
+            quantities = [processed["Demands:Mechanical:Total:Edot"].sum() , processed["Demands:Electricity:Total:Edot"].sum() , processed["Demands:Heat:Total:Edot"].sum()]
+            labels = ["Mechanical Power" , "Electric Power" , "Thermal Power"]
+            explode = (0.05 , 0.05 , 0.05)
+            plt.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', shadow=True,)
+        if filename == "Pie:Heat":
+            quantities = []
+            labels = []
+            explode = []
+            for demand in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
+                quantities.append(processed[d2df("Demands","Heat",demand,"Edot")].sum())
+                labels.append(demand)
+                explode.append(0.05)
+            plt.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', shadow=True,)
+        if filename == "Hist:WHR":
+            temp = processed["HTHR:HTHR13:HRWater_in:mdot"] * CONSTANTS["General"]["CP_WATER"] * (processed["HTHR:HTHR13:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"])
+            temp2 = (processed["ME2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["ME3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE1:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE4:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
+            plt.hist(temp, 50, normed=1, alpha=0.5, label="HTHR")
+            plt.hist(temp2, 50, normed=1, alpha=0.5, label="HRSG")
+            plt.legend()
+        plt.show()
 
 
 

@@ -138,12 +138,12 @@ def flowStructure():
             structure["systems"][system]["units"]["LTcollector13"]["flows"] = {
                 "LTWater_AE1_in": {"type": "IPF"}, "LTWater_AE3_in": {"type": "IPF"},
                 "LTWater_ME1_in": {"type": "IPF"}, "LTWater_ME3_in": {"type": "IPF"},
-                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
+                "LTWater_out": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTcollector13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector24"]["flows"] = {
                 "LTWater_AE2_in": {"type": "IPF"}, "LTWater_AE4_in": {"type": "IPF"},
                 "LTWater_ME2_in": {"type": "IPF"}, "LTWater_ME4_in": {"type": "IPF"},
-                "LTWater_out": {"type": "IPF"}, "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
+                "LTWater_out": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTcollector24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTdistribution13"]["flows"] = {
                 "LTWater_in": {"type": "IPF"},
@@ -180,16 +180,16 @@ def flowStructure():
             structure["systems"][system]["units"]["HTsplit13"]["equations"] = ["MassBalance", "ConstantTemperature"]
             structure["systems"][system]["units"]["HTsplit24"]["flows"] = {
                 "HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
-            structure["systems"][system]["units"]["HTsplit24"]["equations"] = ["MassBalance"]
+            structure["systems"][system]["units"]["HTsplit24"]["equations"] = ["MassBalance", "ConstantTemperature"]
 
         elif system == "HTHR":
             structure["systems"][system]["units"] = {"HTHR13": {}, "HTHR24": {}, "HTHRsplit": {}, "HTHRmerge": {},
                             "HVACpreheater": {}, "HVACreheater": {}, "SteamHeater": {}, "HotWaterHeater": {}}
             structure["systems"][system]["units"]["HTHR13"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"},
-                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTHR13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["HTHR24"]["flows"] = {"HTWater_in": {"type": "IPF"}, "HTWater_out": {"type": "IPF"},
-                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}, "LTWater_out": {"type": "IPF"}}
+                                                                        "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["HTHR24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["SteamHeater"]["flows"] = {"Steam_in": {"type": "SF", "state": "SV"}, "Steam_out": {"type": "SF", "state": "SL"},
                                                                              "HRWater_in": {"type": "IPF"}, "HRWater_out": {"type": "IPF"}}
@@ -254,7 +254,7 @@ def flowStructure():
         elif system == "Demands":
             structure["systems"][system]["units"] = {"Electricity": {}, "Mechanical": {}, "Heat": {}}
             structure["systems"][system]["units"]["Electricity"]["flows"] = {"Thrusters": {"type": "CEF"}, "HVAC": {"type": "CEF"}, "Other": {"type": "CEF"}}
-            structure["systems"][system]["units"]["Mechanical"]["flows"] = {"Propellers": {"type": "CEF"}}
+            structure["systems"][system]["units"]["Mechanical"]["flows"] = {"Propeller1": {"type": "CEF"}, "Propeller2": {"type": "CEF"}, "Total": {"type": "CEF"}}
             structure["systems"][system]["units"]["Heat"]["flows"] = {
                 "HotWaterHeater": {"type": "Qdot"}, "HVACpreheater": {"type": "Qdot"}, "HVACreheater": {"type": "Qdot"},
                 "TankHeating": {"type": "Qdot"}, "OtherTanks": {"type": "Qdot"}, "HFOtankHeating": {"type": "Qdot"},
@@ -503,9 +503,9 @@ def connectionAssignment(structure):
             structure["systems"]["CoolingSystems"]["units"]["LTcollector24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge24" + ":" + "LTWater_in"]
             # The HT water from the HTsplit goes in the the LTHT merge
             structure["systems"]["CoolingSystems"]["units"]["LTHTmerge13"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit13" + ":" + "HTWater_out"]
-            structure["systems"]["CoolingSystems"]["units"]["HTsplit13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge13" + ":" + "LTWater_in"]
-            structure["systems"]["CoolingSystems"]["units"]["LTHTmerge24"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit24" + ":" + "HTWater_out"]
-            structure["systems"]["CoolingSystems"]["units"]["HTsplit24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge24" + ":" + "LTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit13"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge13" + ":" + "HTWater_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTHTmerge24"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit24" + ":" + "HTWater_out"]
+            structure["systems"]["CoolingSystems"]["units"]["HTsplit24"]["flows"]["HTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTHTmerge24" + ":" + "HTWater_in"]
             # The LT water from the HTsplit goes directly to the SeaWater Cooler
             structure["systems"]["CoolingSystems"]["units"]["SWC13"]["flows"]["HTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "HTsplit13" + ":" + "LTWater_out"]
             structure["systems"]["CoolingSystems"]["units"]["HTsplit13"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "SWC13" + ":" + "HTWater_in"]

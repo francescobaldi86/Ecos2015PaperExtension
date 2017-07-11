@@ -69,9 +69,9 @@ def HTHRcheck(processed, CONSTANTS):
     print("Started consistency check...")
     text_file.write("\n *** CONSISTENTCY CHECK FOR THE HTHR SYSTEM *** \n")
     # Checking that the temperature at the end of the circuit is lower than 90 degC
-    temp = sum(processed["HTHR:HTHR13:HTWater_in:T"] <= 90 + 273.15) / tot * 100
+    temp = sum(processed["HTHR:HTHR24:HRWater_in:T"] <= (90 + 273.15)) / tot * 100
     warn = "WARNING " if temp < 95 else ""
-    text_file.write(warn + " HTHR-13 inlet temperatures on the HR side are consistent for " + str(temp) + " % of the datapoints \n")
+    text_file.write(warn + " HTHR-24 inlet temperatures on the HR side are consistent for " + str(temp) + " % of the datapoints \n")
     # HTHR 13 Temperature consistency (HT side)
     temp = sum(processed["HTHR:HTHR13:HTWater_in:T"] >= processed["HTHR:HTHR13:HTWater_out:T"]) / tot * 100
     warn = "WARNING " if temp < 95 else ""
@@ -115,7 +115,7 @@ def SteamCheck(processed, CONSTANTS, dict_structure):
     text_file.write("\n *** CONSISTENTCY CHECK FOR THE STEAM SYSTEMS *** \n")
     for unit in dict_structure["systems"]["Steam"]["units"]:
         if unit in {"TankHeating", "OtherTanks", "HFOtankHeating", "MachinerySpaceHeaters", "HFOheater", "Galley"}:
-            temp = sum(processed[d2df("Steam", unit, "Steam_in", "mdot")] > 0) / tot * 100
+            temp = sum(processed[d2df("Steam", unit, "Steam_in", "mdot")] >= 0) / tot * 100
             warn = "WARNING " if temp < 95 else ""
             text_file.write(warn + unit + "Steam mass flows are consistent for " + str(temp) + " % of the datapoints \n")
 
