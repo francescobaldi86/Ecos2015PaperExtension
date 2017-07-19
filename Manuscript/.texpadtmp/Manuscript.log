@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.3.30)  19 JUL 2017 10:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.3.30)  19 JUL 2017 10:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -268,77 +268,84 @@ Missing character: There is no Ã in font cmr12!
 Missing character: There is no ¤ in font cmr12!
 Missing character: There is no Ã in font cmr12!
 Missing character: There is no ¤ in font cmr12!
-[7] [8] [9]
+[7]
+Missing character: There is no Ã in font cmr12!
+Missing character: There is no ¶ in font cmr12!
+Missing character: There is no Ã in font cmr12!
+Missing character: There is no ¶ in font cmr12!
+Missing character: There is no Ã in font cmr12!
+Missing character: There is no … in font cmr12!
+ [8] [9]
 
-LaTeX Warning: Reference `app:me' on page 10 undefined on input line 307.
+LaTeX Warning: Reference `app:me' on page 10 undefined on input line 306.
 
 
-LaTeX Warning: Reference `app:ae' on page 10 undefined on input line 307.
+LaTeX Warning: Reference `app:ae' on page 10 undefined on input line 306.
 
 [10]
 
-LaTeX Warning: Reference `eq:met:modeling' on page 11 undefined on input line 328.
+LaTeX Warning: Reference `eq:met:modeling' on page 11 undefined on input line 327.
 
 [11]
 
-LaTeX Warning: Reference `fig:hwhvstime' on page 12 undefined on input line 343.
+LaTeX Warning: Reference `fig:hwhvstime' on page 12 undefined on input line 342.
 
 [12] <Figures/Pel_vs_time.png, id=51, 867.24pt x 461.0826pt>
 File: Figures/Pel_vs_time.png Graphic file (type png)
  <use Figures/Pel_vs_time.png>
-Package pdftex.def Info: Figures/Pel_vs_time.png used on input line 392.
+Package pdftex.def Info: Figures/Pel_vs_time.png used on input line 391.
 (pdftex.def)             Requested size: 350.99762pt x 186.61781pt.
- <Figures/PelRel_vs_time.png, id=53, 597.6729pt x 416.2752pt>
+ [13 <./Figures/Pel_vs_time.png>] <Figures/PelRel_vs_time.png, id=59, 597.6729pt x 416.2752pt>
 File: Figures/PelRel_vs_time.png Graphic file (type png)
  <use Figures/PelRel_vs_time.png>
-Package pdftex.def Info: Figures/PelRel_vs_time.png used on input line 401.
+Package pdftex.def Info: Figures/PelRel_vs_time.png used on input line 400.
 (pdftex.def)             Requested size: 350.99762pt x 244.4696pt.
- [13 <./Figures/Pel_vs_time.png>]
-Overfull \hbox (2.46686pt too wide) in paragraph at lines 424--425
+
+Overfull \hbox (2.46686pt too wide) in paragraph at lines 423--424
 []\OT1/cmr/m/n/12 The ob-ser-va-tion of Fig-ure XX shows how the power de-mand from thrusters
  []
 
-<Figures/Thruster_selection.png, id=60, 462.528pt x 345.4506pt>
+[14 <./Figures/PelRel_vs_time.png>] <Figures/Thruster_selection.png, id=64, 462.528pt x 345.4506pt>
 File: Figures/Thruster_selection.png Graphic file (type png)
  <use Figures/Thruster_selection.png>
-Package pdftex.def Info: Figures/Thruster_selection.png used on input line 430.
+Package pdftex.def Info: Figures/Thruster_selection.png used on input line 429.
 (pdftex.def)             Requested size: 350.99762pt x 262.16565pt.
- [14 <./Figures/PelRel_vs_time.png>] <Figures/Tsea_vs_time.png, id=65, 720.5319pt x 486.3771pt>
+ [15 <./Figures/Thruster_selection.png>] <Figures/Tsea_vs_time.png, id=69, 720.5319pt x 486.3771pt>
 File: Figures/Tsea_vs_time.png Graphic file (type png)
  <use Figures/Tsea_vs_time.png>
-Package pdftex.def Info: Figures/Tsea_vs_time.png used on input line 450.
+Package pdftex.def Info: Figures/Tsea_vs_time.png used on input line 449.
 (pdftex.def)             Requested size: 350.99762pt x 236.93904pt.
- <Figures/Tsea_hist.png, id=66, 462.528pt x 345.4506pt>
+ <Figures/Tsea_hist.png, id=70, 462.528pt x 345.4506pt>
 File: Figures/Tsea_hist.png Graphic file (type png)
  <use Figures/Tsea_hist.png>
-Package pdftex.def Info: Figures/Tsea_hist.png used on input line 457.
+Package pdftex.def Info: Figures/Tsea_hist.png used on input line 456.
 (pdftex.def)             Requested size: 350.99762pt x 262.16565pt.
- [15 <./Figures/Thruster_selection.png>] <Figures/vship_hist.png, id=71, 462.528pt x 345.4506pt>
+ <Figures/vship_hist.png, id=71, 462.528pt x 345.4506pt>
 File: Figures/vship_hist.png Graphic file (type png)
  <use Figures/vship_hist.png>
-Package pdftex.def Info: Figures/vship_hist.png used on input line 468.
+Package pdftex.def Info: Figures/vship_hist.png used on input line 467.
 (pdftex.def)             Requested size: 350.99762pt x 262.16565pt.
- <Figures/Pme_vs_vship.png, id=72, 579.6054pt x 424.2249pt>
+ [16 <./Figures/Tsea_vs_time.png>] [17 <./Figures/Tsea_hist.png>] <Figures/Pme_vs_vship.png, id=80, 579.6054pt x 424.2249pt>
 File: Figures/Pme_vs_vship.png Graphic file (type png)
  <use Figures/Pme_vs_vship.png>
-Package pdftex.def Info: Figures/Pme_vs_vship.png used on input line 475.
+Package pdftex.def Info: Figures/Pme_vs_vship.png used on input line 474.
 (pdftex.def)             Requested size: 350.99762pt x 256.90607pt.
- [16 <./Figures/Tsea_vs_time.png>] [17 <./Figures/Tsea_hist.png>] [18 <./Figures/vship_hist.png>] [19 <./Figures/Pme_vs_vship.png>] <Figures/Demand_vs_time_W.png, id=90, 675.7245pt x 457.4691pt>
+ <Figures/Demand_vs_time_W.png, id=81, 675.7245pt x 457.4691pt>
 File: Figures/Demand_vs_time_W.png Graphic file (type png)
  <use Figures/Demand_vs_time_W.png>
-Package pdftex.def Info: Figures/Demand_vs_time_W.png used on input line 497.
+Package pdftex.def Info: Figures/Demand_vs_time_W.png used on input line 496.
 (pdftex.def)             Requested size: 350.99762pt x 237.62703pt.
- <Figures/Demand_vs_time_S.png, id=91, 676.4472pt x 409.0482pt>
+ <Figures/Demand_vs_time_S.png, id=82, 676.4472pt x 409.0482pt>
 File: Figures/Demand_vs_time_S.png Graphic file (type png)
  <use Figures/Demand_vs_time_S.png>
-Package pdftex.def Info: Figures/Demand_vs_time_S.png used on input line 504.
+Package pdftex.def Info: Figures/Demand_vs_time_S.png used on input line 503.
 (pdftex.def)             Requested size: 350.99762pt x 212.25064pt.
- <Figures/Heat_vs_time.png, id=92, 1155.5973pt x 480.5955pt>
+ [18 <./Figures/vship_hist.png>] [19 <./Figures/Pme_vs_vship.png>] [20 <./Figures/Demand_vs_time_W.png> <./Figures/Demand_vs_time_S.png>] <Figures/Heat_vs_time.png, id=97, 1155.5973pt x 480.5955pt>
 File: Figures/Heat_vs_time.png Graphic file (type png)
  <use Figures/Heat_vs_time.png>
-Package pdftex.def Info: Figures/Heat_vs_time.png used on input line 517.
+Package pdftex.def Info: Figures/Heat_vs_time.png used on input line 516.
 (pdftex.def)             Requested size: 386.10214pt x 160.56966pt.
- (/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.bbl [20 <./Figures/Demand_vs_time_W.png>] [21 <./Figures/Demand_vs_time_S.png> <./Figures/Heat_vs_time.png>] [22] [23]
+ (/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.bbl [21 <./Figures/Heat_vs_time.png>] [22] [23]
 Missing character: There is no Ã in font cmr12!
 Missing character: There is no ˜ in font cmr12!
  [24] [25])
@@ -349,9 +356,6 @@ Package natbib Warning: There were undefined citations.
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
  3265 strings out of 493013
@@ -360,9 +364,9 @@ Here is how much of TeX's memory you used:
  6734 multiletter control sequences out of 15000+600000
  12322 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,11n,30p,919b,333s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 39i,11n,30p,965b,333s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb>
-Output written on /Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.pdf (26 pages, 778837 bytes).
+Output written on /Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.pdf (26 pages, 779090 bytes).
 PDF statistics:
  157 PDF objects out of 1000 (max. 8388607)
  96 compressed objects within 1 object stream
