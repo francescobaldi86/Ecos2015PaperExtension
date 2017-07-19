@@ -55,6 +55,8 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
             processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","T")] - processed[d2df(system,"HRSG","Mix_out","T")]) *
                 processed[d2df(system, "HRSG", "Mix_in", "mdot")] * processed[system+":CP_MIX"] /
                 (CONSTANTS["Steam"]["H_STEAM_VS"] - CONSTANTS["Steam"]["H_STEAM_LS"]))
+            temp = processed[d2df(system,"HRSG","Mix_in","T")] < processed[d2df(system,"HRSG","Mix_out","T")]
+            processed.loc[temp, d2df(system, "HRSG", "Steam_in", "mdot")] = 0
         # Calculation of the mass recirculating from the LT outlet to the HT inlet (not exactly...)
         processed[d2df(system, "HTmerge", "LTWater_in", "mdot")] = processed[d2df(system,"JWC","HTWater_out","mdot")] * (
             processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - processed[d2df(system,"JWC","HTWater_in","T")]) / (
@@ -113,13 +115,6 @@ def centralCoolingSystems(processed, CONSTANTS):
     processed["CoolingSystems:LTHTmerge24:LTWater_in:mdot"] = mdot_HTHR24_tot - processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"]
 
     return processed
-
-
-
-
-
-def coolingSystemsPost(processed, CONSTANTS, dict_structure):
-    processed["CoolingSystems:LTHTmerge13:HTWater_in:T"]
 
 
 

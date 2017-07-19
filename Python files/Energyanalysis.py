@@ -9,13 +9,10 @@ import os
 
 
 def energyAnalysisLauncher(processed, dict_structure, CONSTANTS):
-    processed = propertyCalculator(processed, dict_structure, CONSTANTS)
+    processed = propertyCalculator(processed, dict_structure, CONSTANTS)  # Calculates the energy and exergy flows
+    processed = efficiencyCalculator(processed, dict_structure, CONSTANTS)
     return processed
 
-
-def summaryEnergyFlows(processed, CONSTANTS):
-
-    return processed
 
 
 
@@ -116,6 +113,61 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"Wdot", "CEF"}:
                         processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "Edot")]
     print("...done!")
+    return processed
+
+
+
+def efficiencyCalculator(processed, dict_structure, CONSTANTS):
+    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
+    text_file.write("\n *** CALCULATING EFFICIENCIES *** \n")
+    df_index = processed.index
+    for system in dict_structure["systems"]:
+        for unit in dict_structure["systems"][system]["units"]:
+            # Here I create eight (8) series: 4 Edot and 4 Bdot. 2 "Full" and 2 "useful".
+            temp_flow_list = {"Edot_in", "Edot_in_useful", "Edot_out", "Edot_out_useful", "Bdot_in", "Bdot_in_useful", "Bdot_out", "Bdot_out_useful"}
+            temp_df = pd.DataFrame(0, columns=temp_flow_list, index=df_index)
+            for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                if flow[-2:] == "in":
+                    temp_df['Edot_in'] = temp_df['Edot_in'] + processed[d2df(system, unit, flow, "Edot")]
+                    temp_df['Bdot_in'] = temp_df['Bdot_in'] + processed[d2df(system, unit, flow, "Bdot")]
+                elif flow[-3:] == "out":
+                    temp_df['Edot_out'] = temp_df['Edot_out'] + processed[d2df(system, unit, flow, "Edot")]
+                    temp_df['Bdot_out'] = temp_df['Bdot_out'] + processed[d2df(system, unit, flow, "Bdot")]
+                else:
+                    text_file.write("Flow {}:{}:{} is not recognised as either input or output \n".format(system, unit, flow))
+                # The "Edot_useful" and "Bdot_useful" inputs and outputs are only assigned when defined
+                if "IO" in dict_structure["systems"][system]["units"][unit]["flows"][flow]:
+                    if dict_structure["systems"][system]["units"][unit]["flows"][flow]["IO"] == "input":
+                        if flow[-2:] == "in":
+                            temp_df['Edot_in_useful'] = temp_df['Edot_in_useful'] + processed[d2df(system, unit, flow, "Edot")]
+                            temp_df['Bdot_in_useful'] = temp_df['Bdot_in_useful'] + processed[d2df(system, unit, flow, "Bdot")]
+                        elif flow[-3:] == "out":
+                            temp_df['Edot_in_useful'] = temp_df['Edot_in_useful'] - processed[d2df(system, unit, flow, "Edot")]
+                            temp_df['Bdot_in_useful'] = temp_df['Bdot_in_useful'] - processed[d2df(system, unit, flow, "Bdot")]
+                        else:
+                            text_file.write("Flow {}:{}:{} is not recognised as either input or output \n".format(system, unit,flow))
+                    elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["IO"] == "output":
+                        if flow[-2:] == "in":
+                            temp_df['Edot_out_useful'] = temp_df['Edot_out_useful'] - processed[d2df(system, unit, flow, "Edot")]
+                            temp_df['Bdot_out_useful'] = temp_df['Bdot_out_useful'] - processed[d2df(system, unit, flow, "Bdot")]
+                        elif flow[-3:] == "out":
+                            temp_df['Edot_out_useful'] = temp_df['Edot_out_useful'] + processed[d2df(system, unit, flow, "Edot")]
+                            temp_df['Bdot_out_useful'] = temp_df['Bdot_out_useful'] + processed[d2df(system, unit, flow, "Bdot")]
+                        else:
+                            text_file.write("Flow {}:{}:{} is not recognised as either input or output \n".format(system, unit,flow))
+                    else:
+                        text_file.write("Flow {}:{}:{} is not recognised as either USEFEUL input or output \n".format(system, unit, flow))
+            # We first calculate the energy efficiency (if possible)
+            if system+":"+unit+":"+"eta" in processed.columns:
+                processed[system+":"+unit+":"+"eta"] = temp_df['Edot_out_useful'] / temp_df['Edot_in_useful']
+            # Then exergy efficiency (again, if possible)
+            if system + ":" + unit + ":" + "eps" in processed.columns:
+                processed[system + ":" + unit + ":" + "eps"] = temp_df['Bdot_out_useful'] / temp_df['Bdot_in_useful']
+            # Finally, we calculate the lambda
+            processed[system + ":" + unit + ":" + "lambda"] = (temp_df['Bdot_in'] - temp_df['Bdot_out']) / temp_df['Bdot_in']
+
+            #### ADD THE CALCULATION OF THE DELTA #####
+    text_file.close()
     return processed
 
 

@@ -8,7 +8,7 @@ def constantsSetting():
     output["Steam"] = steamProperties()  # loading dictionary with steam properties constants
     output["MainEngines"] = mainEngines(output)  # loading dictionary with main-engine related constants
     output["AuxEngines"] = auxiliaryEngines(output)  # loading dictionary with auxiliary-engine related constants
-    output["OtherUnits"] = otherUnits()
+    output["OtherUnits"] = otherUnits(output)
     return output
 
 
@@ -18,8 +18,8 @@ def general():
     output["R_0"] = 8.3140 # Ideal gas constant, in [J/mol*K]
     output["R_AIR"] = output["R_0"] * 1000 / 29 # Air gas constant, in [J/kg*K]
     output["K_AIR"] = 1.4   # Air specific heat ratio
-    output["CP_AIR"] = 1.01   # Air specific heat, in [kJ/kgK]
-    output["CP_EG"] = 1.10   # EG specific heat, in [kJ/kgK]
+    output["CP_AIR"] = 1.015   # Air specific heat, in [kJ/kgK]
+    output["CP_EG"] = 1.11   # EG specific heat, in [kJ/kgK]
     output["CP_LO"] = 2.1   # Lubricating oil specific heat, in [kW/kgK]
     output["CP_WATER"] = 4.187   # Water specifi heat, in [kW/kgK]
     output["RHO_W"] = 1000.0   # Water density, in [kg/m^3]
@@ -30,16 +30,23 @@ def general():
     output["P_ATM"] = 101325 # Assumption on atmospheric pressure
     output["T_STANDARD"] = 323 # Standard temperature, for the calculation of the exergy in the exhaust gas
     output["ISO"] = {"LHV": 42700, "T_CA": 298, "T_LT": 298, "ETA_MECH": 0.8} # Reference values for ISO conditions
-    output["NAMES"] = {"MainEngines": ["ME1", "ME2", "ME3", "ME4"], "AuxEngines": ["AE1", "AE2", "AE3", "AE4"]}
+    output["NAMES"] = {"MainEngines": {"ME1", "ME2", "ME3", "ME4"}, "AuxEngines": {"AE1", "AE2", "AE3", "AE4"}}
     output["PROPERTY_LIST"] = {}
-    output["PROPERTY_LIST"]["CPF"] =  ["mdot", "T", "p", "h", "b", "Edot", "Bdot"] # Compressible physical flow
-    output["PROPERTY_LIST"]["IPF"] =  ["mdot", "T", "h", "b", "Edot", "Bdot"] # Incompressible physical flow
-    output["PROPERTY_LIST"]["SF"] = ["mdot", "h", "b", "Edot", "Bdot"]  # Incompressible physical flow
-    output["PROPERTY_LIST"]["Qdot"] = ["T", "Edot", "Bdot"] # Heat flow
-    output["PROPERTY_LIST"]["Wdot"] = ["omega", "Edot", "Bdot"] # Mechanical rotational energy flow
-    output["PROPERTY_LIST"]["CEF"] = ["Edot", "Bdot"] # Chemical / Electrical energy flow
+    output["PROPERTY_LIST"]["CPF"] =  {"mdot", "T", "p", "h", "b", "Edot", "Bdot"} # Compressible physical flow
+    output["PROPERTY_LIST"]["IPF"] =  {"mdot", "T", "h", "b", "Edot", "Bdot"} # Incompressible physical flow
+    output["PROPERTY_LIST"]["SF"] = {"mdot", "h", "b", "Edot", "Bdot"}  # Incompressible physical flow
+    output["PROPERTY_LIST"]["Qdot"] = {"T", "Edot", "Bdot"} # Heat flow
+    output["PROPERTY_LIST"]["Wdot"] = {"omega", "Edot", "Bdot"} # Mechanical rotational energy flow
+    output["PROPERTY_LIST"]["CEF"] = {"Edot", "Bdot"} # Chemical / Electrical energy flows
     output["PROPERTY_LIST"]["REF"] = {"Wdot": 0, "omega":0, "mdot":0, "T": 273, "p": output["P_ATM"], "h": 0, "b": 0, "Edot": 0, "Bdot": 0, "Qdot": 0}
-    output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
+    output["EFFICIENCY_LIST"] = {}
+    output["EFFICIENCY_LIST"]["STANDARD"] = {"eta", "eps", "lambda", "delta"}
+    output["EFFICIENCY_LIST"]["HEX"] = {"eps", "lambda", "delta"}
+    output["EFFICIENCY_LIST"]["MIXMERGE"] = {"lambda", "delta"}
+    output["UNIT_TYPES"] = {}
+    output["UNIT_TYPES"]["STANDARD"] = {"cyl", "comp", "turbine", "ag", "boiler", "shaft"}
+    output["UNIT_TYPES"]["MIXMERGE"] = {"merge", "split", "distribution", "collector", "valve"}
+    # output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
     output["MDO"] = {"LHV": 42230.0, "CP": 1.8, "C": 0.87, "H": 0.13}
     output["MDO"]["HHV"] = output["MDO"]["LHV"] * (1.0406 + 0.0144 * output["MDO"]["H"] / output["MDO"]["C"] * 12) * 1.01  # Calculated Higher heating value
     output["HFO"] = {"LHV": 40360.0, "CP": 1.8, "C": 0.89, "H": 0.11}
@@ -105,7 +112,8 @@ def mainEngines(CONSTANTS):
     output["MFR_HT"] = 120.0 * CONSTANTS["General"]["RHO_W"] / 3600.0   # Mass flow rate of LT cooling water, in [kg/s]
     output["POLY_PIN_2_ETA_IS"] = [-1.18e-2, 8.74e-2, 6.81e-1] # Polynoimial regression for isentropic efficiency of the compressor
     output["ETA_CORR"] = 1.05
-    output["ETA_MECH_TC"] = 0.9   # Mechanical efficiency of the turbocharger [-]
+    output["ETA_MECH_TC"] = 0.9   # Mechanical efficiency of the turbocharger [-]. Variations from "Development and validation of a new turbocharger simulation methodology for marine two stroke diesel engine modelling and diagnostic applications"
+    output["POLY_TC_RPM_2_ETA_MECH"] = np.polyfit([6000, 9500, 13000, 16500, 20000], [0.7 , 0.76 , 0.84 , 0.91 , 0.91], 2)
     output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
@@ -157,12 +165,16 @@ def auxiliaryEngines(CONSTANTS):
 
 
 
-def otherUnits ():
+def otherUnits(CONSTANTS):
     output = {}  # Initializing the output dictionary
     output["BOILER"] = {}  # Initializing the boiler sub-dictionary
     output["BOILER"]["ETA_DES"] = 0.9
     output["BOILER"]["ETA_REGR_X"] = [6.79E-02, 1.20E-01, 1.62E-01, 2.12E-01, 2.86E-01, 3.52E-01, 4.03E-01, 4.41E-01, 4.90E-01, 5.40E-01, 5.89E-01, 6.54E-01, 7.16E-01, 7.67E-01, 8.31E-01, 8.94E-01, 9.47E-01, 9.89E-01, 1.04E+00, 1.09E+00, 1.14E+00, 1.20E+00]
     output["BOILER"]["ETA_REGR_Y"] = [0.8787, 0.8830, 0.8864, 0.8889, 0.8910, 0.8897, 0.8870, 0.8842, 0.8810, 0.8777, 0.8740, 0.8692, 0.86486, 0.8613, 0.8570, 0.8528, 0.8491, 0.8462, 0.8427, 0.8390, 0.8356, 0.8317]
+    output["BOILER"]["OXYGEN_EG"] = 0.04
+    # Here we calculate the air/fuel ratio of the boiler, given the concentration of oxygen in the exhaust
+    output["BOILER"]["LAMBDA"] = (CONSTANTS["General"]["MDO"]["C"] / 12 + CONSTANTS["General"]["MDO"]["H"] / 4 * (1 + output["BOILER"]["OXYGEN_EG"])
+                                  ) / (1 - 100/21 * output["BOILER"]["OXYGEN_EG"]) * (32 + 100 / 21 * 28)
     for idx in range(len(output["BOILER"]["ETA_REGR_Y"])):
         output["BOILER"]["ETA_REGR_Y"][idx] = output["BOILER"]["ETA_REGR_Y"][idx] / max(output["BOILER"]["ETA_REGR_Y"])
     output["PROPULSION"] = {}
@@ -185,8 +197,9 @@ def otherUnits ():
     output["HEAT_DEMAND"]["HVAC_START"] = np.datetime64("2014-07-03")
     output["HEAT_DEMAND"]["HVAC_END"] = np.datetime64("2014-08-21")
     output["HEAT_DEMAND"]["TOTAL_AREA"] = (150 + 30) * 2 * 20 + 2 * 150 * 30
-    output["HEAT_DEMAND"]["T_AIR_REF"]  = -20 + 273
-    output["HEAT_DEMAND"]["TOTAL_U"] = output["HEAT_DEMAND"]["HVAC_PREHEATER"] / output["HEAT_DEMAND"]["TOTAL_AREA"] / (output["HEAT_DEMAND"]["T_INSIDE"] - output["HEAT_DEMAND"]["T_AIR_REF"])
+    output["HEAT_DEMAND"]["T_AIR_REF_MIN"]  = -20 + 273
+    output["HEAT_DEMAND"]["T_AIR_REF_MAX"] = 15 + 273
+    output["HEAT_DEMAND"]["TOTAL_U"] = output["HEAT_DEMAND"]["HVAC_PREHEATER"] / output["HEAT_DEMAND"]["TOTAL_AREA"] / (output["HEAT_DEMAND"]["T_INSIDE"] - output["HEAT_DEMAND"]["T_AIR_REF_MIN"])
     output["HEAT_DEMAND"]["HTHR_EPS"] = 0.85  # Effectiveness of the HTHR water-water heat exchangers
     return output
     

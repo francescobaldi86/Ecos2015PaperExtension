@@ -20,7 +20,7 @@ def systemCheck(processed, CONSTANTS, dict_structure, dataset_raw):
 def enginesCheck(processed, CONSTANTS):
     # This function checks that all relative values are consistent
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
-    print("Started consistency check...")
+    print("Started consistency check for the engines...", end="", flush=True)
     text_file.write("\n *** CONSISTENTCY CHECK FOR ENGINES *** \n")
     for type in ["MainEngines", "AuxEngines"]:
         for name in CONSTANTS["General"]["NAMES"][type]:
@@ -66,7 +66,7 @@ def HTHRcheck(processed, CONSTANTS):
     # This function checks that all relative values are consistent
     tot = len(processed.index)
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
-    print("Started consistency check...")
+    print("Started consistency check for the HTHR systems...", end="", flush=True)
     text_file.write("\n *** CONSISTENTCY CHECK FOR THE HTHR SYSTEM *** \n")
     # Checking that the temperature at the end of the circuit is lower than 90 degC
     temp = sum(processed["HTHR:HTHR24:HRWater_in:T"] <= (90 + 273.15)) / tot * 100
@@ -104,27 +104,27 @@ def HTHRcheck(processed, CONSTANTS):
     temp = sum(processed["HTHR:HotWaterHeater:HRWater_in:T"] >= processed["HTHR:HotWaterHeater:HRWater_out:T"]) / tot * 100
     warn = "WARNING " if temp < 95 else ""
     text_file.write(warn + " Hot Water Heater (HR side) temperatures are consistent for " + str(temp) + " % of the datapoints \n")
-
     text_file.close()
+    print("...done!")
 
 def SteamCheck(processed, CONSTANTS, dict_structure):
     # This function checks that all relative values are consistent
     tot = len(processed.index)
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
-    print("Started consistency check...")
+    print("Started consistency check for the steam systems...", end="", flush=True)
     text_file.write("\n *** CONSISTENTCY CHECK FOR THE STEAM SYSTEMS *** \n")
     for unit in dict_structure["systems"]["Steam"]["units"]:
         if unit in {"TankHeating", "OtherTanks", "HFOtankHeating", "MachinerySpaceHeaters", "HFOheater", "Galley"}:
             temp = sum(processed[d2df("Steam", unit, "Steam_in", "mdot")] >= 0) / tot * 100
             warn = "WARNING " if temp < 95 else ""
             text_file.write(warn + unit + "Steam mass flows are consistent for " + str(temp) + " % of the datapoints \n")
-
     text_file.close()
+    print("...done!")
 
 def missingValues(processed, dict_structure, CONSTANTS):
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
     text_file.write("\n *** LIST OF MISSING VALUES *** \n")
-    print("Started looking for missing values...")
+    print("Started looking for missing values...", end="", flush=True)
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
@@ -136,22 +136,34 @@ def missingValues(processed, dict_structure, CONSTANTS):
 
 
 def massBalance(processed, dict_structure, CONSTANTS):
-    # This function checks that the mass balance is respected
+    # This function checks that the mass balance is respected.
+    # Errors are shown:
+    # - On an occurrence basis: every time that the balance is not respected counts as 1
+    # - On an "average error" basis
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
     text_file.write("\n *** CHECKING THE MASS BALANCE *** \n")
-    print("Started checking mass balances...")
+    print("Started checking mass balances...", end="", flush=True)
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
+            if (system == "Steam" and unit == "SteamDistribution"):
+                aaa = 0
             balance = pd.Series(index=processed.index)
             balance[:] = 0
             max_value = 0
+            counter = 0
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
-                if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF" , "IPF"}:
+                if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"CPF" , "IPF", "SF"}:
+                    counter = counter + 1
                     balance = balance + processed[d2df(system,unit,flow,"mdot")] * (2 * float("out" not in flow) - 1)
                     max_value = max(max_value,max(processed[d2df(system,unit,flow,"mdot")]))
-            balance_occ = np.sum(balance[processed[system+":on"]] < 0.001*max_value) / max(1,len(balance[processed[system+":on"]])) * 100
-            balance_ave = np.sum(balance[processed[system+":on"]]) / max(1,len(balance[processed[system+":on"]]))
-            text_file.write("Mass balance for {}_{} unit is not respected {}% of the times, with {} average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
+            balance_occ = np.sum(balance < 0.001*max_value) / len(balance) * 100
+            if balance_occ == 100:
+                text_file.write("The mass balance is fine for {}_{} unit \n".format(system, unit))
+            elif counter == 0:
+                text_file.write("There is no mass balance for {}_{} unit \n".format(system, unit))
+            else:
+                balance_ave = np.sum(balance) / (len(balance)*(100 - balance_occ)/100) / max_value * 100
+                text_file.write("---Mass balance for {}_{} unit is respected {}% of the times, with {}% average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()
 
@@ -160,7 +172,7 @@ def energyBalance(processed, dict_structure, CONSTANTS):
     # This function checks that the mass balance is respected
     text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
     text_file.write("\n *** CHECKING THE ENERGY BALANCE *** \n")
-    print("Started checking the energy balances...")
+    print("Started checking the energy balances...", end="", flush=True)
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
             balance = pd.Series(index=processed.index)
@@ -169,8 +181,11 @@ def energyBalance(processed, dict_structure, CONSTANTS):
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
                 balance = balance + processed[d2df(system,unit,flow,"Edot")] * (2 * float("out" not in flow) - 1)
                 max_value = max(max_value, max(processed[d2df(system, unit, flow, "Edot")]))
-            balance_occ = np.sum(balance[processed[system+":on"]] < 0.001*max_value) / max(1,len(balance[processed[system+":on"]])) * 100
-            balance_ave = np.sum(balance[processed[system+":on"]]) / max(1,len(balance[processed[system+":on"]]))
-            text_file.write("Energy balance for {}_{} unit is respected {}% of the times, with {} average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
+            balance_occ = np.sum(balance < 0.001 * max_value) / max(1, len(balance)) * 100
+            if balance_occ == 100:
+                text_file.write("The Energy balance is fine for {}_{} unit \n".format(system, unit))
+            else:
+                balance_ave = np.sum(balance) / (len(balance)*(100 - balance_occ)/100) / max_value * 100
+                text_file.write("---Energy balance for {}_{} unit is respected {}% of the times, with {}% average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()

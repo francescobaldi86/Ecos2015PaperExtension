@@ -9,7 +9,7 @@ def auxPowerAnalysis(processed, CONSTANTS, dict_structure):
     processed = propPowerDemand(processed, CONSTANTS)
     # Calculating the contribution from the thrusters
     #processed = thrusters(processed, CONSTANTS)  # The second method works better. But I still keep it
-    processed = thrusters2(processed, CONSTANTS)
+    processed = thrusters(processed, CONSTANTS)
     processed = HVAC(processed, CONSTANTS)
     processed = heatDemand(processed, CONSTANTS, dict_structure)
     processed = HTHR(processed, CONSTANTS)
@@ -64,28 +64,6 @@ def HVAC(processed, CONSTANTS):
 
 
 def thrusters(processed, CONSTANTS):
-    aaa = 0 # This is only defined as a trick for the cases when there are two consecutive time steps with thrusters on
-    for idx in range(len(processed.index)):
-        if aaa == 1:
-            aaa = 0
-            continue
-        idt = processed.index[idx]
-        if idx > len(processed.index) - 2:
-            processed.loc[idt, "Demands:Electricity:Thrusters:Edot"] = 0
-        else:
-            if processed["Demands:Electricity:Total:Edot"][processed.index[idx]] - processed["Demands:Electricity:Total:Edot"][processed.index[idx-1]] > 240:
-                if abs(processed["Demands:Electricity:Total:Edot"][processed.index[idx+1]] - processed["Demands:Electricity:Total:Edot"][processed.index[idx]]) < 50:
-                    processed.loc[processed.index[idx], "Demands:Electricity:Thrusters:Edot"] = processed["Demands:Electricity:Total:Edot"][processed.index[idx]] - (processed["Demands:Electricity:Total:Edot"][processed.index[idx - 1]] + (processed["Demands:Electricity:Total:Edot"][processed.index[idx + 2]] - processed["Demands:Electricity:Total:Edot"][processed.index[idx-1]]) / 3)
-                    processed.loc[processed.index[idx+1], "Demands:Electricity:Thrusters:Edot"] = processed["Demands:Electricity:Total:Edot"][processed.index[idx+1]] - (processed["Demands:Electricity:Total:Edot"][processed.index[idx - 1]] + (processed["Demands:Electricity:Total:Edot"][processed.index[idx + 2]] - processed["Demands:Electricity:Total:Edot"][processed.index[idx-1]]) * 2 / 3)
-                    aaa = 1  # Setting aaa=1 here makes us skip the next iteration
-                else:
-                    processed.loc[processed.index[idx], "Demands:Electricity:Thrusters:Edot"] = processed["Demands:Electricity:Total:Edot"][processed.index[idx]] - processed["Demands:Electricity:Total:Edot"][processed.index[idx-1]]/2 - processed["Demands:Electricity:Total:Edot"][processed.index[idx+1]]/2
-            else:
-                processed.loc[idt, "Demands:Electricity:Thrusters:Edot"] = 0
-    return processed
-
-
-def thrusters2(processed, CONSTANTS):
     # The principle of this function is to divide the instanteneous value of total power consumption by the daily average.
     # Then, we take the first day as reference, we manually select the "thruster" values, and we take the difference as
     # the expected "no-thrusters" instantaneous consumption
@@ -120,20 +98,23 @@ def heatDemand(processed, CONSTANTS, dict_structure):
     # This function calculates the heat demand from the on board systems
     db_index = processed.index
     processed["Demands:Heat:HotWaterHeater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HOT_WATER_HEATER"] * pd.Series((round(len(processed)/96)*np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HWH_HOURLY"],4)))[:len(processed)], index=db_index)
-    processed["Demands:Heat:HVACpreheater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_INSIDE"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_INSIDE"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF"])
-    processed.loc[processed["Demands:Heat:HVACpreheater:Edot"] < 0.1 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"], "Demands:Heat:HVAC_preheater:Edot"] = 0 # The pre-heater is not working during summer
+    temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MIN"])
+    temp[temp < 0.1 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"]] = 0
+    processed["Demands:Heat:HVACpreheater:Edot"] = temp # The pre-heater is not working during summer
     processed["Demands:Heat:HVACreheater:Edot"] = processed["Demands:Electricity:HVAC:Edot"]
     processed["Demands:Heat:TankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["TANK_HEATING"]
-    processed.loc[:,"Demands:Heat:OtherTanks:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["OTHER_TANKS"]
-    processed.loc[:,"Demands:Heat:HFOtankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HFO_TANK_HEATING"]
-    processed["Demands:Heat:MachinerySpaceHeaters:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["MACHINERY_SPACE_HEATERS"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_INSIDE"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_INSIDE"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF"])
-    processed.loc[processed["Demands:Heat:HVACpreheater:Edot"] < 0.1 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"], "Demands:Heat:Machinery_space_heaters:Edot"] = 0  # The pre-heater is not working during summer
+    processed["Demands:Heat:OtherTanks:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["OTHER_TANKS"]
+    processed["Demands:Heat:HFOtankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HFO_TANK_HEATING"]
+    temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["MACHINERY_SPACE_HEATERS"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MIN"])
+    temp[processed["Demands:Heat:HVACpreheater:Edot"] == 0] = 0
+    processed["Demands:Heat:MachinerySpaceHeaters:Edot"] = temp
     processed["Demands:Heat:HFOheater:Edot"] = CONSTANTS["General"]["HFO"]["CP"] * (
         processed["AE1:Cyl:FuelPh_in:mdot"]+processed["AE2:Cyl:FuelPh_in:mdot"]+processed["AE3:Cyl:FuelPh_in:mdot"]+processed["AE4:Cyl:FuelPh_in:mdot"]+
         processed["ME1:Cyl:FuelPh_in:mdot"]+processed["ME2:Cyl:FuelPh_in:mdot"]+processed["ME3:Cyl:FuelPh_in:mdot"]+processed["ME4:Cyl:FuelPh_in:mdot"]) * 100
     processed["Demands:Heat:Galley:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY"] * pd.Series((round(len(processed) / 96) * np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY_HOURLY"], 4)))[:len(processed)],index=db_index)
     processed["Demands:Heat:Total:Edot"] = pd.Series(index=db_index)
     processed.loc[:,"Demands:Heat:Total:Edot"] = 0
+    # Updating the steam mass flows
     for flow in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
         processed["Demands:Heat:Total:Edot"] = processed["Demands:Heat:Total:Edot"] + processed[d2df("Demands", "Heat", flow, "Edot")]
         if flow in dict_structure["systems"]["Steam"]["units"]:
@@ -141,6 +122,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
         elif flow in dict_structure["systems"]["HTHR"]["units"]:
             processed[d2df("HTHR", flow, "Qdot_out", "Edot")] = processed[d2df("Demands", "Heat", flow, "Edot")]
     return processed
+
 
 
 def HTHR(processed, CONSTANTS):
@@ -169,12 +151,24 @@ def HTHR(processed, CONSTANTS):
     processed.loc[ER24off, "CoolingSystems:HTcollector24:HTWater_out:T"] = processed["T_0"][ER24off]
 
     # Now we need to calculate the conditions after the heat is given to the hot water heater, preheater, reheater
-    processed["HTHR:HTHR24:HRWater_in:T"] = processed["HTHR:SteamHeater:HRWater_out:T"] - (
-        processed["Demands:Heat:HotWaterHeater:Edot"] + processed["Demands:Heat:HVACreheater:Edot"] + processed["Demands:Heat:HVACpreheater:Edot"]
-        ) / processed["HTHR:SteamHeater:HRWater_out:mdot"] / CONSTANTS["General"]["CP_WATER"]
+    # Case 1: we have made an assumption on the mass flow of water
+    if sum(processed["HTHR:HTHR24:HRWater_in:T"].isnull()) == len(processed):
+        processed["HTHR:HTHR24:HRWater_in:T"] = processed["HTHR:SteamHeater:HRWater_out:T"] - (
+            processed["Demands:Heat:HotWaterHeater:Edot"] + processed["Demands:Heat:HVACreheater:Edot"] + processed["Demands:Heat:HVACpreheater:Edot"]
+            ) / processed["HTHR:SteamHeater:HRWater_out:mdot"] / CONSTANTS["General"]["CP_WATER"]
+    elif sum(processed["HTHR:SteamHeater:HRWater_out:mdot"].isnull()) == len(processed):
+    # Case 2: we have made an assumption on the HTHR inlet temperature
+        processed["HTHR:SteamHeater:HRWater_out:mdot"] = (processed["Demands:Heat:HotWaterHeater:Edot"] +
+            processed["Demands:Heat:HVACreheater:Edot"] + processed["Demands:Heat:HVACpreheater:Edot"]
+            ) / (processed["HTHR:SteamHeater:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
+    else:
+        print("Error: the two variables that were supposed to be calculated are both available")
 
+    # We should be able to proceed in both cases
+    mdot_min24 = pd.concat([processed["HTHR:SteamHeater:HRWater_out:mdot"], processed["CoolingSystems:HTcollector24:HTWater_out:mdot"]], axis=1).min(axis=1)
+    mdot_min13 = pd.concat([processed["HTHR:SteamHeater:HRWater_out:mdot"], processed["CoolingSystems:HTcollector13:HTWater_out:mdot"]],axis=1).min(axis=1)
     # Now, the conditions at the HTHR inputs from the HT side are given, so we can calculate the heat flow using the eps NTU method
-    qdot_HTHR24 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * processed["CoolingSystems:HTcollector24:HTWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (
+    qdot_HTHR24 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * mdot_min24 * CONSTANTS["General"]["CP_WATER"] * (
         processed["CoolingSystems:HTcollector24:HTWater_out:T"] - processed[d2df("HTHR", "HTHR24", "HRWater_in", "T")])
     # Once again, to avoid risks, when all engines of the ER 24 are off, the heat flow here is 0
     qdot_HTHR24[ER24off] = 0
@@ -185,7 +179,7 @@ def HTHR(processed, CONSTANTS):
     processed.loc[ER24off, "HTHR:HTHR24:HTWater_out:T"] = processed["CoolingSystems:HTcollector24:HTWater_out:T"]
 
     # Finally, we can do the same for the HTHR 13 exchanger
-    qdot_HTHR13 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * processed["CoolingSystems:HTcollector13:HTWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (
+    qdot_HTHR13 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * mdot_min13 * CONSTANTS["General"]["CP_WATER"] * (
         processed["CoolingSystems:HTcollector13:HTWater_out:T"] - processed[d2df("HTHR", "HTHR24", "HRWater_out", "T")])
     qdot_HTHR13[ER13off] = 0
     qdot_HTHR13[qdot_HTHR13 < 0] = 0
@@ -197,19 +191,20 @@ def HTHR(processed, CONSTANTS):
     # Now, we know that the HR water before the users must be at 90 degrees
     processed["HTHR:SteamHeater:Steam_in:mdot"] = processed["HTHR:SteamHeater:HRWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (
         processed["HTHR:SteamHeater:HRWater_out:T"] - processed["HTHR:HTHR13:HRWater_out:T"]) / CONSTANTS["Steam"]["DH_STEAM"]
+    processed.loc[processed["HTHR:SteamHeater:HRWater_out:T"] < processed["HTHR:HTHR13:HRWater_out:T"], "HTHR:SteamHeater:Steam_in:mdot"] = 0
 
     # Now, what happens after the three heat exchangers? We assume equal temperature drop
-    processed.loc[:,"HTHR:HTHRmerge:HRWater_HWH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
-    processed.loc[:, "HTHR:HTHRmerge:HRWater_PreH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
-    processed.loc[:, "HTHR:HTHRmerge:HRWater_ReH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
+    processed["HTHR:HTHRmerge:HRWater_HWH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
+    processed["HTHR:HTHRmerge:HRWater_PreH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
+    processed["HTHR:HTHRmerge:HRWater_ReH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
 
     # The so that the mass flow can easily be determined
-    processed.loc[:, "HTHR:HTHRmerge:HRWater_HWH_in:mdot"] = processed["Demands:Heat:HotWaterHeater:Edot"] / (
-        processed["HTHR:HTHRmerge:HRWater_HWH_in:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
-    processed.loc[:, "HTHR:HTHRmerge:HRWater_PreH_in:mdot"] = processed["Demands:Heat:HVACpreheater:Edot"] / (
-        processed["HTHR:HTHRmerge:HRWater_PreH_in:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
-    processed.loc[:, "HTHR:HTHRmerge:HRWater_ReH_in:mdot"] = processed["Demands:Heat:HVACreheater:Edot"] / (
-        processed["HTHR:HTHRmerge:HRWater_ReH_in:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
+    processed["HTHR:HTHRmerge:HRWater_HWH_in:mdot"] = processed["Demands:Heat:HotWaterHeater:Edot"] / (
+        processed["HTHR:SteamHeater:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
+    processed["HTHR:HTHRmerge:HRWater_PreH_in:mdot"] = processed["Demands:Heat:HVACpreheater:Edot"] / (
+        processed["HTHR:SteamHeater:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
+    processed["HTHR:HTHRmerge:HRWater_ReH_in:mdot"] = processed["Demands:Heat:HVACreheater:Edot"] / (
+        processed["HTHR:SteamHeater:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"]) / CONSTANTS["General"]["CP_WATER"]
     return processed
 
 
@@ -228,7 +223,18 @@ def steamSystems(processed, CONSTANTS):
                   processed["HTHR:SteamHeater:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
     # The auxiliary boilers must provide the difference between the demand and the available heat
     processed["Steam:Boiler1:Steam_in:mdot"] = (heat_steam - heat_from_HRSG) / CONSTANTS["Steam"]["DH_STEAM"]
+    temp = processed["Steam:Boiler1:Steam_in:mdot"] < 0
+    processed.loc[temp, "Steam:Boiler1:Steam_in:mdot"] = 0
     processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
     processed["Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"] / CONSTANTS["General"]["HFO"]["LHV"]
+    processed["Steam:Boiler1:Air_in:mdot"] = processed["Steam:Boiler1:FuelPh_in:mdot"] * CONSTANTS["OtherUnits"]["BOILER"]["LAMBDA"]
+    processed["Steam:Boiler1:EG_out:mdot"] = processed["Steam:Boiler1:Air_in:mdot"] + processed["Steam:Boiler1:FuelPh_in:mdot"]
+    # Assuming the boiler 2 is never used. The thing is: we have no way of assessing whether one or the other is used!
+    processed.loc[:,"Steam:Boiler2:Steam_in:mdot"] = 0
+    processed.loc[:,"Steam:Boiler2:FuelCh_in:Edot"] = 0
+    processed.loc[:,"Steam:Boiler2:FuelPh_in:mdot"] = 0
 
     return processed
+
+
+

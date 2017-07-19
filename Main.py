@@ -50,6 +50,7 @@ import plotting as plot
 import datareading as dr
 import unitstructures as us
 import constants as kk
+import fillerfunctions as ff
 import consistencycheck as cc
 import preprocessingAE as ppa
 import preprocessingME as ppm
@@ -57,6 +58,7 @@ import preprocessingO as ppo
 import energyanalysis as ea
 import auxiliaryDemand as aux
 import coolingsystems as cs
+from helpers import d2df
 
 #%%
 ######################################
@@ -98,23 +100,23 @@ elif do_data_processing == "yes":
     if erase_old_file != "no":
         os.remove(CONSTANTS["filenames"]["dataset_output"])
     # First updating the "CONSTANTS" dictionary with the some additional information
-    processed = ppo.assumptions(dataset_raw, processed, CONSTANTS, header_names)
+    processed = input.assumptions(dataset_raw, processed, CONSTANTS, header_names)
     # Updating the fields of the MainEngines and the auxiliary engines
     processed = ppm.mainEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
     processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
     # Calculating the auxiliary power demands: heating and electric power
     processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure)
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Demands", "Demands-1")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Demands", "Demands-1")
     # Calculating the central cooling systems
     processed = cs.centralCoolingSystems(processed, CONSTANTS)
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
     # Assigning defined values to all flows for engines off
     processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS)
     # Re-doing the calculation of the connected points
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
     processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
 
 
@@ -129,7 +131,7 @@ cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
 ## PLOTTING	##
 ######################################
 
-plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, ["TimeSeries:Heat_vs_time", "Pie:TotalEnergy", "Pie:Heat"])
+plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, ["TimeSeries:Heat_vs_time"])
 # plot.plotMain("prompt", dict_structure, processed)
 
 

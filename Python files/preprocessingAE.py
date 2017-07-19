@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import fillerfunctions as ff
 import preprocessingO as ppo
 import coolingsystems as cs
 from helpers import d2df
@@ -11,8 +12,8 @@ def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     processed = ppo.engineStatusCalculation("AuxEngines", raw, processed, CONSTANTS, hd)
     # Calculating the cooling flows, so that they can be later assigned easily
     processed = cs.coolingFlows(processed, CONSTANTS, "AuxEngines")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.1")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.2")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.1")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.2")
     # Calculating the power, including the generator efficiency
     processed = auxEnginePowerCalculation(processed, CONSTANTS)
     # Calculating engine load, that is used many times later on
@@ -21,12 +22,12 @@ def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     processed = auxEngineFuelFlowCalculation(raw, processed, CONSTANTS)
     # Calculate air and exhaust gas flows in the main engines
     processed = auxEngineAirFlowCalculation(raw, processed, CONSTANTS)
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.1")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.2")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.1")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.2")
     # Calculating cooling flows
     processed = cs.engineCoolingSystemsCalculation(processed, CONSTANTS, "AuxEngines")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.1")
-    processed = ppo.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.2")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.1")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.2")
     return processed
 
 
@@ -109,13 +110,10 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
         comp_isentropic_efficiency = beta_comp.apply(ppo.polyvalHelperFunction, args=(CONSTANTS["AuxEngines"]["POLY_PIN_2_ETA_IS"],))
         # Calculating the temperature after the compressor, based on ideal gas assumption
         T_Comp_out_iso = processed[d2df(system, "Comp", "Air_in", "T")] * beta_comp ** ((CONSTANTS["General"]["K_AIR"] - 1) / CONSTANTS["General"]["K_AIR"])
-        processed[d2df(system, "Comp", "Air_out", "T")] = processed[d2df(system, "Comp", "Air_in", "T")] + (
-            T_Comp_out_iso - processed[d2df(system, "Comp", "Air_in", "T")]) / comp_isentropic_efficiency
+        T_Comp_out = processed[d2df(system, "Comp", "Air_in", "T")] + (T_Comp_out_iso - processed[d2df(system, "Comp", "Air_in", "T")]) / comp_isentropic_efficiency
         #### NOTE: HERE WE MAKE THE ASSUMPTION THAT THE COMPRESSOR OUTLET TEMPERATURE CANNOT BE LOWER THAN THE CYLINDER INLET TEMPERATURE
-        processed.loc[processed[d2df(system, "Comp", "Air_out", "T")] < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(
-                system, "Comp", "Air_out", "T")] = \
-            processed.loc[processed[d2df(system, "Comp", "Air_out", "T")] < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(
-                    system, "Cyl", "Air_in", "T")]
+        T_Comp_out[T_Comp_out < processed[d2df(system, "Cyl", "Air_in", "T")]] = processed.loc[T_Comp_out < processed[d2df(system, "Cyl", "Air_in", "T")], d2df(system, "Cyl", "Air_in", "T")]
+        processed[d2df(system, "Comp", "Air_out", "T")] = T_Comp_out
         # Calculating the air inflow aspired by the cylinder: calculated as inlet air density times the maximum volume,
         # times the engine speed
         processed[d2df(system,"Cyl","Air_in","mdot")] = CONSTANTS["AuxEngines"]["V_MAX"] * (
@@ -145,7 +143,7 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
             processed[d2df(system,"BPmerge","BP_in","mdot")] * CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "Comp", "Air_out", "T")]) / (
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"])
         processed[system + ":CP_MIX"] = (processed[d2df(system, "BPmerge", "BP_in", "mdot")] * CONSTANTS["General"]["CP_AIR"] +
-            processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_AIR"]) / processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
+            processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_EG"]) / processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
         # Calculating the turbine's power outpput to the compressor
         processed[d2df(system, "Turbine", "Power_out", "Edot")] = processed[system + ":CP_MIX"] * processed[d2df(system, "BPmerge", "Mix_out", "mdot")] * (
             processed[d2df(system, "Turbine", "Mix_in", "T")] - processed[d2df(system, "Turbine", "Mix_out", "T")])
@@ -153,7 +151,7 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
         processed[d2df(system, "Comp", "Power_in", "Edot")] = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "BPsplit", "Air_in", "mdot")] * (
             processed[d2df(system, "Comp", "Air_out", "T")] - processed[d2df(system, "Comp", "Air_in", "T")])
         # Losses at the TC shaft level are calculated
-        processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] - processed[d2df(system, "Comp", "Power_in", "Edot")]
+        processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] * CONSTANTS["MainEngines"]["ETA_MECH_TC"]
 
         # processed[system + ":EG_Composition"] = ppo.mixtureComposition(
         #     processed[d2df(system, "Cyl", "Air_in", "mdot")],
