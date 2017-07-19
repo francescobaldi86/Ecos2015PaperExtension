@@ -83,13 +83,13 @@
 %% \address[label2]{}
 
 \author[EPFL]{Francesco Baldi}
-\author[Linneus]{Fredrik Ahlgren}
+\author[Linnaeus]{Fredrik Ahlgren}
 \author[DTU]{Tuong-Van Nguyen}
 \author[CTU]{Cecilia Gabrielii}
 \author[CTU]{Karin Andersson}
 
 \address[EPFL]{Industrial Process Energy Systems Engineering (IPESE), \'{E}cole Polytechnique F\'{e}d\'{e}rale de Lausanne, 1950, Sion, Switzerland}
-\address[Linneus]{Kalmar Maritime Academy, Linnaeus University, Kalmar, Sweden}
+\address[Linnaeus]{Kalmar Maritime Academy, Linnaeus University, Kalmar, Sweden}
 \address[DTU]{Department of Mechanical Engineering, Technical University of Denmark, Lyngby, Denmark}
 \address[CTU]{Department of Mechanics and Maritime Sciences, Chalmers University of technology, Gothenburg, Sweden}
 
@@ -260,10 +260,12 @@ Auxiliary heat needs are fulfilled by the exhaust gas steam generators (HRSG) lo
 
 \subsection{Data gathering and pre-processing} \label{sec:met:gathering}
 
-This section should be written by FA :-)
+The operational data was collected on board from the ships' machine logging and surveillance system. The on board database tool exported all logging points to Excel-97 files, and due to the extensive amount of data points the export was divided in to 15 individual Excel-files consisting of a total 665 MB. The exported raw-data from the ship was over a time span of a full year and in most data-points in 15-min average. The Excel-files were processed in the Pandas library which is a high performance data analysis tool in Python \cite{mckinney-proc-scipy-2010}. A new structured naming of headers and a consistent time frequency over all data points were created, and 245 selected data points were saved in a HDF5 table time series database which is the base for the analysis.
 
-Since measurements of ambient and seawater temperature from onboard logging systems were not available for the whole dataset, we used measurements taken from SMHI database for Landsort lighthouse. The assumption was validated based on  June-December period, for which onboard measurements were available. This resulted in a root mean square error of 1.5 K and 1.9 K for the seawater and the ambient temperature respectively, which we considered to be accurate enough for the purpose of this work.
-% We did the calculation, resampling the data from SHMI from a 1(3)h to 15min frequency using linear interpolation. 
+All data-points were checked individually by creating a descriptive statistic and a histogram of each data-point. A filter was applied by setting up a pre-defined maximum and minimum value. As we do not know, or had any meaningful way of deriving, each individual sensors placement, sensor type or calibration status all data must be filtered and checked accordingly for outliers or bad data. 
+
+
+Since measurements of ambient and seawater temperature from onboard logging systems were not available for the whole dataset, we used measurements taken from SMHI database for Landsort lighthouse for the seawater, and the lighthouse Svenska Högarna for the ambient temperature. The Landsord lighthouse is situated south of the Stockholm archipelago, and the Svenska Högarna lighthouse is along the ship route, in between the Swedish archipelago and Åland. The assumption was validated based on  June-December period, for which onboard measurements were available. This resulted in a root mean square error of 1.5 K and 1.9 K for the seawater and the ambient temperature respectively, which we considered to be accurate enough for the purpose of this work. The fit the SMHI-data with the rest of the data-set the SMHI data was resampled from 1h for the seawater and 3h for the ambient temperature, to 15min frequency using a linear interpolation.
 
 \subsection{Data processing: Ship energy system modeling} \label{sec:met:modeling}
 
