@@ -200,6 +200,12 @@ Turgay Koroglu and Oguz~Salim Sogut.
   recovery system of a marine power plant.
 \newblock {\em Journal of Thermal Engineering}, 3(2):1136--1148, 2017.
 
+\bibitem{mckinney-proc-scipy-2010}
+Wes McKinney.
+\newblock Data structures for statistical computing in python.
+\newblock In St\'efan van~der Walt and Jarrod Millman, editors, {\em
+  Proceedings of the 9th Python in Science Conference}, pages 51 -- 56, 2010.
+
 \bibitem{Cohen1962}
 L~Cohen and WA~Fritz.
 \newblock Efficiency determination of marine boilers: Input-output versus

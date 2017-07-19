@@ -4,54 +4,54 @@ The top-level auxiliary file: /Users/fredde/Dropbox/GitHub/Ecos2015PaperExtensio
 The style file: unsrt.bst
 Database file #1: ../bibliography.bib
 Warning--entry type for "UNCTAD2015" isn't style-file defined
---line 223 of file ../bibliography.bib
-Repeated entry---line 285 of file ../bibliography.bib
+--line 233 of file ../bibliography.bib
+Repeated entry---line 295 of file ../bibliography.bib
  : @article{Baldi2015c
  :                    ,
 I'm skipping whatever remains of this entry
 Warning--entry type for "Mccarthy1990" isn't style-file defined
---line 316 of file ../bibliography.bib
+--line 326 of file ../bibliography.bib
 Warning--I didn't find a database entry for "Moran1989"
 Warning--empty journal in Wang2000
-You've used 34 entries,
+You've used 35 entries,
             1791 wiz_defined-function locations,
-            674 strings with 11357 characters,
-and the built_in function-call counts, 8106 in all, are:
-= -- 699
-> -- 438
-< -- 4
-+ -- 158
-- -- 124
-* -- 586
-:= -- 1323
-add.period$ -- 100
-call.type$ -- 34
-change.case$ -- 33
+            680 strings with 11542 characters,
+and the built_in function-call counts, 8478 in all, are:
+= -- 732
+> -- 450
+< -- 5
++ -- 162
+- -- 127
+* -- 605
+:= -- 1372
+add.period$ -- 103
+call.type$ -- 35
+change.case$ -- 34
 chr.to.int$ -- 0
-cite$ -- 35
-duplicate$ -- 328
-empty$ -- 754
-format.name$ -- 124
-if$ -- 1760
+cite$ -- 36
+duplicate$ -- 349
+empty$ -- 793
+format.name$ -- 127
+if$ -- 1853
 int.to.chr$ -- 0
-int.to.str$ -- 34
-missing$ -- 33
-newline$ -- 171
-num.names$ -- 34
-pop$ -- 84
+int.to.str$ -- 35
+missing$ -- 34
+newline$ -- 176
+num.names$ -- 37
+pop$ -- 90
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 143
+skip$ -- 160
 stack$ -- 0
-substring$ -- 557
-swap$ -- 59
-text.length$ -- 4
+substring$ -- 585
+swap$ -- 70
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 85
-width$ -- 36
-write$ -- 364
+while$ -- 89
+width$ -- 37
+write$ -- 375
 (There was 1 error message)
