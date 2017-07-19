@@ -260,7 +260,8 @@ Auxiliary heat needs are fulfilled by the exhaust gas steam generators (HRSG) lo
 
 \subsection{Data gathering and pre-processing} \label{sec:met:gathering}
 
-This section should be written by FA :-)
+The operational data was collected on board from the ships' machine logging and surveillance system. The on board database tool exported all logging points to Excel-97 files, and due to the extensive amount of data points the export was divided in to 15 individual Excel-files consisting of a total 665 MB. The exported raw-data from the ship was over a time span of a full year and in most data-points in 15-min average. The Excel-files were processed in the Pandas library which is a high performance data analysis tool in Python [**INSERT REF TO PANDAS**]. A new structured naming of headers and a consistent time frequency over all data points were created in a HDF5 table database which is the base for the analysis.
+
 
 Since measurements of ambient and seawater temperature from onboard logging systems were not available for the whole dataset, we used measurements taken from SMHI database for Landsort lighthouse. The assumption was validated based on  June-December period, for which onboard measurements were available. This resulted in a root mean square error of 1.5 K and 1.9 K for the seawater and the ambient temperature respectively, which we considered to be accurate enough for the purpose of this work.
 % We did the calculation, resampling the data from SHMI from a 1(3)h to 15min frequency using linear interpolation. 
