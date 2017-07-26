@@ -24,8 +24,8 @@
 # - EXERGY ANALYSIS
 
 
-do_processed_data_preparation = "yes"
-do_data_processing = "yes"
+do_processed_data_preparation = "no"
+do_data_processing = "no"
 
 
 
@@ -159,7 +159,7 @@ plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, ["TimeSe
 
 import matplotlib
 matplotlib.style.use('ggplot')
-from helpers import d2df
+
 
 #%%
 

@@ -163,10 +163,20 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
             # Then exergy efficiency (again, if possible)
             if system + ":" + unit + ":" + "eps" in processed.columns:
                 processed[system + ":" + unit + ":" + "eps"] = temp_df['Bdot_out_useful'] / temp_df['Bdot_in_useful']
+            # We calculate also the irreversibility ratio. Might come in handy
+            processed[system + ":" + unit + ":" + "Idot"] = temp_df['Bdot_in'] - temp_df['Bdot_out']
             # Finally, we calculate the lambda
             processed[system + ":" + unit + ":" + "lambda"] = (temp_df['Bdot_in'] - temp_df['Bdot_out']) / temp_df['Bdot_in']
 
             #### ADD THE CALCULATION OF THE DELTA #####
+    temp_total_idot = sum(processed[system + ":" + unit + ":" + "Idot"]
+                          for system in dict_structure["systems"] for unit in dict_structure["systems"][system]["units"])
+    for system in dict_structure["systems"]:
+        temp_system_idot = sum(processed[system + ":" + unit + ":" + "Idot"] for unit in dict_structure["systems"][system]["units"])
+        processed[system + ":lambda"] = temp_system_idot / temp_total_idot
+        for unit in dict_structure["systems"][system]["units"]:
+            processed[system + ":" + unit + ":" + "lambda"] = processed[system + ":" + unit + ":" + "Idot"] / temp_system_idot
+
     text_file.close()
     return processed
 

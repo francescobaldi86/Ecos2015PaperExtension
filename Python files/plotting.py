@@ -274,6 +274,18 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
             plt.hist(temp, 50, normed=1, alpha=0.5, label="HTHR")
             plt.hist(temp2, 50, normed=1, alpha=0.5, label="HRSG")
             plt.legend()
+        if filename == "TimeSeries:El+Tair_vs_time":
+            # Plotting with two different y axis
+            fig, ax1 = plt.subplots()
+            ax1.plot(processed["Demands:Electricity:Total:Edot"]["2014-04-01":"2014-11-01"].resample('D').mean(), "b--", label="Electric power")
+            ax1.set_xlabel('Time [YYYY:MM]')
+            ax1.set_ylabel('Power [kW]')
+            plt.legend()
+            # Adding the second axis
+            ax2 = ax1.twinx()
+            ax2.plot(processed["T_air"]["2014-04-01":"2014-11-01"].resample('D').mean(), 'r--', label="Ambient air temperature")
+            ax2.set_ylabel('Temperature [K]')
+            plt.legend()
         plt.show()
 
 
