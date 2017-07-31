@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.3.30)  19 JUL 2017 13:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.3.30)  28 JUL 2017 10:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -333,43 +333,73 @@ Package pdftex.def Info: Figures/Pme_vs_vship.png used on input line 474.
  <Figures/Demand_vs_time_W.png, id=81, 675.7245pt x 457.4691pt>
 File: Figures/Demand_vs_time_W.png Graphic file (type png)
  <use Figures/Demand_vs_time_W.png>
-Package pdftex.def Info: Figures/Demand_vs_time_W.png used on input line 496.
+Package pdftex.def Info: Figures/Demand_vs_time_W.png used on input line 489.
 (pdftex.def)             Requested size: 350.99762pt x 237.62703pt.
  <Figures/Demand_vs_time_S.png, id=82, 676.4472pt x 409.0482pt>
 File: Figures/Demand_vs_time_S.png Graphic file (type png)
  <use Figures/Demand_vs_time_S.png>
-Package pdftex.def Info: Figures/Demand_vs_time_S.png used on input line 503.
+Package pdftex.def Info: Figures/Demand_vs_time_S.png used on input line 496.
 (pdftex.def)             Requested size: 350.99762pt x 212.25064pt.
- [18 <./Figures/vship_hist.png>] [19 <./Figures/Pme_vs_vship.png>] [20 <./Figures/Demand_vs_time_W.png> <./Figures/Demand_vs_time_S.png>] <Figures/Heat_vs_time.png, id=97, 1155.5973pt x 480.5955pt>
+ <Figures/Pie_TotalEnergy.png, id=83, 462.528pt x 345.4506pt>
+File: Figures/Pie_TotalEnergy.png Graphic file (type png)
+ <use Figures/Pie_TotalEnergy.png>
+Package pdftex.def Info: Figures/Pie_TotalEnergy.png used on input line 503.
+(pdftex.def)             Requested size: 350.99762pt x 262.16565pt.
+ [18 <./Figures/vship_hist.png>] [19 <./Figures/Pme_vs_vship.png>] [20 <./Figures/Demand_vs_time_W.png> <./Figures/Demand_vs_time_S.png>] [21 <./Figures/Pie_TotalEnergy.png>] <Figures/PelHVAC_vs_time.png, id=102, 654.0435pt x 439.4016pt>
+File: Figures/PelHVAC_vs_time.png Graphic file (type png)
+ <use Figures/PelHVAC_vs_time.png>
+Package pdftex.def Info: Figures/PelHVAC_vs_time.png used on input line 512.
+(pdftex.def)             Requested size: 350.99762pt x 235.81169pt.
+ <Figures/Tair_cum.png, id=103, 462.528pt x 345.4506pt>
+File: Figures/Tair_cum.png Graphic file (type png)
+ <use Figures/Tair_cum.png>
+Package pdftex.def Info: Figures/Tair_cum.png used on input line 519.
+(pdftex.def)             Requested size: 350.99762pt x 262.16565pt.
+ <Figures/Heat_vs_time.png, id=104, 1214.136pt x 664.1613pt>
 File: Figures/Heat_vs_time.png Graphic file (type png)
  <use Figures/Heat_vs_time.png>
-Package pdftex.def Info: Figures/Heat_vs_time.png used on input line 516.
-(pdftex.def)             Requested size: 386.10214pt x 160.56966pt.
- (/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.bbl [21 <./Figures/Heat_vs_time.png>] [22] [23]
+Package pdftex.def Info: Figures/Heat_vs_time.png used on input line 532.
+(pdftex.def)             Requested size: 386.10214pt x 211.20836pt.
+ <Figures/HeatGen_hist.png, id=105, 526.1256pt x 345.4506pt>
+File: Figures/HeatGen_hist.png Graphic file (type png)
+ <use Figures/HeatGen_hist.png>
+Package pdftex.def Info: Figures/HeatGen_hist.png used on input line 541.
+(pdftex.def)             Requested size: 386.10214pt x 253.52625pt.
+ [22 <./Figures/PelHVAC_vs_time.png>] [23 <./Figures/Tair_cum.png> <./Figures/Heat_vs_time.png>] <Figures/HTHR_T_hist.png, id=115, 462.528pt x 344.0052pt>
+File: Figures/HTHR_T_hist.png Graphic file (type png)
+ <use Figures/HTHR_T_hist.png>
+Package pdftex.def Info: Figures/HTHR_T_hist.png used on input line 550.
+(pdftex.def)             Requested size: 386.10214pt x 287.17769pt.
+ [24 <./Figures/HeatGen_hist.png>] [25 <./Figures/HTHR_T_hist.png>] <Figures/Heat_comparison.png, id=125, 2682.02pt x 1233.60875pt>
+File: Figures/Heat_comparison.png Graphic file (type png)
+ <use Figures/Heat_comparison.png>
+Package pdftex.def Info: Figures/Heat_comparison.png used on input line 561.
+(pdftex.def)             Requested size: 386.10214pt x 177.57928pt.
+ (/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.bbl [26 <./Figures/Heat_comparison.png>] [27] [28]
 Missing character: There is no Ã in font cmr12!
 Missing character: There is no ˜ in font cmr12!
- [24] [25])
+ [29] [30])
 
 Package natbib Warning: There were undefined citations.
 
-[26] (/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.aux)
+[31] (/Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 3268 strings out of 493013
- 44328 string characters out of 6133343
- 108083 words of memory out of 5000000
- 6737 multiletter control sequences out of 15000+600000
+ 3305 strings out of 493013
+ 45267 string characters out of 6133343
+ 108154 words of memory out of 5000000
+ 6768 multiletter control sequences out of 15000+600000
  12322 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  39i,11n,30p,965b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb>
-Output written on /Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.pdf (26 pages, 779107 bytes).
+Output written on /Users/fredde/Dropbox/GitHub/Ecos2015PaperExtension/Manuscript/.texpadtmp/Manuscript.pdf (31 pages, 1403626 bytes).
 PDF statistics:
- 157 PDF objects out of 1000 (max. 8388607)
- 96 compressed objects within 1 object stream
+ 186 PDF objects out of 1000 (max. 8388607)
+ 107 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 51 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 81 words of extra memory for PDF output out of 10000 (max. 10000000)
 

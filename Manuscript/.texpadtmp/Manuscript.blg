@@ -4,13 +4,13 @@ The top-level auxiliary file: /Users/fredde/Dropbox/GitHub/Ecos2015PaperExtensio
 The style file: unsrt.bst
 Database file #1: ../bibliography.bib
 Warning--entry type for "UNCTAD2015" isn't style-file defined
---line 233 of file ../bibliography.bib
-Repeated entry---line 295 of file ../bibliography.bib
+--line 234 of file ../bibliography.bib
+Repeated entry---line 296 of file ../bibliography.bib
  : @article{Baldi2015c
  :                    ,
 I'm skipping whatever remains of this entry
 Warning--entry type for "Mccarthy1990" isn't style-file defined
---line 326 of file ../bibliography.bib
+--line 327 of file ../bibliography.bib
 Warning--I didn't find a database entry for "Moran1989"
 Warning--empty journal in Wang2000
 You've used 35 entries,
