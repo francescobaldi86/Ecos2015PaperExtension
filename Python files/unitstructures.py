@@ -101,30 +101,30 @@ def flowStructure():
             structure["systems"][system]["units"]["TCshaft"]["equations"] = []
             # Charge air cooler, HT side
             structure["systems"][system]["units"]["CAC_HT"]["flows"] = {
-                "Air_in": {"type": "CPF", "IO": "output"},
-                "HTWater_in": {"type": "IPF", "IO": "input"},
-                "Air_out": {"type": "CPF", "IO": "output"},
-                "HTWater_out": {"type": "IPF", "IO": "input"}}  # Charge air
+                "Air_in": {"type": "CPF", "IO": "input"},
+                "HTWater_in": {"type": "IPF", "IO": "output"},
+                "Air_out": {"type": "CPF", "IO": "input"},
+                "HTWater_out": {"type": "IPF", "IO": "output"}}  # Charge air
             structure["systems"][system]["units"]["CAC_HT"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Charge air cooler, LT stage
             structure["systems"][system]["units"]["CAC_LT"]["flows"] = {
-                "Air_in": {"type": "CPF", "IO": "output"},
-                "LTWater_in": {"type": "IPF", "IO": "input"},
-                "Air_out": {"type": "CPF", "IO": "output"},
-                "LTWater_out": {"type": "IPF", "IO": "input"}}  # Charge air
+                "Air_in": {"type": "CPF", "IO": "input"},
+                "LTWater_in": {"type": "IPF", "IO": "output"},
+                "Air_out": {"type": "CPF", "IO": "input"},
+                "LTWater_out": {"type": "IPF", "IO": "output"}}  # Charge air
             structure["systems"][system]["units"]["CAC_LT"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Lubricating oil cooler
             structure["systems"][system]["units"]["LOC"]["flows"] = {
-                "LubOil_in": {"type": "IPF", "IO": "output"},
-                "LTWater_in": {"type": "IPF", "IO": "input"},
-                "LubOil_out": {"type": "IPF", "IO": "output"},
-                "LTWater_out": {"type": "IPF", "IO": "input"}}  # Lubricating oil
+                "LubOil_in": {"type": "IPF", "IO": "input"},
+                "LTWater_in": {"type": "IPF", "IO": "output"},
+                "LubOil_out": {"type": "IPF", "IO": "input"},
+                "LTWater_out": {"type": "IPF", "IO": "output"}}  # Lubricating oil
             structure["systems"][system]["units"]["LOC"]["equations"] = ["MassBalance"]
             # Jacket water cooler
             structure["systems"][system]["units"]["JWC"]["flows"] = {
-                "QdotJW_in": {"type": "Qdot", "IO": "output"},
-                "HTWater_in": {"type": "IPF", "IO": "input"},
-                "HTWater_out": {"type": "IPF", "IO": "input"}}  # Jacket water
+                "QdotJW_in": {"type": "Qdot", "IO": "input"},
+                "HTWater_in": {"type": "IPF", "IO": "output"},
+                "HTWater_out": {"type": "IPF", "IO": "output"}}  # Jacket water
             structure["systems"][system]["units"]["JWC"]["equations"] = ["MassBalance"]
             # Engine cylinders
             structure["systems"][system]["units"]["Cyl"]["flows"] = {
@@ -175,19 +175,19 @@ def flowStructure():
                                                       "LTHTmerge13": {}, "LTHTmerge24": {}, "HTsplit13": {}, "HTsplit24":{}}
             # Seawater cooler, ER 1/3
             structure["systems"][system]["units"]["SWC13"]["flows"] = {
-                "SeaWater_in": {"type": "IPF", "IO": "input"},
-                "LTWater_in": {"type": "IPF", "IO": "output"},
-                "SeaWater_out": {"type": "IPF", "IO": "input"},
-                "LTWater_out": {"type": "IPF", "IO": "output"},
-                "HTWater_in": {"type": "IPF", "IO": "output"}}
+                "SeaWater_in": {"type": "IPF", "IO": "output"},
+                "LTWater_in": {"type": "IPF", "IO": "input"},
+                "SeaWater_out": {"type": "IPF", "IO": "output"},
+                "LTWater_out": {"type": "IPF", "IO": "input"},
+                "HTWater_in": {"type": "IPF", "IO": "input"}}
             structure["systems"][system]["units"]["SWC13"]["equations"] = ["MassBalance"]
             # Seawater cooler, ER 2/4
             structure["systems"][system]["units"]["SWC24"]["flows"] = {
-                "SeaWater_in": {"type": "IPF", "IO": "input"},
-                "LTWater_in": {"type": "IPF", "IO": "output"},
-                "SeaWater_out": {"type": "IPF", "IO": "input"},
-                "LTWater_out": {"type": "IPF", "IO": "output"},
-                "HTWater_in": {"type": "IPF", "IO": "output"}}
+                "SeaWater_in": {"type": "IPF", "IO": "output"},
+                "LTWater_in": {"type": "IPF", "IO": "input"},
+                "SeaWater_out": {"type": "IPF", "IO": "output"},
+                "LTWater_out": {"type": "IPF", "IO": "input"},
+                "HTWater_in": {"type": "IPF", "IO": "input"}}
             structure["systems"][system]["units"]["SWC24"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector13"]["flows"] = {
                 "LTWater_AE1_in": {"type": "IPF"},
@@ -401,12 +401,13 @@ def flowStructure():
 
         elif system == "Demands":
             structure["systems"][system]["units"] = {"Electricity": {}, "Mechanical": {}, "Heat": {}}
-            structure["systems"][system]["units"]["Electricity"]["flows"] = {"Thrusters": {"type": "CEF"}, "HVAC": {"type": "CEF"}, "Other": {"type": "CEF"}}
+            structure["systems"][system]["units"]["Electricity"]["flows"] = {"Thrusters": {"type": "CEF"}, "HVAC": {"type": "CEF"}, "Other": {"type": "CEF"}, "Total": {"type": "CEF"}}
             structure["systems"][system]["units"]["Mechanical"]["flows"] = {"Propeller1": {"type": "CEF"}, "Propeller2": {"type": "CEF"}, "Total": {"type": "CEF"}}
             structure["systems"][system]["units"]["Heat"]["flows"] = {
                 "HotWaterHeater": {"type": "Qdot"}, "HVACpreheater": {"type": "Qdot"}, "HVACreheater": {"type": "Qdot"},
                 "TankHeating": {"type": "Qdot"}, "OtherTanks": {"type": "Qdot"}, "HFOtankHeating": {"type": "Qdot"},
-                "MachinerySpaceHeaters": {"type": "Qdot"}, "HFOheater": {"type": "Qdot"}, "Galley": {"type": "Qdot"}}
+                "MachinerySpaceHeaters": {"type": "Qdot"}, "HFOheater": {"type": "Qdot"}, "Galley": {"type": "Qdot"},
+                "Total": {"type": "Qdot"}}
             structure["systems"][system]["units"]["Electricity"]["equations"] = []
             structure["systems"][system]["units"]["Mechanical"]["equations"] = []
             structure["systems"][system]["units"]["Heat"]["equations"] = []
@@ -727,6 +728,7 @@ def generalStatus(processed, structure):
         processed[onoff_ID] = pd.Series(index=processed.index)
         processed[load_ID] = pd.Series(index=processed.index)
     print("...done!")
+    processed["ME:on"] = processed["ME1:on"] | processed["ME2:on"] | processed["ME3:on"] | processed["ME4:on"]
     return processed
 
 

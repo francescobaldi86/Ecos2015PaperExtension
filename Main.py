@@ -25,7 +25,7 @@
 
 
 do_processed_data_preparation = "no"
-do_data_processing = "no"
+do_data_processing = "yes"
 
 
 
@@ -59,6 +59,7 @@ import energyanalysis as ea
 import auxiliaryDemand as aux
 import coolingsystems as cs
 from helpers import d2df
+import export as ex
 
 #%%
 ######################################
@@ -82,7 +83,7 @@ header_names = dr.keysRenaming(dataset_raw, filenames["headers_translate"])
 CONSTANTS = kk.constantsSetting()
 CONSTANTS["filenames"] = filenames
 (dict_structure, processed) = us.structurePreparation(CONSTANTS, dataset_raw.index, CONSTANTS["filenames"]["dataset_output_empty"], do_processed_data_preparation)
-
+processed = kk.seasons(dataset_raw, processed, CONSTANTS)
 erase_old_file = "yes"
 try:
     processed_temp = pd.read_hdf(CONSTANTS["filenames"]["dataset_output"], 'processed')
@@ -117,14 +118,19 @@ elif do_data_processing == "yes":
     # Re-doing the calculation of the connected points
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
-    processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
 
+    # Saving the processed data
+    processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
 
 
 ######################################
 ## RESULTS CHECK                	##
 ######################################
 cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
+######################################
+## EXPORT EFFICIENCIES                	##
+######################################
+ex.exportEfficiecies(processed, CONSTANTS, dict_structure)
 
 #%%
 ######################################
@@ -136,21 +142,7 @@ plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, ["TimeSe
 
 
 
-#%%
-######################################
-## ENERGY ANALYSIS		##
-######################################
 
-# Responsible: FB
-# dataset_processed = ea.eYergyAnalzsis(dataset_processed, CONSTANTS)
-
-
-#%%
-######################################
-## EXERGY ANALYSIS		##
-######################################
-
-# Responsible: FB
 
 
 

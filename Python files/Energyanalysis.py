@@ -27,13 +27,18 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                         # Only doing the calculations if the values for p and T are not NaN
                         if processed[d2df(system,unit,flow,"T")].isnull().sum() != len(processed[d2df(system,unit,flow,"T")]) :
                             temp = processed[d2df(system,unit,flow,"T")]  # .values()
+                            press = processed[d2df(system, unit, flow, "p")]  # .values()
                             # If the specific enthalpy is available already, it needs to be calculated
                             if ("Air" in flow) or ("BP" in flow):
                                 # print("Calculating properties for " + system + "_" + unit + "_" + flow)
                                 # dh = pd.Series(cp.PropsSI('H','T',np.array(temp),'P',np.array(press), 'Air.mix'), index=df_index) - pd.Series(cp.PropsSI('H', 'T', np.array(processed["T_0"]), 'P', CONSTANTS["General"]["P_ATM"], 'Air.mix'), index=df_index)
                                 # ds = pd.Series(cp.PropsSI('S', 'T', np.array(temp), 'P', np.array(press), 'Air.mix'), index=df_index) - pd.Series(cp.PropsSI('S', 'T', np.array(processed["T_0"]), 'P', CONSTANTS["General"]["P_ATM"], 'Air.mix'), index=df_index)
-                                dh = pd.Series(enthalpyCalculator(np.array(temp), CONSTANTS), index=df_index) - pd.Series(enthalpyCalculator(np.array(processed["T_0"]), CONSTANTS), index=df_index)
-                                ds = pd.Series(entropyCalculator(np.array(temp), CONSTANTS), index=df_index) - pd.Series(entropyCalculator(np.array(processed["T_0"]), CONSTANTS),index=df_index)
+                                R = CONSTANTS["General"]["R_0"] / 29
+                                dh = (pd.Series(enthalpyCalculator(np.array(temp), CONSTANTS), index=df_index) -
+                                      pd.Series(enthalpyCalculator(np.array(processed["T_0"]), CONSTANTS), index=df_index))
+                                ds = (pd.Series(entropyCalculator(np.array(temp), CONSTANTS), index=df_index) -
+                                      pd.Series(entropyCalculator(np.array(processed["T_0"]), CONSTANTS),index=df_index) -
+                                      R * np.log(np.array(press) / CONSTANTS["General"]["P_ATM"]))
                                 dh.loc[~processed[system + ":on"]] = 0
                                 ds.loc[~processed[system + ":on"]] = 0
                             elif ("Mix" in flow) or ("EG" in flow):
@@ -44,10 +49,12 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                                     processed[d2df(system,"Cyl","FuelPh_in","mdot")],
                                     processed[d2df(system, "Cyl", "FuelPh_in", "T")],
                                     CONSTANTS)
+                                R = CONSTANTS["General"]["R_0"] * sum(mixture[idx] / CONSTANTS["General"]["MOLAR_MASSES"][idx] for idx in {"N2", "O2", "CO2", "H2O"})
                                 dh = pd.Series(enthalpyCalculator(np.array(temp), CONSTANTS, mixture), index=df_index) - pd.Series(
                                     enthalpyCalculator(np.array(processed["T_0"]), CONSTANTS, mixture), index=df_index)
-                                ds = pd.Series(entropyCalculator(np.array(temp), CONSTANTS, mixture), index=df_index) - pd.Series(
-                                    entropyCalculator(np.array(processed["T_0"]), CONSTANTS, mixture), index=df_index)
+                                ds = pd.Series(entropyCalculator(np.array(temp),  CONSTANTS, mixture), index=df_index) - pd.Series(
+                                    entropyCalculator(np.array(processed["T_0"]), CONSTANTS, mixture), index=df_index) - (
+                                    R * np.log(np.array(press) / CONSTANTS["General"]["P_ATM"]))
                                 # for idx in dh.index:
                                 #     if "Mix" in flow:
                                 #         mixture = processed[system+":Mix_Composition"][idx]
@@ -109,7 +116,7 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                         processed[d2df(system, unit, flow, "Edot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "h")]
                         processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "b")]
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "Qdot":
-                        processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system,unit,flow,"Edot")] / processed[d2df(system,unit,flow,"T")]
+                        processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system,unit,flow,"Edot")] * (1 - processed["T_0"] / processed[d2df(system,unit,flow,"T")])
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"Wdot", "CEF"}:
                         processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "Edot")]
     print("...done!")
@@ -123,6 +130,8 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
     df_index = processed.index
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
+            if system+":"+unit == "ME1:Turbine":
+                aaa = 0
             # Here I create eight (8) series: 4 Edot and 4 Bdot. 2 "Full" and 2 "useful".
             temp_flow_list = {"Edot_in", "Edot_in_useful", "Edot_out", "Edot_out_useful", "Bdot_in", "Bdot_in_useful", "Bdot_out", "Bdot_out_useful"}
             temp_df = pd.DataFrame(0, columns=temp_flow_list, index=df_index)
@@ -173,9 +182,9 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
                           for system in dict_structure["systems"] for unit in dict_structure["systems"][system]["units"])
     for system in dict_structure["systems"]:
         temp_system_idot = sum(processed[system + ":" + unit + ":" + "Idot"] for unit in dict_structure["systems"][system]["units"])
-        processed[system + ":lambda"] = temp_system_idot / temp_total_idot
+        processed[system + ":delta"] = temp_system_idot / temp_total_idot
         for unit in dict_structure["systems"][system]["units"]:
-            processed[system + ":" + unit + ":" + "lambda"] = processed[system + ":" + unit + ":" + "Idot"] / temp_system_idot
+            processed[system + ":" + unit + ":" + "delta"] = processed[system + ":" + unit + ":" + "Idot"] / temp_system_idot
 
     text_file.close()
     return processed
@@ -209,6 +218,7 @@ def entropyCalculator(T, CONSTANTS, mass_composition = {"N2": 0.768, "O2": 0.232
                 CONSTANTS["General"]["NASA_POLY"][idx][3]/3 * T**3 +
                 CONSTANTS["General"]["NASA_POLY"][idx][4]/4 * T**4 +
                 CONSTANTS["General"]["NASA_POLY"][idx][6]) * CONSTANTS["General"]["R_0"] # This result is in J/molK
+
     specific_entropy = (specific_entropy_molar["N2"] / CONSTANTS["General"]["MOLAR_MASSES"]["N2"] * mass_composition["N2"] +
                          specific_entropy_molar["O2"] / CONSTANTS["General"]["MOLAR_MASSES"]["O2"] * mass_composition["O2"] +
                          specific_entropy_molar["CO2"] / CONSTANTS["General"]["MOLAR_MASSES"]["CO2"] * mass_composition["CO2"] +

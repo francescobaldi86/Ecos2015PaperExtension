@@ -1,5 +1,5 @@
 import numpy as np
-import CoolProp.CoolProp as cp
+import pandas as pd
 
 
 def constantsSetting():
@@ -194,8 +194,14 @@ def otherUnits(CONSTANTS):
     output["HEAT_DEMAND"]["GALLEY_HOURLY"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0,
                                               1.0, 0.5, 0.1, 0.1, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 0.1, 0.1]
     output["HEAT_DEMAND"]["T_INSIDE"] = 22 + 273.15
-    output["HEAT_DEMAND"]["HVAC_START"] = np.datetime64("2014-07-03")
-    output["HEAT_DEMAND"]["HVAC_END"] = np.datetime64("2014-08-21")
+    output["HEAT_DEMAND"]["WINTER_START"] = np.datetime64("2013-12-03")
+    output["HEAT_DEMAND"]["WINTER_END"] = np.datetime64("2014-04-14")
+    output["HEAT_DEMAND"]["SPRING_START"] = np.datetime64("2014-04-15")
+    output["HEAT_DEMAND"]["SPRING_END"] = np.datetime64("2014-07-02")
+    output["HEAT_DEMAND"]["SUMMER_START"] = np.datetime64("2014-07-03")
+    output["HEAT_DEMAND"]["SUMMER_END"] = np.datetime64("2014-08-21")
+    output["HEAT_DEMAND"]["AUTUMN_START"] = np.datetime64("2014-08-22")
+    output["HEAT_DEMAND"]["AUTUMN_END"] = np.datetime64("2014-12-02")
     output["HEAT_DEMAND"]["TOTAL_AREA"] = (150 + 30) * 2 * 20 + 2 * 150 * 30
     output["HEAT_DEMAND"]["T_AIR_REF_MIN"]  = -20 + 273
     output["HEAT_DEMAND"]["T_AIR_REF_MAX"] = 15 + 273
@@ -205,45 +211,45 @@ def otherUnits(CONSTANTS):
     
 
 
-def monthLimits (N_POINTS):
-    # This function is used to store the limits of each month. This is useful whenever one wants to make inputs vary each month, etc. 
-    # Months start from 01 February 2014 until 17 December 2014
-    MONTH_LIMIT_IDX = [{"Name":"FEB", "Days":28}, {"Name":"MAR", "Days":31}, {"Name":"APR", "Days":30}, {"Name":"MAY", "Days":31}, {"Name":"JUN", "Days":30}, {"Name":"JUL", "Days":31}, {"Name":"AUG", "Days":31}, {"Name":"SEP", "Days":30}, {"Name":"OCT", "Days":31}, {"Name":"NOV", "Days":30}, {"Name":"DEC", "Days":(16 + 19/24)}] # Note that we only have data until 17 of December!
-    # Here we calculate the index in the original dataset of the limit between each month. Hence, 
-    idx = 0
-    for element in MONTH_LIMIT_IDX:
-        if idx == 0:
-            MONTH_LIMIT_IDX[idx].update({"Limits": (0,MONTH_LIMIT_IDX[idx]["Days"] * 24 * 4 - 1)})  # The first month's starts at 0
-        else:
-            MONTH_LIMIT_IDX[idx].update({"Limits": (MONTH_LIMIT_IDX[idx-1]["Limits"][1]+1, MONTH_LIMIT_IDX[idx-1]["Limits"][1] + MONTH_LIMIT_IDX[idx]["Days"] * 24 * 4)})
-        idx = idx + 1
-    # MONTH_ID_LIMIT(length(MONTH_DAYS)) = MONTH_ID_LIMIT(length(MONTH_DAYS)) - 1I am commenting this because it was in the original code, but I am not sure why it was there from the beginning :-)
-    
-    # We also want an object that, for each day of the year, gives us the first and last point in the dataset
-    DAY_LIMIT_IDX = []
-    idx1 = 0
-    idx2 = 0
-    day = 1
-    month = "FEB"
-    idx_month = 0 
-    while idx1 < N_POINTS:
-        DAY_LIMIT_IDX[idx2] = {}
-        DAY_LIMIT_IDX[idx2]["Month"] = month
-        DAY_LIMIT_IDX[idx2]["Day"] = day
-        DAY_LIMIT_IDX[idx2]["indexes"] = (idx1,idx1+24*4-1)
-        idx1 = idx1 + 24 * 4  # The next index will be 24*4 timesteps later
-        idx2 = idx2 + 1
-        if day+1 <= MONTH_LIMIT_IDX[idx_month]["Days"]:
-            day = day + 1
-        else:
-            day = 1
-            idx_month = idx_month + 1
-            month = MONTH_LIMIT_IDX[idx_month]["Name"]
-    output = [MONTH_LIMIT_IDX, DAY_LIMIT_IDX]
-    return output
+def seasons(dataset_raw, processed, CONSTANTS):
+    # This function is used to define some time-related features, such as the season, the weekends, etc.
+    # Definition of the weekend: all data points are 1 if it's weekend, 0 if it is a weekday.
+    temp = pd.Series(index = processed.index)
+    temp[processed.index.dayofweek == 4] = 1  # Fridays
+    temp[processed.index.dayofweek == 5] = 1  # Saturdays
+    temp[processed.index.dayofweek == 6] = 1  # Sundays
+    temp[temp.isnull()] = 0  # All other weekdays
+    temp = temp.shift(16*4-1)  # Shifting to account for the fact that passengers are going on and off at 16
+    temp[temp.isnull()] = 0
+    processed["Weekends"] = temp
 
-    
+    # Definition of the seasons based on energy demand
+    # 0 = winter, 1 = spring/fall, 2 = summer
+    temp = pd.Series(index=processed.index)
+    temp[CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["WINTER_START"]:CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["WINTER_END"]] = 0
+    temp[CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SPRING_START"]:CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SPRING_END"]] = 1
+    temp[CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SUMMER_START"]:CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SUMMER_END"]] = 2
+    temp[CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["AUTUMN_START"]:CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["AUTUMN_END"]] = 1
+    processed["Seasons"] = temp
 
-    
+    # Definition of the summer based on the number of passengers
+    temp = pd.Series(index=processed.index)
+    temp["2014-06-21":"2014-08-17"] = 1
+    temp[temp.isnull()] = 0
+    passenger_summer = temp
 
-    
+    # Definition of the number of passengers
+    N_passengers_summer = dataset_raw["Passengers"][passenger_summer==1].mean()
+    temp = pd.Series(index=processed.index)
+    temp = processed["Weekends"].copy()
+    temp[passenger_summer==1] = 0
+    N_passengers_weekend = dataset_raw["Passengers"][temp == 1].mean()
+    N_passengers_weekday = dataset_raw["Passengers"][(temp == 0) & (passenger_summer == 0)].mean()
+    temp[processed["Weekends"]==1] = N_passengers_weekend
+    temp[processed["Weekends"] == 0] = N_passengers_weekday
+    temp[passenger_summer==1] = N_passengers_summer
+    processed["Passengers_calc"] = temp
+
+
+
+    return processed

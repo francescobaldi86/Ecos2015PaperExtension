@@ -41,6 +41,7 @@ def readAuxEnginesExistingValues(raw, processed,CONSTANTS,hd):
         processed[d2df(system,"HRSG","Mix_out","T")] = raw[hd[system + "-EGB_EG_T_OUT"]] + 273.15
         # Reading the HT temperature before and after the main engine
         processed[d2df(system,"JWC","HTWater_in","T")] = raw[hd[system + "-HT_FW_T_IN"]] + 273.15
+        #processed[d2df(system, "CAC_HT", "HTWater_out", "T")] = raw[hd[system + "-HT_FW_T_OUT2"]] + 273.15
         # Reading the LT temperature before the main engine
         processed[d2df(system,"CAC_LT","LTWater_in","T")] = raw[hd[system + "-LT-CAC_FW_T_IN"]] + 273.15
         # Reading the Lubricating oil temperature before and after the Lubricating oil cooler

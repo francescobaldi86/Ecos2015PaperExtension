@@ -17,7 +17,8 @@ def filenames(project_path):
     output["dataset_output_empty"] = project_path + os.sep +'Data_Process' + os.sep + 'database_out_empty.h5'
     output["dataset_output"] = project_path + os.sep +'Data_Process' + os.sep + 'database_out.h5'
     output["consistency_check_report"] = project_path + os.sep + 'Data_Process' + os.sep + 'check_report.txt'
-    # opening the
+    output["aggregated_efficiencies"] = project_path + os.sep + 'Data_Process' + os.sep + 'aggregated_efficiencies.csv'
+    # opening the report file and inititing it
     text_file = open(output["consistency_check_report"],"w") # Cleaning the file
     text_file.write("=== STARTING THE REPORT FILE === \n \n")
     text_file.close()
@@ -64,7 +65,7 @@ def assumptions(raw, processed, CONSTANTS, hd):
     # HTHR system
     processed.loc[:,"HTHR:SteamHeater:HRWater_out:T"] = 90 + 273.15 # From the heat balance, the temperature needs to rise at 90 degrees
     # processed.loc[:,"HTHR:SteamHeater:HRWater_out:mdot"] = 298 / 3600 * CONSTANTS["General"]["RHO_W"] # the original value is in m3/h
-    processed.loc[:,"HTHR:HTHR24:HRWater_in:T"] = 60 + 273.15 # Assumption on the Temperature at the HTHR-24 inlet (HT side)
+    processed.loc[:,"HTHR:HTHR24:HRWater_in:T"] = 70 + 273.15 # Assumption on the Temperature at the HTHR-24 inlet (HT side)
     processed.loc[:, "HTHR:HVACpreheater:Qdot_out:T"] = (50 - 23) / np.log((50+273.15)/(23+273.15))
     processed.loc[:, "HTHR:HVACreheater:Qdot_out:T"] = (80 - 60) / np.log((80 + 273.15) / (60 + 273.15))
     processed.loc[:, "HTHR:HotWaterHeater:Qdot_out:T"] = 70 + 273.15

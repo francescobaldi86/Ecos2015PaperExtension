@@ -104,7 +104,7 @@ def centralCoolingSystems(processed, CONSTANTS):
     # We can now calculate the flows into the LTHT merge for the ER 13
     mdot_HTHR13_tot = processed["CoolingSystems:LTHTmerge13:HTWater_ME1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_ME3_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE3_out:mdot"]
     processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = mdot_HTHR13_tot * (
-        processed["CoolingSystems:LTHTmerge13:HTWater_ME1_out:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"]) / (
+        CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"]) / (
         processed["CoolingSystems:LTHTmerge13:HTWater_in:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"])
     processed["CoolingSystems:LTHTmerge13:LTWater_in:mdot"] = mdot_HTHR13_tot - processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"]
     # We can now calculate the flows into the LTHT merge for the ER 24
@@ -127,12 +127,19 @@ def coolingFlows(processed, CONSTANTS, engine_type):
         processed.loc[processed[d2df(system, "CAC_LT", "LTWater_in", "p")] < 150000, d2df(system, "CAC_LT", "LTWater_in", "p")] = 190000
         head_HT = processed[d2df(system, "JWC", "HTWater_in", "p")][~processed[system+":on"]].mean()
         heat_LT = processed[d2df(system, "CAC_LT", "LTWater_in", "p")][~processed[system+":on"]].mean()
+        # Mass flow in the LT water cooling systems
         processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
                        processed[d2df(system, "CAC_LT", "LTWater_in", "p")], heat_LT, CONSTANTS, engine_type)
         processed.loc[:,d2df(system, "CAC_LT", "LTWater_in", "mdot")] = processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] / max(processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")]) * CONSTANTS[engine_type]["MFR_LT"]
+        processed.loc[processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] < 0,d2df(system, "CAC_LT", "LTWater_in", "mdot")] = 0
+        processed.loc[processed[d2df(system, "CAC_LT", "LTWater_in", "mdot")] > CONSTANTS[engine_type]["MFR_LT"], d2df(system, "CAC_LT", "LTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_LT"]
+        # Mass flow in the HT water cooling systems
         processed[d2df(system, "JWC", "HTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
                        processed[d2df(system, "JWC", "HTWater_in", "p")], head_HT, CONSTANTS, engine_type)
         processed.loc[:, d2df(system, "JWC", "HTWater_in", "mdot")] = processed[d2df(system, "JWC", "HTWater_in","mdot")] / max(processed[d2df(system, "JWC", "HTWater_in", "mdot")]) * CONSTANTS[engine_type]["MFR_HT"]
+        processed.loc[processed[d2df(system, "JWC", "HTWater_in", "mdot")] < 0, d2df(system, "JWC", "HTWater_in","mdot")] = 0
+        processed.loc[processed[d2df(system, "JWC", "HTWater_in", "mdot")] > CONSTANTS[engine_type]["MFR_HT"], d2df(system,"JWC","HTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_HT"]
+        # Mass flow in the lubricating oil cooler
         processed.loc[:, d2df(system, "LOC", "LubOil_out", "mdot")] = CONSTANTS[engine_type]["MFR_LO"]
     print("done!")
     return processed

@@ -56,8 +56,8 @@ def propPowerDemand(processed, CONSTANTS):
 def HVAC(processed, CONSTANTS):
     # The idea of the calculation of the HVAC demand, very much simplified, lies in saying that during the summer monhs
     # the HVAC demand is the difference between the average consumption before summer AND the instananteous one.
-    mask = (processed.index > CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_START"]) & (processed.index <= CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_END"])
-    processed["Demands:Electricity:HVAC:Edot"] = processed["Demands:Electricity:Total:Edot1D"] - (processed["Demands:Electricity:Total:Edot1D"][processed.index < CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_START"]]).mean()/2 - (processed["Demands:Electricity:Total:Edot1D"][processed.index > CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_END"]]).mean()/2
+    mask = (processed.index > CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SUMMER_START"]) & (processed.index <= CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SUMMER_END"])
+    processed["Demands:Electricity:HVAC:Edot"] = processed["Demands:Electricity:Total:Edot1D"] - (processed["Demands:Electricity:Total:Edot1D"][processed.index < CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SUMMER_START"]]).mean()/2 - (processed["Demands:Electricity:Total:Edot1D"][processed.index > CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["SUMMER_END"]]).mean()/2
     processed.loc[~mask,"Demands:Electricity:HVAC:Edot"] = 0
     processed["Demands:Electricity:Other:Edot"] = processed["Demands:Electricity:Other:Edot"] - processed["Demands:Electricity:HVAC:Edot"]
     return processed
@@ -97,11 +97,19 @@ def thrusters(processed, CONSTANTS):
 def heatDemand(processed, CONSTANTS, dict_structure):
     # This function calculates the heat demand from the on board systems
     db_index = processed.index
-    processed["Demands:Heat:HotWaterHeater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HOT_WATER_HEATER"] * pd.Series((round(len(processed)/96)*np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HWH_HOURLY"],4)))[:len(processed)], index=db_index)
+
+    # Let's make some reasonable assumption on the number of passengers, given the data that we have:
+    # - Assumption # 1: during summer, we have a more or less constant number of passengers equal to the average between
+    #   midsummer and the 15th of August
+    # - During the rest of the season, we take for each day the average number of passengers during that day for the season
+
+    # Since the number of passenergers is only known for a certain period, we take a factor 0.5 for the hot water demand
+    processed["Demands:Heat:HotWaterHeater:Edot"] = processed["Passengers_calc"] / 1800 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HOT_WATER_HEATER"] * pd.Series((round(len(processed)/96)*np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HWH_HOURLY"],4)))[:len(processed)], index=db_index)
     temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MIN"])
     temp[temp < 0.1 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"]] = 0
     processed["Demands:Heat:HVACpreheater:Edot"] = temp # The pre-heater is not working during summer
-    processed["Demands:Heat:HVACreheater:Edot"] = processed["Demands:Electricity:HVAC:Edot"]
+    processed["Demands:Heat:HVACreheater:Edot"] = processed["Demands:Electricity:HVAC:Edot"] > 0
+    processed["Demands:Heat:HVACreheater:Edot"] = 0.3 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_REHEATER"] * processed["Demands:Heat:HVACreheater:Edot"] * processed["Passengers_calc"] / 1800
     processed["Demands:Heat:TankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["TANK_HEATING"]
     processed["Demands:Heat:OtherTanks:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["OTHER_TANKS"]
     processed["Demands:Heat:HFOtankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HFO_TANK_HEATING"]
@@ -116,7 +124,10 @@ def heatDemand(processed, CONSTANTS, dict_structure):
     processed.loc[:,"Demands:Heat:Total:Edot"] = 0
     # Updating the steam mass flows
     for flow in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
-        processed["Demands:Heat:Total:Edot"] = processed["Demands:Heat:Total:Edot"] + processed[d2df("Demands", "Heat", flow, "Edot")]
+        if flow == "Total":
+            pass
+        else:
+            processed["Demands:Heat:Total:Edot"] = processed["Demands:Heat:Total:Edot"] + processed[d2df("Demands", "Heat", flow, "Edot")]
         if flow in dict_structure["systems"]["Steam"]["units"]:
             processed[d2df("Steam", flow, "Steam_in", "mdot")] = processed[d2df("Demands", "Heat", flow, "Edot")] / CONSTANTS["Steam"]["DH_STEAM"]
         elif flow in dict_structure["systems"]["HTHR"]["units"]:
@@ -221,10 +232,17 @@ def steamSystems(processed, CONSTANTS):
                   processed["Demands:Heat:HFOtankHeating:Edot"] + processed["Demands:Heat:MachinerySpaceHeaters:Edot"] +
                   processed["Demands:Heat:HFOheater:Edot"] + processed["Demands:Heat:Galley:Edot"] +
                   processed["HTHR:SteamHeater:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
+    steam_deficit = heat_steam - heat_from_HRSG
     # The auxiliary boilers must provide the difference between the demand and the available heat
-    processed["Steam:Boiler1:Steam_in:mdot"] = (heat_steam - heat_from_HRSG) / CONSTANTS["Steam"]["DH_STEAM"]
-    temp = processed["Steam:Boiler1:Steam_in:mdot"] < 0
-    processed.loc[temp, "Steam:Boiler1:Steam_in:mdot"] = 0
+    temp = pd.Series(index=processed.index)
+    date_series = processed.index.date
+    date_list = np.unique(date_series)
+    for date in date_list:
+        temp_port = steam_deficit[date_series == date].sum() / ((processed["ME:on"] == False) & (date_series == date)).sum()
+        temp[(processed["ME:on"] == False) & (date_series == date)] = temp_port
+    temp[temp<0] = 0  # Boiler consumption cannot be lower than 0
+    processed["Steam:Boiler1:Steam_in:mdot"] = temp / CONSTANTS["Steam"]["DH_STEAM"]
+    # Filling in the rest
     processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
     processed["Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"] / CONSTANTS["General"]["HFO"]["LHV"]
     processed["Steam:Boiler1:Air_in:mdot"] = processed["Steam:Boiler1:FuelPh_in:mdot"] * CONSTANTS["OtherUnits"]["BOILER"]["LAMBDA"]

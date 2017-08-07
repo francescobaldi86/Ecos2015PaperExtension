@@ -248,11 +248,15 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
             # Contribution from the auxiliary boilers
             boilers_measured = (dataset_raw["Boiler_Port"].resample("D").mean() + dataset_raw["Boiler_starbord"].resample("D").mean()) * CONSTANTS["General"]["HFO"]["LHV"]
             boilers_calculated = processed["Steam:Boiler1:FuelPh_in:mdot"].resample("D").sum() * 60 * 15 * CONSTANTS["General"]["HFO"]["LHV"]
+            # Total demand
+            total = processed["Demands:Heat:Total:Edot"].resample("D").sum() * 60 * 15
+            # Actual plotting
             plt.plot(hrsg, 'k-', label="HRSG")
             plt.plot(hthr, 'b-', label="HTHR")
-            plt.plot(hthr_max, 'b:', label="HTHR max")
+            # plt.plot(hthr_max, 'b:', label="HTHR max")
             plt.plot(boilers_measured, 'r-', label="Boilers (M)")
             plt.plot(boilers_calculated, 'r:', label="Boilers (C)")
+            plt.plot(total, 'g-', label='Total heating demand')
             plt.legend()
         if filename == "Pie:TotalEnergy":
             quantities = [processed["Demands:Mechanical:Total:Edot"].sum() , processed["Demands:Electricity:Total:Edot"].sum() , processed["Demands:Heat:Total:Edot"].sum()]
