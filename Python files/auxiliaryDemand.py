@@ -108,8 +108,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
     temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MIN"])
     temp[temp < 0.1 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"]] = 0
     processed["Demands:Heat:HVACpreheater:Edot"] = temp # The pre-heater is not working during summer
-    processed["Demands:Heat:HVACreheater:Edot"] = processed["Demands:Electricity:HVAC:Edot"] > 0
-    processed["Demands:Heat:HVACreheater:Edot"] = 0.3 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_REHEATER"] * processed["Demands:Heat:HVACreheater:Edot"] * processed["Passengers_calc"] / 1800
+    processed["Demands:Heat:HVACreheater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_REHEATER"] * processed["Demands:Electricity:HVAC:Edot"] / CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_POWER_DES"] * processed["Passengers_calc"] / 1800
     processed["Demands:Heat:TankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["TANK_HEATING"]
     processed["Demands:Heat:OtherTanks:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["OTHER_TANKS"]
     processed["Demands:Heat:HFOtankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HFO_TANK_HEATING"]

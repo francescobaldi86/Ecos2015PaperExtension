@@ -1,91 +1,7 @@
 === STARTING THE REPORT FILE === 
  
 
- *** CALCULATING EFFICIENCIES *** 
-Flow Demands:Electricity:Thrusters is not recognised as either input or output 
-Flow Demands:Electricity:HVAC is not recognised as either input or output 
-Flow Demands:Electricity:Other is not recognised as either input or output 
-Flow Demands:Electricity:Total is not recognised as either input or output 
-Flow Demands:Mechanical:Propeller1 is not recognised as either input or output 
-Flow Demands:Mechanical:Propeller2 is not recognised as either input or output 
-Flow Demands:Mechanical:Total is not recognised as either input or output 
-Flow Demands:Heat:HotWaterHeater is not recognised as either input or output 
-Flow Demands:Heat:HVACpreheater is not recognised as either input or output 
-Flow Demands:Heat:HVACreheater is not recognised as either input or output 
-Flow Demands:Heat:TankHeating is not recognised as either input or output 
-Flow Demands:Heat:OtherTanks is not recognised as either input or output 
-Flow Demands:Heat:HFOtankHeating is not recognised as either input or output 
-Flow Demands:Heat:MachinerySpaceHeaters is not recognised as either input or output 
-Flow Demands:Heat:HFOheater is not recognised as either input or output 
-Flow Demands:Heat:Galley is not recognised as either input or output 
-Flow Demands:Heat:Total is not recognised as either input or output 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:b and ME2:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:h and ME2:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:b and ME3:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:h and ME3:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:b and AE1:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:h and AE1:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:b and AE2:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:h and AE2:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:b and AE3:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:h and AE3:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:b and AE4:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:h and AE4:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:Edot and Steam:OtherTanks:Steam_out:Edot should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:Bdot and Steam:OtherTanks:Steam_out:Bdot should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:b and Steam:OtherTanks:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:h and Steam:OtherTanks:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:b and ME2:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:h and ME2:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:b and ME3:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:h and ME3:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:b and AE1:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:h and AE1:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:b and AE2:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:h and AE2:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:b and AE3:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:h and AE3:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:b and AE4:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:h and AE4:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:b and ME2:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME2_out:h and ME2:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:b and ME3:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_ME3_out:h and ME3:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:b and AE1:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE1_out:h and AE1:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:b and AE2:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE2_out:h and AE2:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:b and AE3:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE3_out:h and AE3:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:b and AE4:HRSG:Steam_in:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_HRSG_AE4_out:h and AE4:HRSG:Steam_in:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:Edot and Steam:OtherTanks:Steam_out:Edot should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:Bdot and Steam:OtherTanks:Steam_out:Bdot should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:b and Steam:OtherTanks:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamCollector:Steam_OT_in:h and Steam:OtherTanks:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:b and ME2:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME2_in:h and ME2:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:b and ME3:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_ME3_in:h and ME3:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:b and AE1:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE1_in:h and AE1:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:b and AE2:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE2_in:h and AE2:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:b and AE3:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE3_in:h and AE3:HRSG:Steam_out:h should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:b and AE4:HRSG:Steam_out:b should be the same, they are not. 
-ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows Steam:SteamDistribution:Steam_HRSG_AE4_in:h and AE4:HRSG:Steam_out:h should be the same, they are not. 
-
  *** CONSISTENTCY CHECK FOR ENGINES *** 
-ME4 Compressor temperatures are consistent for 100.0 % of the datapoints 
-WARNING ME4 Exhaust temperatures (Cyl->TC are consistent for 94.5102059838 % of the datapoints 
-ME4 Turbine temperatures are consistent for 100.0 % of the datapoints 
-ME4 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
-ME4 LOC temperatures (LT water side) are consistent for 100.0 % of the datapoints 
-ME4 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
-ME4 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
-ME4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
-ME4 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
 ME1 Compressor temperatures are consistent for 100.0 % of the datapoints 
 ME1 Exhaust temperatures (Cyl->TC are consistent for 99.9614903244 % of the datapoints 
 ME1 Turbine temperatures are consistent for 100.0 % of the datapoints 
@@ -95,6 +11,15 @@ ME1 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints
 ME1 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
 ME1 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
 ME1 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+ME4 Compressor temperatures are consistent for 100.0 % of the datapoints 
+WARNING ME4 Exhaust temperatures (Cyl->TC are consistent for 94.5102059838 % of the datapoints 
+ME4 Turbine temperatures are consistent for 100.0 % of the datapoints 
+ME4 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME4 LOC temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
 ME3 Compressor temperatures are consistent for 100.0 % of the datapoints 
 ME3 Exhaust temperatures (Cyl->TC are consistent for 96.2342017023 % of the datapoints 
 ME3 Turbine temperatures are consistent for 100.0 % of the datapoints 
@@ -113,15 +38,6 @@ ME2 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints
 ME2 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
 ME2 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
 ME2 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
-AE3 Compressor temperatures are consistent for 100.0 % of the datapoints 
-AE3 Exhaust temperatures (Cyl->TC are consistent for 95.859997388 % of the datapoints 
-AE3 Turbine temperatures are consistent for 97.884288886 % of the datapoints 
-AE3 LOC temperatures (oil side) are consistent for 98.0540681729 % of the datapoints 
-AE3 LOC temperatures (LT water side) are consistent for 98.0540681729 % of the datapoints 
-AE3 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
-AE3 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
-AE3 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
-AE3 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
 AE4 Compressor temperatures are consistent for 100.0 % of the datapoints 
 AE4 Exhaust temperatures (Cyl->TC are consistent for 97.5953123811 % of the datapoints 
 AE4 Turbine temperatures are consistent for 100.0 % of the datapoints 
@@ -149,6 +65,15 @@ AE1 CAC_LT temperatures (air side) are consistent for 99.9946853741 % of the dat
 AE1 CAC_LT temperatures (LT water side) are consistent for 99.9946853741 % of the datapoints 
 AE1 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
 AE1 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+AE3 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE3 Exhaust temperatures (Cyl->TC are consistent for 95.859997388 % of the datapoints 
+AE3 Turbine temperatures are consistent for 97.884288886 % of the datapoints 
+AE3 LOC temperatures (oil side) are consistent for 98.0540681729 % of the datapoints 
+AE3 LOC temperatures (LT water side) are consistent for 98.0540681729 % of the datapoints 
+AE3 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
 
  *** CONSISTENTCY CHECK FOR THE HTHR SYSTEM *** 
  HTHR-24 inlet temperatures on the HR side are consistent for 100.0 % of the datapoints 
@@ -156,7 +81,7 @@ AE1 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapo
  HTHR-13 (HR side) temperatures are consistent for 100.0 % of the datapoints 
  HTHR-24 (HT side) temperatures are consistent for 100.0 % of the datapoints 
  HTHR-24 (HR side) temperatures are consistent for 100.0 % of the datapoints 
-WARNING  Steam heater (HR side) temperatures are consistent for 87.5285388128 % of the datapoints 
+WARNING  Steam heater (HR side) temperatures are consistent for 84.1267123288 % of the datapoints 
  HVAC-Preheater (HR side) temperatures are consistent for 100.0 % of the datapoints 
  HVAC-Reheater (HR side) temperatures are consistent for 100.0 % of the datapoints 
  Hot Water Heater (HR side) temperatures are consistent for 100.0 % of the datapoints 
@@ -171,55 +96,55 @@ GalleySteam mass flows are consistent for 100.0 % of the datapoints
 
  *** LIST OF MISSING VALUES *** 
 The field CoolingSystems:SWC13:SeaWater_in:Edot is still empty 
-The field CoolingSystems:SWC13:SeaWater_in:Bdot is still empty 
 The field CoolingSystems:SWC13:SeaWater_in:b is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:Bdot is still empty 
+The field CoolingSystems:SWC13:SeaWater_in:mdot is still empty 
 The field CoolingSystems:SWC13:SeaWater_in:h is still empty 
 The field CoolingSystems:SWC13:SeaWater_in:T is still empty 
-The field CoolingSystems:SWC13:SeaWater_in:mdot is still empty 
 The field CoolingSystems:SWC13:SeaWater_out:Edot is still empty 
 The field CoolingSystems:SWC13:SeaWater_out:Bdot is still empty 
 The field CoolingSystems:SWC13:SeaWater_out:mdot is still empty 
 The field CoolingSystems:SWC24:SeaWater_in:Edot is still empty 
-The field CoolingSystems:SWC24:SeaWater_in:Bdot is still empty 
 The field CoolingSystems:SWC24:SeaWater_in:b is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:Bdot is still empty 
+The field CoolingSystems:SWC24:SeaWater_in:mdot is still empty 
 The field CoolingSystems:SWC24:SeaWater_in:h is still empty 
 The field CoolingSystems:SWC24:SeaWater_in:T is still empty 
-The field CoolingSystems:SWC24:SeaWater_in:mdot is still empty 
 The field CoolingSystems:SWC24:SeaWater_out:Edot is still empty 
 The field CoolingSystems:SWC24:SeaWater_out:Bdot is still empty 
 The field CoolingSystems:SWC24:SeaWater_out:mdot is still empty 
 The field Steam:Boiler1:Air_in:Edot is still empty 
-The field Steam:Boiler1:Air_in:Bdot is still empty 
+The field Steam:Boiler1:Air_in:p is still empty 
 The field Steam:Boiler1:Air_in:b is still empty 
+The field Steam:Boiler1:Air_in:Bdot is still empty 
 The field Steam:Boiler1:Air_in:h is still empty 
 The field Steam:Boiler1:Air_in:T is still empty 
-The field Steam:Boiler1:Air_in:p is still empty 
 The field Steam:Boiler1:EG_out:Edot is still empty 
-The field Steam:Boiler1:EG_out:Bdot is still empty 
+The field Steam:Boiler1:EG_out:p is still empty 
 The field Steam:Boiler1:EG_out:b is still empty 
+The field Steam:Boiler1:EG_out:Bdot is still empty 
 The field Steam:Boiler1:EG_out:h is still empty 
 The field Steam:Boiler1:EG_out:T is still empty 
-The field Steam:Boiler1:EG_out:p is still empty 
 The field Steam:Boiler1:FuelPh_in:Edot is still empty 
-The field Steam:Boiler1:FuelPh_in:Bdot is still empty 
 The field Steam:Boiler1:FuelPh_in:b is still empty 
+The field Steam:Boiler1:FuelPh_in:Bdot is still empty 
 The field Steam:Boiler1:FuelPh_in:h is still empty 
 The field Steam:Boiler1:FuelPh_in:T is still empty 
 The field Steam:Boiler2:Air_in:Edot is still empty 
-The field Steam:Boiler2:Air_in:Bdot is still empty 
+The field Steam:Boiler2:Air_in:p is still empty 
 The field Steam:Boiler2:Air_in:b is still empty 
+The field Steam:Boiler2:Air_in:Bdot is still empty 
 The field Steam:Boiler2:Air_in:h is still empty 
 The field Steam:Boiler2:Air_in:T is still empty 
-The field Steam:Boiler2:Air_in:p is still empty 
 The field Steam:Boiler2:EG_out:Edot is still empty 
-The field Steam:Boiler2:EG_out:Bdot is still empty 
+The field Steam:Boiler2:EG_out:p is still empty 
 The field Steam:Boiler2:EG_out:b is still empty 
+The field Steam:Boiler2:EG_out:Bdot is still empty 
 The field Steam:Boiler2:EG_out:h is still empty 
 The field Steam:Boiler2:EG_out:T is still empty 
-The field Steam:Boiler2:EG_out:p is still empty 
 The field Steam:Boiler2:FuelPh_in:Edot is still empty 
-The field Steam:Boiler2:FuelPh_in:Bdot is still empty 
 The field Steam:Boiler2:FuelPh_in:b is still empty 
+The field Steam:Boiler2:FuelPh_in:Bdot is still empty 
 The field Steam:Boiler2:FuelPh_in:h is still empty 
 The field Steam:Boiler2:FuelPh_in:T is still empty 
 The field Demands:Heat:Total:Bdot is still empty 
@@ -362,8 +287,8 @@ The mass balance is fine for HTHR_SteamHeater unit
 The mass balance is fine for HTHR_HotWaterHeater unit 
 The mass balance is fine for Steam_Boiler1 unit 
 ---Mass balance for Steam_Boiler2 unit is respected 0.0% of the times, with nan% average error 
----Mass balance for Steam_SteamCollector unit is respected 55.4594748858% of the times, with -1.78280864016% average error 
----Mass balance for Steam_SteamDistribution unit is respected 44.8515981735% of the times, with 1.43988275962% average error 
+---Mass balance for Steam_SteamCollector unit is respected 56.9320776256% of the times, with -4.02912695867% average error 
+---Mass balance for Steam_SteamDistribution unit is respected 43.4160958904% of the times, with 3.06670474269% average error 
 The mass balance is fine for Steam_TankHeating unit 
 The mass balance is fine for Steam_OtherTanks unit 
 The mass balance is fine for Steam_HFOtankHeating unit 
@@ -493,12 +418,12 @@ The Energy balance is fine for AE4_AG unit
 ---Energy balance for CoolingSystems_SWC24 unit is respected 0.0% of the times, with 0.0% average error 
 The Energy balance is fine for CoolingSystems_HTcollector13 unit 
 The Energy balance is fine for CoolingSystems_HTcollector24 unit 
----Energy balance for CoolingSystems_LTcollector13 unit is respected 87.3515981735% of the times, with -82.7187522351% average error 
----Energy balance for CoolingSystems_LTcollector24 unit is respected 78.801369863% of the times, with -17.1764411692% average error 
----Energy balance for CoolingSystems_LTdistribution13 unit is respected 87.3573059361% of the times, with 2.14296053077e-15% average error 
----Energy balance for CoolingSystems_LTdistribution24 unit is respected 78.801369863% of the times, with 4.2952249581e-15% average error 
----Energy balance for CoolingSystems_LTHTmerge13 unit is respected 80.2482876712% of the times, with 0.217379438273% average error 
----Energy balance for CoolingSystems_LTHTmerge24 unit is respected 67.4885844749% of the times, with 0.173000271597% average error 
+---Energy balance for CoolingSystems_LTcollector13 unit is respected 87.3515981735% of the times, with -84.7489861471% average error 
+---Energy balance for CoolingSystems_LTcollector24 unit is respected 78.801369863% of the times, with -17.4855758852% average error 
+---Energy balance for CoolingSystems_LTdistribution13 unit is respected 87.3573059361% of the times, with 1.63709351895e-15% average error 
+---Energy balance for CoolingSystems_LTdistribution24 unit is respected 78.801369863% of the times, with 3.83381367094e-15% average error 
+---Energy balance for CoolingSystems_LTHTmerge13 unit is respected 79.2151826484% of the times, with 0.223005500691% average error 
+---Energy balance for CoolingSystems_LTHTmerge24 unit is respected 66.3099315068% of the times, with 0.184581787856% average error 
 The Energy balance is fine for CoolingSystems_HTsplit13 unit 
 The Energy balance is fine for CoolingSystems_HTsplit24 unit 
 The Energy balance is fine for HTHR_HTHR13 unit 
@@ -507,12 +432,12 @@ The Energy balance is fine for HTHR_HTHRsplit unit
 The Energy balance is fine for HTHR_HTHRmerge unit 
 The Energy balance is fine for HTHR_HVACpreheater unit 
 The Energy balance is fine for HTHR_HVACreheater unit 
----Energy balance for HTHR_SteamHeater unit is respected 90.4423515982% of the times, with 0.7934104976% average error 
+---Energy balance for HTHR_SteamHeater unit is respected 87.3601598174% of the times, with 0.652418637317% average error 
 The Energy balance is fine for HTHR_HotWaterHeater unit 
 ---Energy balance for Steam_Boiler1 unit is respected 0.0% of the times, with 0.0% average error 
 ---Energy balance for Steam_Boiler2 unit is respected 0.0% of the times, with nan% average error 
----Energy balance for Steam_SteamCollector unit is respected 41.9549086758% of the times, with 14.9773303829% average error 
----Energy balance for Steam_SteamDistribution unit is respected 44.8544520548% of the times, with 1.41056600113% average error 
+---Energy balance for Steam_SteamCollector unit is respected 42.5941780822% of the times, with 13.6890043743% average error 
+---Energy balance for Steam_SteamDistribution unit is respected 43.4189497717% of the times, with 2.99319334506% average error 
 The Energy balance is fine for Steam_TankHeating unit 
 The Energy balance is fine for Steam_OtherTanks unit 
 The Energy balance is fine for Steam_HFOtankHeating unit 
@@ -521,4 +446,4 @@ The Energy balance is fine for Steam_HFOheater unit
 The Energy balance is fine for Steam_Galley unit 
 ---Energy balance for Demands_Electricity unit is respected 0.00856164383562% of the times, with 96.451831787% average error 
 ---Energy balance for Demands_Mechanical unit is respected 36.3613013699% of the times, with 42.2349768166% average error 
----Energy balance for Demands_Heat unit is respected 0.0% of the times, with 106.068396468% average error 
+---Energy balance for Demands_Heat unit is respected 0.0% of the times, with 98.5140760569% average error 

@@ -207,6 +207,7 @@ def otherUnits(CONSTANTS):
     output["HEAT_DEMAND"]["T_AIR_REF_MAX"] = 15 + 273
     output["HEAT_DEMAND"]["TOTAL_U"] = output["HEAT_DEMAND"]["HVAC_PREHEATER"] / output["HEAT_DEMAND"]["TOTAL_AREA"] / (output["HEAT_DEMAND"]["T_INSIDE"] - output["HEAT_DEMAND"]["T_AIR_REF_MIN"])
     output["HEAT_DEMAND"]["HTHR_EPS"] = 0.85  # Effectiveness of the HTHR water-water heat exchangers
+    output["HEAT_DEMAND"]["HVAC_POWER_DES"] = 1500  # Design power of the HVAC compressors
     return output
     
 
