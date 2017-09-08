@@ -168,7 +168,7 @@ def auxiliaryEngines(CONSTANTS):
 def otherUnits(CONSTANTS):
     output = {}  # Initializing the output dictionary
     output["BOILER"] = {}  # Initializing the boiler sub-dictionary
-    output["BOILER"]["ETA_DES"] = 0.9
+    output["BOILER"]["ETA_DES"] = 0.8
     output["BOILER"]["ETA_REGR_X"] = [6.79E-02, 1.20E-01, 1.62E-01, 2.12E-01, 2.86E-01, 3.52E-01, 4.03E-01, 4.41E-01, 4.90E-01, 5.40E-01, 5.89E-01, 6.54E-01, 7.16E-01, 7.67E-01, 8.31E-01, 8.94E-01, 9.47E-01, 9.89E-01, 1.04E+00, 1.09E+00, 1.14E+00, 1.20E+00]
     output["BOILER"]["ETA_REGR_Y"] = [0.8787, 0.8830, 0.8864, 0.8889, 0.8910, 0.8897, 0.8870, 0.8842, 0.8810, 0.8777, 0.8740, 0.8692, 0.86486, 0.8613, 0.8570, 0.8528, 0.8491, 0.8462, 0.8427, 0.8390, 0.8356, 0.8317]
     output["BOILER"]["OXYGEN_EG"] = 0.04
