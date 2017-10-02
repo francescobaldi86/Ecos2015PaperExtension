@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from helpers import d2df
+import datetime as dt
 
 
 def auxPowerAnalysis(processed, CONSTANTS, dict_structure):
@@ -103,24 +104,52 @@ def heatDemand(processed, CONSTANTS, dict_structure):
     #   midsummer and the 15th of August
     # - During the rest of the season, we take for each day the average number of passengers during that day for the season
 
-    # Since the number of passenergers is only known for a certain period, we take a factor 0.5 for the hot water demand
-    processed["Demands:Heat:HotWaterHeater:Edot"] = processed["Passengers_calc"] / 1800 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HOT_WATER_HEATER"] * pd.Series((round(len(processed)/96)*np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HWH_HOURLY"],4)))[:len(processed)], index=db_index)
-    temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MIN"])
-    temp[temp < 0.1 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_PREHEATER"]] = 0
-    processed["Demands:Heat:HVACpreheater:Edot"] = temp # The pre-heater is not working during summer
-    processed["Demands:Heat:HVACreheater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_REHEATER"] * processed["Demands:Electricity:HVAC:Edot"] / CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HVAC_POWER_DES"] * processed["Passengers_calc"] / 1800
-    processed["Demands:Heat:TankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["TANK_HEATING"]
-    processed["Demands:Heat:OtherTanks:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["OTHER_TANKS"]
-    processed["Demands:Heat:HFOtankHeating:Edot"] = 0.5 * CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HFO_TANK_HEATING"]
-    temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["MACHINERY_SPACE_HEATERS"] * (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - processed["T_air"]) / (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MAX"] - CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["T_AIR_REF_MIN"])
-    temp[processed["Demands:Heat:HVACpreheater:Edot"] == 0] = 0
-    processed["Demands:Heat:MachinerySpaceHeaters:Edot"] = temp
+    # HVAC Reheater
+    processed["Demands:Heat:HVACreheater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HVAC_REHEATER"] * (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HVAC_REHEATER"] * processed["Demands:Electricity:HVAC:Edot"] / processed["Demands:Electricity:HVAC:Edot"].max())
+    processed["Demands:Heat:HVACreheater:Edot"][processed["Demands:Electricity:HVAC:Edot"] <= 0] = 0
+    # Hot water heater
+    processed["Demands:Heat:HotWaterHeater:Edot"] = (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HOT_WATER_HEATER"] * (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HOT_WATER_HEATER"] * processed["Passengers_calc"] / 1800 * (
+        pd.Series((round(len(processed) / 96) *
+                   np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HWH_HOURLY"], 4)))[:len(processed)], index=db_index))) +
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_HTHR"])
+    # HVAC Preheater
+    temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HVAC_PREHEATER"] * (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HVAC_PREHEATER"] * (297 - processed["T_air"]) / (297 - 248)) - 0.100 * processed["Passengers_calc"]
+    temp[processed["Demands:Electricity:HVAC:Edot"] > 20] = 0  # The preheater is never used when the AC compressors are on
+    processed["Demands:Heat:HVACpreheater:Edot"] = temp  # The pre-heater is not working during summer
+    # Galley
+    processed["Demands:Heat:Galley:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["GALLEY"] * (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["GALLEY"] * pd.Series((round(len(processed) / 96) * np.ndarray.tolist(
+        np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY_HOURLY"], 4)))[:len(processed)], index=db_index))
+    # Tank heating
+    processed["Demands:Heat:TankHeating:Edot"] = (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_STEAM"] / 4 +
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["TANK_HEATING"] *
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["OTHER_CONSUMERS"] * processed["T_air"] / 298)
+    # Other tanks
+    processed["Demands:Heat:OtherTanks:Edot"] = (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_STEAM"] / 4 +
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_TANKS"] *
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["OTHER_CONSUMERS"] * processed["T_air"] / 298)
+    # HFO tanks
+    processed["Demands:Heat:HFOtankHeating:Edot"] = (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_STEAM"] / 4 +
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HFO_TANK_HEATING"] *
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["OTHER_CONSUMERS"] * processed["T_air"] / 298)
+    # Machinery space heaters
+    processed["Demands:Heat:MachinerySpaceHeaters:Edot"] = (
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_STEAM"] / 4 +
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["MACHINERY_SPACE_HEATERS"] *
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["OTHER_CONSUMERS"] * processed["T_air"] / 298)
+    # HFO heaters
     processed["Demands:Heat:HFOheater:Edot"] = CONSTANTS["General"]["HFO"]["CP"] * (
-        processed["AE1:Cyl:FuelPh_in:mdot"]+processed["AE2:Cyl:FuelPh_in:mdot"]+processed["AE3:Cyl:FuelPh_in:mdot"]+processed["AE4:Cyl:FuelPh_in:mdot"]+
-        processed["ME1:Cyl:FuelPh_in:mdot"]+processed["ME2:Cyl:FuelPh_in:mdot"]+processed["ME3:Cyl:FuelPh_in:mdot"]+processed["ME4:Cyl:FuelPh_in:mdot"]) * 100
-    processed["Demands:Heat:Galley:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY"] * pd.Series((round(len(processed) / 96) * np.ndarray.tolist(np.repeat(CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["GALLEY_HOURLY"], 4)))[:len(processed)],index=db_index)
-    processed["Demands:Heat:Total:Edot"] = pd.Series(index=db_index)
-    processed.loc[:,"Demands:Heat:Total:Edot"] = 0
+        processed["AE1:Cyl:FuelPh_in:mdot"] + processed["AE2:Cyl:FuelPh_in:mdot"] + processed[
+            "AE3:Cyl:FuelPh_in:mdot"] + processed["AE4:Cyl:FuelPh_in:mdot"] +
+        processed["ME1:Cyl:FuelPh_in:mdot"] + processed["ME2:Cyl:FuelPh_in:mdot"] + processed[
+            "ME3:Cyl:FuelPh_in:mdot"] + processed["ME4:Cyl:FuelPh_in:mdot"]) * (150 - 80)
+
     # Updating the steam mass flows
     for flow in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
         if flow == "Total":
@@ -131,6 +160,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
             processed[d2df("Steam", flow, "Steam_in", "mdot")] = processed[d2df("Demands", "Heat", flow, "Edot")] / CONSTANTS["Steam"]["DH_STEAM"]
         elif flow in dict_structure["systems"]["HTHR"]["units"]:
             processed[d2df("HTHR", flow, "Qdot_out", "Edot")] = processed[d2df("Demands", "Heat", flow, "Edot")]
+
     return processed
 
 
@@ -221,6 +251,8 @@ def HTHR(processed, CONSTANTS):
 
 def steamSystems(processed, CONSTANTS):
     # This function assigns all calculations to the steam systems
+    Qdot_ab = pd.Series(index=processed.index)
+    Qdot_ab[:] = 0
     # First, we see how much heat is provided by the HRSGs
     heat_from_HRSG = pd.Series(index=processed.index)
     heat_from_HRSG[:] = 0
@@ -231,16 +263,27 @@ def steamSystems(processed, CONSTANTS):
                   processed["Demands:Heat:HFOtankHeating:Edot"] + processed["Demands:Heat:MachinerySpaceHeaters:Edot"] +
                   processed["Demands:Heat:HFOheater:Edot"] + processed["Demands:Heat:Galley:Edot"] +
                   processed["HTHR:SteamHeater:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
-    steam_deficit = heat_steam - heat_from_HRSG
+    steam_deficit = heat_from_HRSG - heat_steam
     # The auxiliary boilers must provide the difference between the demand and the available heat
-    temp = pd.Series(index=processed.index)
-    date_series = processed.index.date
-    date_list = np.unique(date_series)
-    for date in date_list:
-        temp_port = steam_deficit[date_series == date].sum() / ((processed["ME:on"] == False) & (date_series == date)).sum()
-        temp[(processed["ME:on"] == False) & (date_series == date)] = temp_port
-    temp[temp<0] = 0  # Boiler consumption cannot be lower than 0
-    processed["Steam:Boiler1:Steam_in:mdot"] = temp / CONSTANTS["Steam"]["DH_STEAM"]
+    Qcumul_deficit = steam_deficit.cumsum()
+    total_deficit = Qcumul_deficit[processed.index[-1]]
+    dt_boiler = int(np.ceil(CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"] / CONSTANTS["OtherUnits"]["BOILER"]["REFERENCE_POWER"]))
+    limit = CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"]
+    while total_deficit < -limit:
+        idx = Qcumul_deficit.loc[Qcumul_deficit < -limit].index
+        if len(idx) > 0:
+            last = min(len(idx), dt_boiler)
+            Qdot_ab[idx[0]:idx[0] + dt.timedelta(minutes=15 * (last - 1))] = (CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"] - (
+            limit + Qcumul_deficit[idx[0]]) - steam_deficit[idx[0] + dt.timedelta(minutes=15):idx[0] + dt.timedelta(
+                minutes=15 * (last - 1))].sum()) / dt_boiler
+            # limit = limit + param[7] - Qdot_deficit[idx[0]+dt.timedelta(minutes=15):idx[0]+dt.timedelta(minutes=15*(last-1))].sum()
+            limit = limit + Qdot_ab[idx[0]:idx[0] + dt.timedelta(minutes=15 * (last - 1))].sum()
+    # The extra steam during summer is dumped in the hot well
+    Qdot_steam_dumped = (heat_from_HRSG + Qdot_ab[:] - heat_steam)
+    Qdot_steam_dumped[(heat_from_HRSG + Qdot_ab[:] - heat_from_HRSG).cumsum() < CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"] * 0.05] = 0
+
+    # Adding
+    processed["Steam:Boiler1:Steam_in:mdot"] = Qdot_ab / CONSTANTS["Steam"]["DH_STEAM"]
     # Filling in the rest
     processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
     processed["Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"] / CONSTANTS["General"]["HFO"]["LHV"]
@@ -250,6 +293,8 @@ def steamSystems(processed, CONSTANTS):
     processed.loc[:,"Steam:Boiler2:Steam_in:mdot"] = 0
     processed.loc[:,"Steam:Boiler2:FuelCh_in:Edot"] = 0
     processed.loc[:,"Steam:Boiler2:FuelPh_in:mdot"] = 0
+
+
 
     return processed
 

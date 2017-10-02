@@ -167,6 +167,22 @@ def auxiliaryEngines(CONSTANTS):
 
 def otherUnits(CONSTANTS):
     output = {}  # Initializing the output dictionary
+    # Providing the optimal optimization vector
+    param = [1.36929841e+02, 1.76569058e+02, 5.90926596e-01, 7.06974933e-01, 9.98138178e-01, 5.47476618e-01,
+            2.69942265e-01, 3.45398252e+02, 7.18364651e-01, 3 * 2.06480953e+03, 2.92188518e+03]
+    Qdot_HTHR_constant = param[0]
+    Qdot_steam_constant = param[1]
+    HVACreheaterCoefficient = param[2]
+    HotWaterHeaterCoefficient = param[3]
+    HVACpreheaterCoefficient = param[4]
+    GalleyCoefficient = param[5]
+    OtherCoefficient = param[6]
+    HTHRinletTemperature = param[7]
+    HTHRhexEffectiveness = param[8]
+    BoilerStorageSize = param[9]
+    BoilerReferencePower = param[10]
+
+    # Boiler
     output["BOILER"] = {}  # Initializing the boiler sub-dictionary
     output["BOILER"]["ETA_DES"] = 0.8
     output["BOILER"]["ETA_REGR_X"] = [6.79E-02, 1.20E-01, 1.62E-01, 2.12E-01, 2.86E-01, 3.52E-01, 4.03E-01, 4.41E-01, 4.90E-01, 5.40E-01, 5.89E-01, 6.54E-01, 7.16E-01, 7.67E-01, 8.31E-01, 8.94E-01, 9.47E-01, 9.89E-01, 1.04E+00, 1.09E+00, 1.14E+00, 1.20E+00]
@@ -177,18 +193,33 @@ def otherUnits(CONSTANTS):
                                   ) / (1 - 100/21 * output["BOILER"]["OXYGEN_EG"]) * (32 + 100 / 21 * 28)
     for idx in range(len(output["BOILER"]["ETA_REGR_Y"])):
         output["BOILER"]["ETA_REGR_Y"][idx] = output["BOILER"]["ETA_REGR_Y"][idx] / max(output["BOILER"]["ETA_REGR_Y"])
+    output["BOILER"]["STORAGE_SIZE"] = BoilerStorageSize
+    output["BOILER"]["REFERENCE_POWER"] = BoilerReferencePower
+
+    # Propulsion train
     output["PROPULSION"] = {}
     output["PROPULSION"]["ETA_GB"] = 0.98
     output["PROPULSION"]["ETA_SH"] = 0.99
+
+    # Heat demand
     output["HEAT_DEMAND"] = {}
-    output["HEAT_DEMAND"]["HOT_WATER_HEATER"] = 1200
-    output["HEAT_DEMAND"]["HVAC_PREHEATER"] = 3500
-    output["HEAT_DEMAND"]["HVAC_REHEATER"] = 1780
-    output["HEAT_DEMAND"]["TANK_HEATING"] = 210
-    output["HEAT_DEMAND"]["OTHER_TANKS"] = 140
-    output["HEAT_DEMAND"]["HFO_TANK_HEATING"] = 270
-    output["HEAT_DEMAND"]["MACHINERY_SPACE_HEATERS"] = 280
-    output["HEAT_DEMAND"]["GALLEY"] = 600
+    output["HEAT_DEMAND"]["DESIGN"] = {}
+    output["HEAT_DEMAND"]["DESIGN"]["HOT_WATER_HEATER"] = 1200
+    output["HEAT_DEMAND"]["DESIGN"]["HVAC_PREHEATER"] = 3500
+    output["HEAT_DEMAND"]["DESIGN"]["HVAC_REHEATER"] = 1780
+    output["HEAT_DEMAND"]["DESIGN"]["TANK_HEATING"] = 210
+    output["HEAT_DEMAND"]["DESIGN"]["OTHER_TANKS"] = 140
+    output["HEAT_DEMAND"]["DESIGN"]["HFO_TANK_HEATING"] = 270
+    output["HEAT_DEMAND"]["DESIGN"]["MACHINERY_SPACE_HEATERS"] = 280
+    output["HEAT_DEMAND"]["DESIGN"]["GALLEY"] = 600
+    output["HEAT_DEMAND"]["DESIGN"]["OTHER_HTHR"] = Qdot_HTHR_constant
+    output["HEAT_DEMAND"]["DESIGN"]["OTHER_STEAM"] = Qdot_steam_constant
+    output["HEAT_DEMAND"]["LIN"] = {}
+    output["HEAT_DEMAND"]["LIN"]["HOT_WATER_HEATER"] = HotWaterHeaterCoefficient
+    output["HEAT_DEMAND"]["LIN"]["HVAC_PREHEATER"] = HVACpreheaterCoefficient
+    output["HEAT_DEMAND"]["LIN"]["HVAC_REHEATER"] = HVACreheaterCoefficient
+    output["HEAT_DEMAND"]["LIN"]["OTHER_CONSUMERS"] = OtherCoefficient
+    output["HEAT_DEMAND"]["LIN"]["GALLEY"] = GalleyCoefficient
     output["HEAT_DEMAND"]["HWH_HOURLY"] = [0.10, 0.10, 0.10, 0.10, 0.70, 1.00, 1.00, 1.00, 0.50, 0.50, 0.50, 0.50,
                                            0.50, 0.50, 0.50, 0.50, 0.70, 0.70, 1.00, 1.00, 1.00, 0.50, 0.50, 0.30]
     output["HEAT_DEMAND"]["GALLEY_HOURLY"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0,
@@ -205,9 +236,11 @@ def otherUnits(CONSTANTS):
     output["HEAT_DEMAND"]["TOTAL_AREA"] = (150 + 30) * 2 * 20 + 2 * 150 * 30
     output["HEAT_DEMAND"]["T_AIR_REF_MIN"]  = -20 + 273
     output["HEAT_DEMAND"]["T_AIR_REF_MAX"] = 15 + 273
-    output["HEAT_DEMAND"]["TOTAL_U"] = output["HEAT_DEMAND"]["HVAC_PREHEATER"] / output["HEAT_DEMAND"]["TOTAL_AREA"] / (output["HEAT_DEMAND"]["T_INSIDE"] - output["HEAT_DEMAND"]["T_AIR_REF_MIN"])
-    output["HEAT_DEMAND"]["HTHR_EPS"] = 0.85  # Effectiveness of the HTHR water-water heat exchangers
+    output["HEAT_DEMAND"]["TOTAL_U"] = output["HEAT_DEMAND"]["DESIGN"]["HVAC_PREHEATER"] / output["HEAT_DEMAND"]["TOTAL_AREA"] / (output["HEAT_DEMAND"]["T_INSIDE"] - output["HEAT_DEMAND"]["T_AIR_REF_MIN"])
+    output["HEAT_DEMAND"]["HTHR_EPS"] = HTHRhexEffectiveness  # Effectiveness of the HTHR water-water heat exchangers. Old: 0.85
+    output["HEAT_DEMAND"]["HTHR_INLET_TEMPERATURE"] = HTHRinletTemperature
     output["HEAT_DEMAND"]["HVAC_POWER_DES"] = 1500  # Design power of the HVAC compressors
+
     return output
     
 

@@ -159,6 +159,8 @@ def massBalance(processed, dict_structure, CONSTANTS):
             balance_occ = np.sum(balance < 0.001*max_value) / len(balance) * 100
             if balance_occ == 100:
                 text_file.write("The mass balance is fine for {}_{} unit \n".format(system, unit))
+            elif (balance_occ >= 99) or (balance_ave <= 1):
+                text_file.write("The mass balance is ALMOST fine for {}_{} unit \n".format(system, unit))
             elif counter == 0:
                 text_file.write("There is no mass balance for {}_{} unit \n".format(system, unit))
             else:
