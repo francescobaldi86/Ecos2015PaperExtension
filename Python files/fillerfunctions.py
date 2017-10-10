@@ -72,18 +72,16 @@ def unitOffCheck(processed, dict_structure, CONSTANTS, call_ID):
 
 
 def connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, call_ID):
-    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")
+    text_file = open(CONSTANTS["filenames"]["consistency_check_report"], "a")  # Opens the log file
     counter = 0
     for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
-        if system+":"+unit+":"+flow == "ME1:HTmerge:LTWater_in":
-            a = 0
         if "Connections" in dict_structure["systems"][system]["units"][unit]["flows"][flow]:
             for connected_flow in dict_structure["systems"][system]["units"][unit]["flows"][flow]["Connections"]:
                 for property in CONSTANTS["General"]["PROPERTY_LIST"][dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"]]:
-                    ID = d2df(system,unit,flow,property)
-                    ID_c = connected_flow + ":" + property
-                    if processed[ID].isnull().sum() != len(processed[ID]):
-                        if (processed[ID_c].isnull().sum() == len(processed[ID_c])) or (sum(processed[ID_c]) == 0):
+                    ID = d2df(system,unit,flow,property)  # Writing the property full ID of the flow we are checking
+                    ID_c = connected_flow + ":" + property  # Writing the property full ID of the flow connected to the flow we are checking
+                    if processed[ID].isnull().sum() != len(processed[ID]):  # If the flow is not empty
+                        if (processed[ID_c].isnull().sum() == len(processed[ID_c])) or (sum(processed[ID_c]) == 0):  # If the connected flow IS empty
                             processed[ID_c] = processed[ID]
                             counter = counter + 1
                         elif (processed[ID] - processed[ID_c]).sum() > processed[ID].max():
@@ -99,7 +97,7 @@ def massFill(processed, dict_structure, CONSTANTS, system, unit, streams, call_I
     # This function applies the mass balance over one component:
     # - If some of the flows have not been assigned yet, they are calculated based on the mass balance
     counter = 0
-    if system+":"+unit == "ME1:HTmerge":
+    if system+":"+unit == "CoolingSystems:LTcollector13":
         aaa = 0
     for stream in streams:
         # If there is only one flow, something is tricky...

@@ -5,6 +5,17 @@ from helpers import polyvalHelperFunction
 import CoolProp.CoolProp as cp
 
 
+def operationalModeCalculator(processed, raw, CONSTANTS, hd):
+    # Initializing the data series
+    temp = pd.Series(index=processed.index)
+    temp[raw[hd["SHIP_SPEED_KNOT_"]] > 15] = "High Speed Sailing"
+    temp[(raw[hd["SHIP_SPEED_KNOT_"]] < 15) * (raw[hd["SHIP_SPEED_KNOT_"]] > 4)] = "Low Speed Sailing"
+    temp[((processed["Demands:Electricity:Thrusters:Edot"] > 0) + ((raw[hd["SHIP_SPEED_KNOT_"]] < 4) * (raw[hd["SHIP_SPEED_KNOT_"]] > 2)))] = "Maneuvering"
+    temp[temp.isnull()] = "Port/Stay"
+    processed["operationalMode"] = pd.Series(temp.values)
+    return processed
+
+
 def engineStatusCalculation(type, raw, processed, CONSTANTS, hd):
     for system in CONSTANTS["General"]["NAMES"][type]:
         processed[system + ":" + "on"] = raw[hd[system+"-TC__RPM_"]] > 5000

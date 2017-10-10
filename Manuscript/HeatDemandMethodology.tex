@@ -3,6 +3,7 @@
 \usepackage{verbatim}
 \usepackage{algorithmicx}
 \usepackage[noend]{algpseudocode}
+\usepackage{tabls}
 
 %opening
 \title{Estimation of the heat demand}
@@ -46,36 +47,38 @@ where the vector $\textbf{p}$ includes the calibration parameters that are part 
 		Boiler drum steam storage capacity & $Q_{ab,max}$ & MJ & 100 & 100000 & 5580 \\ 
 		Boiler heat rate & $\dot{Q}_{ab,des}$ & kW & 2000 & 8000 & 2920 \\ 
 		\hline
-	\end{tabular} 
+	\end{tabular}
+	\caption{Parameters optimized in the parameter estimation for the heat balance}
+	\label{tab:ParameterEstimation} 
 \end{table}
 
 
 
 \section{Heat demand}
 
-Based on the ship's heat balance, we calculate the heat demand as the sum of the contributions of the following elements:
-
-
-Given that no direct measurement of these quantities is available, they had to be estimated based on the following assumptions:
+We calculated the heat demand as the sum of the contributions of the elements listed in the ship's heat balance documentation. As no direct measurement of these quantities was available in the dataset, they had to be estimated based on the following assumptions:
 \begin{table}
 	\centering
-	\begin{tabular}{p{3cm}lp{1.6cm}}
+	{\tablinesep=2ex\tabcolsep=10pt
+	\begin{tabular}{p{2.8cm}l}
 		\hline 
 		Heat flow name & Equation \\
 		\hline
-		HVAC Preheater & $\dot{Q}_{HVAC,PH} = f_{HVAC,RH} \dot{Q}_{HVAC,PH,des} \frac{\dot{W}_{HVAC}(t)}{\dot{W}_{HVAC,max}} $ \\
-		HVAC Reheater &	$\dot{Q}_{HVAC,RH} = f_{HVAC,PH} \dot{Q}_{HVAC,PH,des} \frac{T_{in} - T_{air,out}(t)}{T_{in} - T_{air,out,des}}$ \\
+		HVAC Preheater & $\dot{Q}_{HVAC,PH} = f_{HVAC,RH} \dot{Q}_{HVAC,PH,des} \dfrac{\dot{W}_{HVAC}(t)}{\dot{W}_{HVAC,max}} $ \\
+		HVAC Reheater &	$\dot{Q}_{HVAC,RH} = f_{HVAC,PH} \dot{Q}_{HVAC,PH,des} \dfrac{T_{in} - T_{air,out}(t)}{T_{in} - T_{air,out,des}}$ \\
 		Hot water heater& $\dot{Q}_{HWH} = f_{HWH} \dot{Q}_{HWH,des} \Phi_{HWH}(\hat{t})$ \\
 		Galley & $\dot{Q}_{G} = f_{G} \dot{Q}_{G,des} \Phi_G(\hat{t})$ \\
-		Low temperature tank heating & $\dot{Q}_{TH} = f_{TH} \dot{Q}_{TH} \frac{T_{T} - T_{air,out}(t)}{T_{T} -T_{air,out,des}}$ \\
-		HFO tank heating & $\dot{Q}_{HTH} = f_{HTH} \dot{Q}_{HTH} \frac{T_{HT} - T_{air,out}(t)}{T_{HT} - T_{air,out,des}}$ \\
-		Machinery space heating & $\dot{Q}_{MSH} = f_{MSH} \dot{Q}_{MSH} \frac{T_{MS} - T_{air,out}(t)}{T_{MS} - T_{air,out,des}}$ \\
+		Low temperature tank heating & $\dot{Q}_{TH} = f_{TH} \dot{Q}_{TH} \dfrac{T_{T} - T_{air,out}(t)}{T_{T} -T_{air,out,des}}$ \\
+		HFO tank heating & $\dot{Q}_{HTH} = f_{HTH} \dot{Q}_{HTH} \dfrac{T_{HT} - T_{air,out}(t)}{T_{HT} - T_{air,out,des}}$ \\
+		Machinery space heating & $\dot{Q}_{MSH} = f_{MSH} \dot{Q}_{MSH} \dfrac{T_{MS} - T_{air,out}(t)}{T_{MS} - T_{air,out,des}}$ \\
 		HFO heater & $\dot{Q}_{HH} = \dot{m}_{HFO}(t) c_{p,HFO} (T_{HFO,inj} - T_{HT})$ \\
 		\hline
-	\end{tabular}
+	\end{tabular}}
+	\caption{Summary of the heat demand contributions and their calculation}
+	\label{tab:HeatDemand}
 \end{table}
 
-where all $f_i$ factors are treated as calibration parameters. The $\Phi_G(\hat{t})$ and $\Phi_{HWH}(\hat{t})$ functions represent the assumption made on the daily evolution of the heating demand from the galley and the hot water heater respectively. The daily evolutions of the demand are considered to be the same over the whole year of operations and are represented graphically in Figure REF.
+where all $f_i$ factors are treated as calibration parameters (see table \ref{tab:ParameterEstimation}). The $\Phi_G(\hat{t})$ and $\Phi_{HWH}(\hat{t})$ functions represent the assumption made on the daily evolution of the heating demand from the galley and the hot water heater respectively. The daily evolutions of the demand are considered to be the same over the whole year of operations and are represented graphically in Figure REF.
 
 
 
@@ -88,18 +91,18 @@ The heat recovered in the EGBs is the only contribution to the heat balance that
 \dot{Q}_{EGB} = \dot{m}_{eg} c_{p,eg} (T_{eg,EGB,in} - T_{eg,EGB,out})
 \end{equation}\label{eq:egb}
 
-where $T_{eg,EGB,out}$ and $T_{eg,EGB,in}$ are measured for all EGBs, $c_{p,eg}$ is assumed to be a function of the exhaust gas composition, and $ \dot{m}_{eg} $ is calculated based on the engine energy and mass balance as described in section REF and in the appendix REF
+where $T_{eg,EGB,out}$ and $T_{eg,EGB,in}$ are measured for all EGBs, $c_{p,eg}$ is calculated as a function of the exhaust gas composition and temperature, and $ \dot{m}_{eg} $ is calculated based on the engine energy and mass balance as described in section REF and in the appendix REF
 
 \subsection{High Temperature Heat Recovery}
 
-It is known that the ship heating systems are designed for recovering energy from the high temperature cooling systems of all the ship's engines. However, measurements of this contribution and of other variables that could lead to its straight-forward identification, thus requiring certain assumptions. 
+It is known that the ship heating systems are designed for recovering energy from the high temperature cooling systems of all the ship's engines. However, measurements of this contribution and of other variables that could lead to its straight-forward identification are missing. In this work, we calculated the heat exchanged in the two HTHRs according to equation \label{eqn:HTHR2},
 
 \begin{eqnarray}
-\dot{Q}_{HTHR} & = & \dot{Q}_{HTHR,ER1} + \dot{Q}_{HTHR,ER2} \\
+\dot{Q}_{HTHR} & = & \dot{Q}_{HTHR,ER1} + \dot{Q}_{HTHR,ER2} \label{eqn:HTHR1} \\
  & = & \sum_{i=ER1,ER2}{\epsilon_{HTHR} * \dot{m}_{min,HTHR,i} * c_{p,w} * (T_{HT,out,i} - T_{HRHT,i,in})} \label{eqn:HTHR2}
 \end{eqnarray}
 
-where the effectiveness of the heat exchanger $\epsilon_{HTHR}$ is considered to be constant and its value is part of the parameter estimation problem. The HT water outlet temperature for each engine room is calculated based on the thermal balance of the engines, and the HR water at the HTHR inlet ($T_{HRHT,ER1,in}$) is considered as a calibration parameter. 
+where the effectiveness of the heat exchanger $\epsilon_{HTHR}$ is considered to be constant and its value is part of the parameter estimation problem (see table \ref{tab:ParameterEstimation}). The HT water outlet temperature for each engine room is calculated based on the thermal balance of the engines, and the HR water at the HTHR inlet ($T_{HRHT,ER1,in}$) is considered as a calibration parameter. 
 
 \subsection{Auxiliary boilers}
 
@@ -114,13 +117,17 @@ The heat generated by the auxiliary boilers is calculated as to close the heat b
 		\EndWhile
 	\end{algorithmic}
 
-where the calibration parameters are the heat storage capacity ($Q_{ab,max}$) and the fixed heat rate ($\dot{Q}_{ab,des}$) of the auxiliary boilers.
+where the calibration parameters are the heat storage capacity ($Q_{ab,max}$) and the fixed heat rate ($\dot{Q}_{ab,des}$) of the auxiliary boilers (see table \ref{tab:ParameterEstimation}).
 
 
 
 
 
-\section{Uncertainty quantification}
+\section{Parameter estimation and uncertainty quantification}
+
+The results of the parameter estimation are represented graphically and quantitatively in Figure REF and Table REF. 
+
+
 
 Given the lack of input values for the estimation of the heat demand, the provided estimate based on the procedure described above should be integrated with an estimation of the uncertainty. 
 

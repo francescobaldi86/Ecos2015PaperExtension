@@ -45,7 +45,7 @@ def general():
     output["EFFICIENCY_LIST"]["MIXMERGE"] = {"lambda", "delta"}
     output["UNIT_TYPES"] = {}
     output["UNIT_TYPES"]["STANDARD"] = {"cyl", "comp", "turbine", "ag", "boiler", "shaft"}
-    output["UNIT_TYPES"]["MIXMERGE"] = {"merge", "split", "distribution", "collector", "valve"}
+    output["UNIT_TYPES"]["MIXMERGE"] = {"merge", "split", "distribution", "collector", "valve", "Distribution", "HotWell"}
     # output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
     output["MDO"] = {"LHV": 42230.0, "CP": 1.8, "C": 0.87, "H": 0.13}
     output["MDO"]["HHV"] = output["MDO"]["LHV"] * (1.0406 + 0.0144 * output["MDO"]["H"] / output["MDO"]["C"] * 12) * 1.01  # Calculated Higher heating value
@@ -168,8 +168,11 @@ def auxiliaryEngines(CONSTANTS):
 def otherUnits(CONSTANTS):
     output = {}  # Initializing the output dictionary
     # Providing the optimal optimization vector
-    param = [1.36929841e+02, 1.76569058e+02, 5.90926596e-01, 7.06974933e-01, 9.98138178e-01, 5.47476618e-01,
-            2.69942265e-01, 3.45398252e+02, 7.18364651e-01, 3 * 2.06480953e+03, 2.92188518e+03]
+    #    param = [0.00000000e+00, 0.00000000e+00, 3.02453747e-01, 6.10256462e-01, 1.00000000e+00, 7.37813650e-01,
+    #             6.13233358e-01, 3.44252126e+02, 5.61738566e-01, 7.19654306e+06, 4.16518191e+03]
+    param = [2.04820342e+01, 0.00000000e+00, 3.97004436e-01, 7.22620258e-01, 1.00000000e+00, 6.81708153e-01,
+             2.14566717e-01, 3.47857597e+02, 5.00000000e-01, 9.54336804e+06, 5.13466015e+03]
+
     Qdot_HTHR_constant = param[0]
     Qdot_steam_constant = param[1]
     HVACreheaterCoefficient = param[2]

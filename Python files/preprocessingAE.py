@@ -3,6 +3,7 @@ import pandas as pd
 import fillerfunctions as ff
 import preprocessingO as ppo
 import coolingsystems as cs
+from energyanalysis import propertyCalculator
 from helpers import d2df
 
 def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
@@ -24,6 +25,8 @@ def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     processed = auxEngineAirFlowCalculation(raw, processed, CONSTANTS)
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.1")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-2.2")
+    processed = propertyCalculator(processed, dict_structure, CONSTANTS, ["AE1", "AE2", "AE3", "AE4"])
+    processed = auxEngineAirFlowPostCalculation(processed, CONSTANTS)
     # Calculating cooling flows
     processed = cs.engineCoolingSystemsCalculation(processed, CONSTANTS, "AuxEngines")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-3.1")
@@ -143,26 +146,24 @@ def auxEngineAirFlowCalculation(raw, processed, CONSTANTS):
             processed[d2df(system,"BPmerge","BP_in","mdot")] * CONSTANTS["General"]["CP_AIR"]) * processed[d2df(system,"Turbine","Mix_in","T")] -
             processed[d2df(system,"BPmerge","BP_in","mdot")] * CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "Comp", "Air_out", "T")]) / (
             processed[d2df(system,"Cyl","EG_out","mdot")] * CONSTANTS["General"]["CP_EG"])
-        processed[system + ":CP_MIX"] = (processed[d2df(system, "BPmerge", "BP_in", "mdot")] * CONSTANTS["General"]["CP_AIR"] +
-            processed[d2df(system, "Cyl", "EG_out", "mdot")] * CONSTANTS["General"]["CP_EG"]) / processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
+        # Assiging the mass flow values for the HRSGs otherwise it makes a mess
+        processed[d2df(system, "HRSG", "Mix_in", "mdot")] = processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
+        processed[d2df(system, "HRSG", "Mix_out", "mdot")] = processed[d2df(system, "BPmerge", "Mix_out", "mdot")]
+    print("...done!")
+    return processed
+
+def auxEngineAirFlowPostCalculation(processed, CONSTANTS):
+    print("Started calculating auxiliary engine air and exhaust flows...", end="", flush=True)
+    # This function calculates the different air and exhaust gas flows in the main engines, taking into account the
+    # presence of air bypass and exhaust wastegate valves
+    for system in CONSTANTS["General"]["NAMES"]["AuxEngines"]:
         # Calculating the turbine's power outpput to the compressor
-        processed[d2df(system, "Turbine", "Power_out", "Edot")] = processed[system + ":CP_MIX"] * processed[d2df(system, "BPmerge", "Mix_out", "mdot")] * (
-            processed[d2df(system, "Turbine", "Mix_in", "T")] - processed[d2df(system, "Turbine", "Mix_out", "T")])
+        processed[d2df(system, "Turbine", "Power_out", "Edot")] = processed[d2df(system, "BPmerge", "Mix_out", "mdot")] * (
+            processed[d2df(system, "Turbine", "Mix_in", "h")] - processed[d2df(system, "Turbine", "Mix_out", "h")])
         # Calculating the compressor's power input.
-        processed[d2df(system, "Comp", "Power_in", "Edot")] = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system, "BPsplit", "Air_in", "mdot")] * (
-            processed[d2df(system, "Comp", "Air_out", "T")] - processed[d2df(system, "Comp", "Air_in", "T")])
+        processed[d2df(system, "Comp", "Power_in", "Edot")] = processed[d2df(system, "BPsplit", "Air_in", "mdot")] * (
+            processed[d2df(system, "Comp", "Air_out", "h")] - processed[d2df(system, "Comp", "Air_in", "h")])
         # Losses at the TC shaft level are calculated
         processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] * CONSTANTS["MainEngines"]["ETA_MECH_TC"]
 
-        # processed[system + ":EG_Composition"] = ppo.mixtureComposition(
-        #     processed[d2df(system, "Cyl", "Air_in", "mdot")],
-        #     processed[d2df(system, "Cyl", "FuelPh_in", "mdot")],
-        #     processed[d2df(system, "Cyl", "FuelPh_in", "T")],
-        #     CONSTANTS)
-        # processed[system + ":Mix_Composition"] = ppo.mixtureComposition(
-        #     processed[d2df(system, "BPsplit", "Air_in", "mdot")],
-        #     processed[d2df(system, "Cyl", "FuelPh_in", "mdot")],
-        #     processed[d2df(system, "Cyl", "FuelPh_in", "T")],
-        #     CONSTANTS)
-    print("...done!")
     return processed

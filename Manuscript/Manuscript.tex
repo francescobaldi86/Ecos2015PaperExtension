@@ -43,6 +43,14 @@
 \usepackage{amsthm}
 %% Tthe amsmath package provides the "align" environment for nicer equation formatting
 \usepackage{amsmath}
+%% The package tabls helps in having nicer tables with higher spaces
+\usepackage{tabls}
+%% The package multirow allows merging together multiple cells vertifcally
+\usepackage{multirow}
+%% 
+\usepackage{subcaption}
+
+
 \def\bibsection{\section*{References}}
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -136,9 +144,9 @@ low carbon shipping \sep energy analysis \sep exergy analysis \sep energy effici
 
 \subsection{Background}
 
-According to the third IMO GHG Study, in 2012 CO$_2$ emissions from shipping amounted to a total of 949 million tonnes, contributing to 2.7\% of global anthropogenic CO$_2$ emissions \cite{Smith2014}. Although this contribution appears relatively low, the trend is that shipping will play an even greater role in the future due to the increased transport demand according to all IMO future scenarios \cite{Smith2014}. As an example, global transport demand has increased by 3.4\% in 2014, compared to a global GBP growth of 2.5\% the same year, which shows how shipping tends to rise even faster than global economy \cite{UNCTAD2015}.
+CO$_2$ emissions from shipping in 2012 amounted to a total of 949 million tonnes, contributing to 2.7\% of global anthropogenic CO$_2$ emissions \cite{Smith2014}. Although this contribution appears relatively low, the trend is that shipping will play an even greater role in the future due to the increased transport demand according to all IMO future scenarios \cite{Smith2014}. As an example, global transport demand has increased by 3.4\% in 2014, compared to a global GBP growth of 2.5\% the same year, which shows how shipping tends to rise even faster than global economy \cite{UNCTAD2015}. The OECD countries have reduced the CO$_2$ impact from shipping, but a larger amount has been moved to the non-OECD countries [3]. The fact that shipping needs to even further reduce its CO$_2$ emissions in the near future is essential for being able to achieve the goals of maintaining the climate below a 2-degree level in 2050 [4]. 
 
-International Energy Agency data show that the OECD countries have reduced the CO$_2$ impact from shipping, but a larger amount has been moved to the non-OECD countries [3]. The fact that shipping needs to even further reduce its CO$_2$ emissions in the near future is essential for being able to achieve the goals of maintaining the climate below a 2-degree level in 2050 [4]. Finally, in the Baltic Sea an emission control area is enforced by the International Maritime Organisation since January 2015 which stipulates that the fuel used must not contain more than 0.1\% sulphur, therefore requiring the use of more expensive distillate fuels. More generally making shipping sustainable is a challenge that will demand growing attention by the shipping industry \cite{Andersson2016}
+In addition to considerations related to GHG emissions, an emission control area (ECA) is enforced in the Baltic Sea  by the International Maritime Organisation since January 2015. This ECA stipulates that the fuel used must not contain more than 0.1\% sulphur, therefore requiring the use of more expensive distillate fuels. More generally making shipping sustainable is a challenge that will demand growing attention by the shipping industry \cite{Andersson2016}
 
 Altogether, these conditions present a challenge to the shipping companies who attempt to reduce their fuel consumption, environmental impact, and operative costs. A wide range of fuel saving solutions for shipping are available and partially implemented in the existing fleet, both from the design and operational perspective; several specific studies have been conducted on these technologies, and a more detailed treatise would be out of the scope of this work. In this context, it has been acknowledged that the world fleet is heterogeneous, and measures need to be evaluated on a ship-to-ship basis \cite{Bouman2017}. In this process, a deeper understanding of energy use on board of the specific ship is vital.
 
@@ -178,9 +186,9 @@ Exergy analysis provides a more accurate estimation of the potential for energy 
 
 Given the existing limitations of the current available information in scientific literature highlighted in the previous section, the objective of this work is the following:
 \begin{itemize}
-	\item Analyse the demand of a cruise ship in terms of propulsion power, electric power and heat, based on operational measurements.
-	\item Analyse the current efficiency of the system, and potential ways to improve it, by means of applying exergy analysis
-	\item Provide a more detailed analysis of the heat demand of a cruise ship, as a basis for further studies on how to optimize the whole efficiency of the propulsion plant.
+	\item Analyse the demand of a cruise ship in terms of propulsion power, electric power and heat, based on operational measurements. The lack of existing information with reference to the heat demand is considered a particular element of novelty when compared to existing literature in the subject.
+	\item Analyse the current efficiency of the system, and potential ways to improve it, by means of applying exergy analysis.
+	\item Provide reference operational conditions for further use in the field of energy systems optimization.
 \end{itemize}
 
 
@@ -189,19 +197,11 @@ Given the existing limitations of the current available information in scientifi
 
 \section{Method} \label{sec:method}
 
-Here an overview of the method is provided: 
-\begin{itemize}
-	\item Data gathering
-	\item Data filtering
-	\item Data pre-processing
-	\item Heat demand estimation
-	\item Statistical analysis
-	\item Energy and exergy analysis
-\end{itemize}
+In this paper, we present the application of energy and exergy analysis (described in section \ref{sec:met:energyExergy}) to a cruise ship. This is done for one specific case study vessel, that is described in detail in Section \ref{sec:met:case}; in Section \ref{sec:met:gathering} we present the specifics of the available information, in particular the measured data and the technical documentation; the specific assumptions and methods used for processing the available information into  energy and exergy flows are specified in Section \ref{sec:met:processing}. In these regards, the estimation of the heat demand is treated in a separate section (Sec. \ref{sec:met:heat}) as it constitutes a particularly challenging task and it is one of the central aspects of this article. 
 
-In this paper, we present the application of energy and exergy analysis (described in sections \ref{set:met:energy} and \ref{sec:met:exergy} to a cruise ship. This is done for one specific case study vessel, that is described in detail in Section \ref{sec:met:case}; in Section \ref{sec:met:gathering} we present the specifics of the available information, in particular the measured data and the technical documentation; these are used to generate the required information for calculating energy and exergy flows (Section \ref{sec:met:processing}. In these regards, the estimation of the heat demand is treated in a separate section (Sec. \ref{sec:met:heat} as it constituted a particularly challenging task and it is one of the central aspects of this article. 
+\subsection{Energy and exergy analysis} \label{sec:met:energyExergy}
 
-\subsection{Energy analysis}
+\subsubsection{Energy analysis}
 
 \emph{Energy} can be stored, transformed from one form to another (e.g. heat to power) and transferred between systems, but can neither be created nor destroyed (conservation law)~\textbf{Bejan et al.}. The system under study is the \emph{ship energy system} and is thus taken as control volume. The energy balance can be expressed as:
 
@@ -214,7 +214,7 @@ The left-hand side term represents, on a time rate basis, the energy associated 
 
 The energy flow associated with a material stream is calculated as the sum of the physical and chemical enthalpies, and kinetic and potential energies are neglected.    The physical energy is taken as the relative enthalpy, as underlined in~\textbf{Kotas et al.}, and the chemical energy is taken as the lower/higher heating value. The environmental conditions taken for the present analysis are the ambient pressure and seawater temperature.
 
-\subsection{Exergy analysis}
+\subsubsection{Exergy analysis}
 
 \emph{Exergy} may be defined as the `maximum theoretical useful work (shaft work or electrical work) as the system is brought into complete thermodynamic equilibrium with the thermodynamic environment while the system interacts with it only'~\citep{Moran1989}. Unlike energy, exergy is not conserved but some is destroyed because of the irreversible phenomena taking place in real processes (e.g. chemical reactions like combustion). The exergy balance for the system under study can be expressed as:
 
@@ -232,7 +232,7 @@ The exergy balance may alternatively be formulated as:
 
 where $\dot{E}_{\mathrm{p}}$ is called the exergy product, and corresponds to the desired output of the system, in exergy terms (for example, the power produced in an engine). $\dot{E}_{\mathrm{f}}$ denotes the exergy fuel, and represents the resources spent to drive the studied process (for instance, the fuel used in a combustion process). The last term $\dot{E}_{\mathrm{l}}$ corresponds to the losses of a system, such as the heat discharged into the environment with cooling water. 
 
-\subsection{System performance}
+\subsubsection{System performance}
 
 The following indicators are used to evaluate the system performance:
 \begin{itemize}
@@ -246,13 +246,19 @@ The following indicators are used to evaluate the system performance:
 \end{itemize}    
 
 
+
+
+
+
+
+
 \subsection{Case study vessel} \label{sec:met:case}
 
 The energy and exergy analysis are here applied to a specific  cruise ship operating daily cruises in the Baltic Sea between Stockholm and the island of \.{A}land. The ship is 176.9 m long and has a beam of 28.6 m, and has a design speed of 21 knots. The ship was built in Aker Finnyards, Raumo Finland in 2004.
 
 The ship has a capacity of 1800 passengers and has several restaurants, night clubs and bars, as well as saunas and pools. This means that the energy system regarding the heat and electricity demand is more complex than a regular cargo vessel in the same size. Typical ship operations, although they can vary slightly between different days, are represented in Figure \ref{fig:typicalShipOperations}. It should be noted that the ship stops and drifts in open sea during night hours before mooring at its destination in the morning, if allowed by weather conditions.
 
-The ship systems are summarized in Figure \ref{fig:shipSystems}. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four Wärtsilä 4-stroke Diesel engines (ME) rated 5850 kW each All engines are equipped with selective catalytic reactors (SCR) for NOX emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
+The ship systems are summarized in Figure \ref{fig:shipSystems}. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four Wärtsilä 4-stroke Diesel engines (ME) rated 5850 kW each. All engines are equipped with selective catalytic reactors (SCR) for NOX emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
 
 Auxiliary power is provided by four auxiliary engines (AE) rated 2760 kW each. Auxiliary power is needed on board for a number of alternative functions, from pumps in the engine room to lights, restaurants, ventilation and entertainment for the passengers. 
 
@@ -265,112 +271,200 @@ The operational data was collected on board from the ships' machine logging and 
 All data-points were checked individually by creating a descriptive statistic and a histogram of each data-point. A filter was applied by setting up a pre-defined maximum and minimum value. As we do not know, or had any meaningful way of deriving, each individual sensors placement, sensor type or calibration status all data must be filtered and checked accordingly for outliers or bad data. 
 
 
-Since measurements of ambient and seawater temperature from onboard logging systems were not available for the whole dataset, we used measurements taken from SMHI database for Landsort lighthouse for the seawater, and the lighthouse Svenska Högarna for the ambient temperature. The Landsord lighthouse is situated south of the Stockholm archipelago, and the Svenska Högarna lighthouse is along the ship route, in between the Swedish archipelago and Åland. The assumption was validated based on  June-December period, for which onboard measurements were available. This resulted in a root mean square error of 1.5 K and 1.9 K for the seawater and the ambient temperature respectively, which we considered to be accurate enough for the purpose of this work. The fit the SMHI-data with the rest of the data-set the SMHI data was resampled from 1h for the seawater and 3h for the ambient temperature, to 15min frequency using a linear interpolation.
+Since measurements of ambient and seawater temperature from onboard logging systems were not available for the whole dataset, we used measurements taken from SMHI database for Landsort lighthouse for the seawater, and the lighthouse Svenska H\"{o}garna for the ambient temperature. The Landsord lighthouse is situated south of the Stockholm archipelago, and the Svenska H\"{o}garna lighthouse is along the ship route, in between the Swedish archipelago and Åland. The assumption was validated based on  June-December period, for which onboard measurements were available. This resulted in a root mean square error of 1.5 K and 1.9 K for the seawater and the ambient temperature respectively, which we considered to be accurate enough for the purpose of this work. The fit the SMHI-data with the rest of the data-set the SMHI data was resampled from 1h for the seawater and 3h for the ambient temperature, to 15min frequency using a linear interpolation.
 
-\subsection{Data processing: Ship energy system modeling} \label{sec:met:modeling}
+\subsection{Data processing: Ship energy system modeling} \label{sec:met:processing}
 
 Not all of the variables required to perform a full energy and exergy analysis of the system are available from measurements. In some cases, they are measurable, but not measured (e.g. some temperatures, mass flows, etc.). In other cases, they are simply impossible, or impractical, to measure (e.g. specific enthalpy, specific entropy). For this reason, part of the ship systems needed to be modeled in order to derive the unknown variables. 
 
-\subsubsection*{Main engines}
-
-Make a figure representing the main engines, with specified the variables for which we have measurements of. 
-
-List the main assumptions
-
-\subsubsection*{Auxiliary engines}
-
-Make a figure representing the main engines, with specified the variables for which we have measurements of. 
-
-List the main assumptions
-
-\subsubsection*{Auxiliary boilers}
-
-\subsubsection*{Cooling systems}
-
-\subsection{Estimation of the heat demand} \label{sec:met:heat}
-
-\subsubsection*{Production-side}
-
-In a top-down model, the demand of an energy system is modeled based on the production side of the energy balance. According to the top-down approach, the total heat consumption is calculated based on the sum of the heat provided by the three main heat sources available on board:
-\begin{itemize}
-	\item Exhaust gas boilers
-	\item Auxiliary oil-fired boilers
-	\item Heat recovery on the HT cooling systems
-\end{itemize}
-
-For the case of the EGBs, the heat transferred from the exhaust gas to the steam ($\dot{Q}_{EGB}$) is calculated according to equation \ref{eq:egb}:
-\begin{equation}
-\dot{Q}_{EGB} = \dot{m}_{eg} c_{p,eg} (T_{eg,EGB,in} - T_{eg,EGB,out})
-\end{equation}\label{eq:egb}
-
-Where measurements of the exhaust gas temperature before and after the EGBs (respectively $T_{eg,EGB,in}$ and $T_{eg,EGB,out}$) are available from the DLS; the mass flow of exhaust gas ($\dot{m}_{eg}$) is calculated as described in appendices \ref{app:me} and \ref{app:ae}; and the specific heat at constant pressure of the exhaust gas ($c_{p,eg}$) is assumed to be constant and equal to 1.08 $\frac{kJ}{kgK}$.
-
-For the case of the ABs, the heat transferred to the steam ($\dot{Q}_{AB}$) is calculated according to equation \ref{eq:ab}:
-\begin{equation}
-\dot{Q}_{AB} = \dot{m}_{fuel,AB} \eta_{AB}
-\end{equation} \label{eq:ab}
-
-Where the fuel consumption of the ABs ($\dot{m}_{fuel,AB}$) is available on a monthly basis. No information was available concerning the first-law efficiency of the boilers ($ \eta_{AB}$). \cite{Cohen1962} estimated it to vary between 0.83 and 0.89 depending on the load of the boiler, while according to a more recent experimental campaign presented in \cite{Mrzljak2017} the efficiency varies between 0.7 and 0.79. In the absence of more specific available data, a value of 0.8 was selected for $ \eta_{AB}$
-
-The contribution from the heat recovery on the high temperature cooling systems of the engines ($\dot{Q}_{HRHT}$) represents the main uncertainty related to the top-down estimations. This contribution cannot be measured, neither directly or indirectly, and hence needs to be estimated. 
-
-For this reason, two calculated values for the top-down heat demand are provided:
-\begin{itemize}
-	\item A \textbf{high boundary} case, where it is assumed that almost all of the heat available from the HT cooling systems (an utilization factor of 0.9 is assumed to account for losses) is used. This corresponds to the assumption that the use of the waste heat from the HT cooling systems is prioritized over the use of waste heat from the exhaust gas of the engines.
-	\begin{equation}
-	\dot{Q}_{HRHT} = f_{HRHT} \dot{Q}_{HT,tot} 
-	\end{equation}
-	\item a \textbf{low boundary} case, where it is assumed that the waste heat from the cooling systems is only used when the ship is in port (again assuming a utilization factor of 0.9). 
-	\item a reference case, (NOTE: We should discuss what the assumption could be here. The one we had in the ECOS paper? Or a value halfway between the highest and lowest estimate?)
-\end{itemize}
-
-In both cases, the available heat from the HT cooling systems is estimated as explained in Section \ref{eq:met:modeling}.
 
 
 
-\subsubsection*{Consumers-side}
-Following, the assumptions that we have made related to the bottom-up estimations of ship heat demand:
-\begin{itemize}
-	\item In the HVAC unit, the "\textbf{Preheater}" is only used when heating (i.e., in winter) while the "\textbf{Reheater}" is only used when cooling (i.e., in summer)
-	\item \textbf{Spacial heating} demand during \textbf{winter} is linearly dependent on the external air temperature, from a minimum of 0 for an external temperature of 20$^o$C to a maximum of 3500 kW (design power of the preheater)  for an outer air temperature of -20$^o$C.
-	\item \textbf{Spacial heating} demand during \textbf{summer} is related to the need for dehumidification, and harder to estimate based on available measurements. As a first assumption, it is estimated to be equal to the cooling demand (estimated as detailed in Sec. ref{sec:met:electric})
-	\item Every passenger contributes with a total of 150 W of free heat during the day (8-23, ref. to "walking, seated" activity from \cite{Wang2000}) and 100 W during night (23-8, ref. to "seated at rest" activity from \cite{Wang2000}). For the crew, as it is assumed that they perform a more intense activity than the passengers, the daily contribution is considered equal to 160 (ref. to "moderate work" activity from \cite{Wang2000}) 
-	\item The heat required for \textbf{tank heating} is linearly dependent on the external sea water temperature. The maximum heat is required for an external seawater temperature of 0$^o$C
-	\item The heat required from the \textbf{galley} depends on two parameters:
-	\begin{itemize}
-		\item The \textbf{number of passengers} (linear dependence)
-		\item the \textbf{hour of the day}. See Figure \ref{fig:hwhvstime}
-	\end{itemize}
-	\item The heat required from the \textbf{hot water} depends on two parameters:
-	\begin{itemize}
-		\item The \textbf{number of passengers} (linear dependence)
-		\item the \textbf{hour of the day}. The hour-dependent factor is assumed based on the estimations for a land-based hotel reported in \cite{Chung2015}.
-	\end{itemize}   
-\end{itemize}
+\subsubsection{Diesel engines}
 
-In Table \ref{tab:heatConsumers} we summarize all heat consumers on board the case study vessel. For each entry, we provide the design heat demand and the variables we assumed the actual heat demand to depend on:
+The setup of the engines and their connections to the other ship systems are summarized in Figure REF and REF for the main and auxiliary engines, respectively. The defining net energy flows are listed in Table REF. It should be noted that, in the case of the main engines, the engine power output was not measured and needed to be estimated. In this work, we calculated the engine power output based on measurements of engine fuel rack position (used as a proxy of the mass of fuel injected per cycle) and of the engine speed:
+\begin{eqnarray}
+\dot{m}_{fuel} & = & \dot{m}_{fuel,des} \left(a_0 + a_1 \frac{frp}{frp_{des}}\right) \frac{\omega}{\omega_{des}} \\
+\eta_{ME} & = & a_0 + a_1 \frac{\dot{m}_{fuel}}{\dot{m}_{fuel,des}} + a_2 \left( \frac{\dot{m}_{fuel}}{\dot{m}_{fuel,des}} \right)^2 \\
+\dot{W}_{ME} & = & \dot{m}_{fuel} \eta_{ME} LHV
+\end{eqnarray}
+
+The validity of this assumption can be seen by observing Figure REF, representing the calculated total power from the main engines as a function of the ship speed
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{Figures/DieselEngines}
+	\caption{Schematic representation of the Diesel engines and their connections to the cooling systems}
+	\label{fig:DieselEngines}
+\end{figure}
+
+In the case of the auxiliary engines, instead, direct measurements of the power generated by each engine were available. 
+
+For both auxiliary and main engines, part of the relevant internal variables are not measured (particularly with relation to the bypass valves) and this required to determine them based on modeling the heat and mass balance of the engine. The model is explained in detail in Appendix REF.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{Figures/Pme_vs_vship_Neng}
+	\caption{Scatter plot, Propulsion power versus ship speed}
+	\label{fig:Pme_vs_vship_Neng}
+\end{figure}
+
+ALSO INCLUDE THE POWER VS TC SPEED RELATIONSHIP
+
+
 \begin{table}
-	\begin{tabular}{lrccccc}
-		\hline 
-		Name & $\dot{Q}_{des}$ [kW] & \multicolumn{5}{c}{Depends on...} \\ 
-		\hline 
-		 & & $T_{air}$ & t & $N_{pax}$ & $f_{TL}$ & $\lambda$ \\ 
-		\hline 
-		Hot water heater & 1200 &  & x & x &  &  \\ 
-		HVAC Preheater & 3500 & x & x & x &  &  \\ 
-		HVAC Reheater & 1780 & x & x & x &  &  \\ 
-		Tank heating & 208 &  &  &  & x &  \\ 
-		Other tanks & 138 &  &  &  & x &  \\ 
-		HFO Tank heating & 271 &  &  &  & x &  \\ 
-		Machinery space heaters & 281 & x &  &  &  &  \\ 
-		Bilge water separator & 26 &  &  &  &  &  \\ 
-		Hot water calorifier & 366 &  & x &  &  &  \\ 
-		Fuel oil heater & 103 &  &  &  &  & x \\ 
-		HFO Separator & 37 &  &  &  &  &  \\ 
-		Galley & 602 &  & x & x &  &  \\
-		\hline 
-	\end{tabular} \label{tab:heatConsumers}
+	\small
+	\centering
+	\begin{tabular}{llccrrrrr}
+		\hline
+		\multicolumn{2}{l}{Variable} & Unit & M/C & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		\hline
+		\multicolumn{2}{l}{Compressor} & & & & & & & \\ 
+		& 	$T_{air,in}$  		& $^o$C & M  & &  & & & \\ 
+		&	$T_{air,out}$  		& $^o$C & C  & & & & &  \\ 
+		&	$\dot{m}_{air}$  	& $kg/s$ & C  & & & & &  \\
+		&   $\beta_{comp}$		& - 	& M & & & & &  \\
+		\multicolumn{2}{l}{Turbine} & & & & & & &  \\
+		&	$T_{air,in}$   		& $^o$C & C  & & & & &  \\ 
+		&	$T_{air,out}$  		& $^o$C & M  & & & & &  \\ 
+		&	$\dot{m}_{eg}$  	& $kg/s$ & C  & & & & &  \\
+		&   $\beta_{exp}$		& - 	& C & & & & &  \\
+		\multicolumn{2}{l}{Bypass valve} & & & & & & &  \\
+		&	$\dot{m}_{air,BP}$	& $kg/s$ & C  & & & & &  \\ 
+		\multicolumn{2}{l}{Cylinders} & & & & & & &   \\
+		&	$\dot{m}_{air,in}$  & $kg/s$ & C  & & & & &  \\
+		&	$\dot{m}_{fuel,in}$ & $kg/s$ & C  & & & & &  \\
+		&	$\dot{m}_{eg,out}$  & $kg/s$ & C  & & & & &  \\
+		&	$T_{air,in}$  		& $^o$C & M  & & & & &  \\ 
+		&	$T_{eg,out}$  		& $^o$C & M  & & & & &  \\ 
+		\multicolumn{2}{l}{CAC-LT stage} & & & & & & &  \\
+		&	$T_{air,in}$  		& $^o$C & C  & & & & &  \\ 
+		&	$T_{air,out}$ 		& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,in}$   		& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
+		& 	$\dot{m}_{w,LT}$  	& $kg/s$ & & & & & &  \\
+		\multicolumn{2}{l}{CAC-HT stage} & & & & & & & \\
+		&	$T_{air,in}$   		& $^o$C & C  & & & & &  \\ 
+		&	$T_{air,out}$   	& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
+		& 	$\dot{m}_{w,HT}$  	& $kg/s$ & C & & & & &  \\
+		\multicolumn{2}{l}{LOC} & & & & & & &  \\
+		&	$T_{lo,in}$   		& $^o$C & C  & & & & &  \\  
+		&	$T_{lo,out}$    	& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
+		\multicolumn{2}{l}{JWC} & & & & & & &  \\
+		&	$T_{wall}$    		& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,in}$    		& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,out}$	   		& $^o$C & C  & & & & &  \\ 
+		& 	$\dot{m}_{w}$  		& $kg/s$ & C & & & & &  \\
+		\hline
+		\end{tabular}
+	\caption{Main engines, measured and calculated temperatures and flows at different engine loads}
 \end{table}
+
+INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
+
+
+\begin{table}
+	\small
+	\centering
+	\begin{tabular}{llccrrrrr}
+		\hline
+		\multicolumn{2}{l}{Variable} & Unit & M/C & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		\hline
+		\multicolumn{2}{l}{Compressor} & & & & & & & \\ 
+		& 	$T_{air,in}$  		& $^o$C & M  & &  & & & \\ 
+		&	$T_{air,out}$  		& $^o$C & C  & & & & &  \\ 
+		&	$\dot{m}_{air}$  	& $kg/s$ & C  & & & & &  \\
+		&   $\beta_{comp}$		& - 	& M & & & & &  \\
+		\multicolumn{2}{l}{Turbine} & & & & & & &  \\
+		&	$T_{air,in}$   		& $^o$C & M  & & & & &  \\ 
+		&	$T_{air,out}$  		& $^o$C & M  & & & & &  \\ 
+		&	$\dot{m}_{eg}$  	& $kg/s$ & C  & & & & &  \\
+		&   $\beta_{exp}$		& - 	& C & & & & &  \\
+		\multicolumn{2}{l}{Bypass valve} & & & & & & &  \\
+		&	$\dot{m}_{air,BP}$	& $kg/s$ & C  & & & & &  \\ 
+		\multicolumn{2}{l}{Cylinders} & & & & & & &   \\
+		&	$\dot{m}_{air,in}$  & $kg/s$ & C  & & & & &  \\
+		&	$\dot{m}_{fuel,in}$ & $kg/s$ & C  & & & & &  \\
+		&	$\dot{m}_{eg,out}$  & $kg/s$ & C  & & & & &  \\
+		&	$T_{air,in}$  		& $^o$C & M  & & & & &  \\ 
+		&	$T_{eg,out}$  		& $^o$C & C  & & & & &  \\ 
+		\multicolumn{2}{l}{CAC-LT stage} & & & & & & &  \\
+		&	$T_{air,in}$  		& $^o$C & C  & & & & &  \\ 
+		&	$T_{air,out}$ 		& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,in}$   		& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
+		& 	$\dot{m}_{w,LT}$  	& $kg/s$ & & & & & &  \\
+		\multicolumn{2}{l}{CAC-HT stage} & & & & & & & \\
+		&	$T_{air,in}$   		& $^o$C & C  & & & & &  \\ 
+		&	$T_{air,out}$   	& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
+		& 	$\dot{m}_{w,HT}$  	& $kg/s$ & C & & & & &  \\
+		\multicolumn{2}{l}{LOC} & & & & & & &  \\
+		&	$T_{lo,in}$   		& $^o$C & C  & & & & &  \\  
+		&	$T_{lo,out}$    	& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
+		\multicolumn{2}{l}{JWC} & & & & & & &  \\
+		&	$T_{wall}$    		& $^o$C & C  & & & & &  \\ 
+		&	$T_{w,in}$    		& $^o$C & M  & & & & &  \\ 
+		&	$T_{w,out}$	   		& $^o$C & C  & & & & &  \\ 
+		& 	$\dot{m}_{w}$  		& $kg/s$ & C & & & & &  \\
+		\hline
+	\end{tabular}
+	\caption{Auxiliary engines, measured and calculated temperatures and flows at different engine loads}
+\end{table}
+
+INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
+
+\begin{table}
+	\small
+	\centering
+	\begin{tabular}{lcrrrrr}
+		\hline
+		Energy flow & type & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		\hline
+		Power output & Mech &  &  &  &  &  \\
+		Exhaust gas & Heat &  &  &  &  &  \\
+		CAC-LT & Heat &  &  &  &  &  \\
+		CAC-HT & Heat &  &  &  &  &  \\
+		JWC & Heat &  &  &  &  &  \\
+		LOC & Heat &  &  &  &  &  \\
+		\hline
+	\end{tabular}
+	\caption{Main engines, energy flows at different engine loads}
+\end{table}
+
+\begin{table}
+	\small
+	\centering
+	\begin{tabular}{lcrrrrr}
+		\hline
+		Energy flow & type & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		\hline
+		Power output & Mech &  &  &  &  &  \\
+		Exhaust gas & Heat &  &  &  &  &  \\
+		CAC-LT & Heat &  &  &  &  &  \\
+		CAC-HT & Heat &  &  &  &  &  \\
+		JWC & Heat &  &  &  &  &  \\
+		LOC & Heat &  &  &  &  &  \\
+		\hline
+	\end{tabular}
+	\caption{Auxiliary engines, energy flows at different engine loads}
+\end{table}
+
+
+\subsubsection{Cooling systems}
+
+The ship's cooling systems are designed similarly to most ships and divided in two cooling systems of two separate temperature levels: the high temperature (HT) cooling systems (70-90$^o$C) and the low temperature (LT) cooling systems (40-60$^o$C). The cooling systems provide the necessary cooling to the engines, to the steam systems and to all other components on board. A representation of the ship cooling systems is provided in Figure XXX. 
+
+All values not directly measured in the cooling systems were calculated based on mass and energy balances. 
+
+Figure cooling systems
 
 
 \subsection{Estimation of the electric power demand} \label{sec:met:electric}
@@ -382,7 +476,7 @@ P_{el,tot} = \sum_{1}^{4} AE_i
 
 The determination of how different consumers contribute to the total electric power demand is less trivial. The ship is equipped with a number of different systems, including lighting, navigational systems, pumps and compressors, etc. None of the individual contributions is directly measured, hence estimations need to be based on indirect measurements. 
 
-\subsubsection*{HVAC systems}
+\subsubsection{HVAC systems}
 
 For what concerns the air conditioning unit demand (HVAC), the observation of the total power demand over the year (see Figure \ref{fig:pelvstime}, showing daily averages) leads to the identification of a clear period, corresponding to the summer months, during which there is a significant increase of the demand. 
 
@@ -412,15 +506,13 @@ P_{el,tot}(t) - P_{el,ref}(t) , & \text{if}\ \text{2014-07-03} < t < \text{2014-
 \end{equation}
 where $P_{el,ref}(t)$ is calculated as:
 \begin{equation}
-	P_{el,ref}(t) = 0.5 (P_{el,tot}(t_1) + P_{el,tot}(t_2))
+P_{el,ref}(t) = 0.5 (P_{el,tot}(t_1) + P_{el,tot}(t_2))
 \end{equation}
 
 
-\subsubsection*{Thrusters}
+\subsubsection{Thrusters}
 
-When entering port areas, the ship needs to use thrusters to maneuver and berth. In the case of this particular ships, operating on daily schedules and hence maneuvering four times per day, the power demand related to thrusters can be significant. 
-
-The observation of Figure XX shows how the power demand from thrusters can be identified as "spikes" in the total electric power demand. In order to isolate the demand from the thrusters, we created a reference daily energy profile, based on the instantaneous electric power demand divided by the daily average. From this daily profile (made of 96 points), we selected manually selected the points that could be clearly identified as related to the thrusters energy demand, and substituted the actual value with a weighted average of the previous and subsequent points (see Figure \ref{fig:thruster_selection}). 
+When entering port areas, the ship needs to use thrusters to maneuver and berth. In the case of this particular ships, operating on daily schedules and hence maneuvering four times per day, the power demand related to thrusters can be significant. In order to isolate the demand from the thrusters, we created a reference daily energy profile, based on the instantaneous electric power demand divided by the daily average. From this daily profile (made of 96 points), we selected manually selected the points that could be clearly identified as related to the thrusters energy demand, and substituted the actual value with a weighted average of the previous and subsequent points (see Figure \ref{fig:thruster_selection}). 
 
 By comparing the reference profile to the instantaneous one, the points where the former is more than 10\% higher than the latter are identified as "thruster-on" points and treated consequently. 
 
@@ -433,6 +525,146 @@ By comparing the reference profile to the instantaneous one, the points where th
 
 
 
+\subsection{Estimation of the heat demand} \label{sec:met:heat}
+
+As the heat demand is not measured, it is necessary to determine it based on the available indirect measurements. 
+	
+The heat demand and generation can be summarized according to the following equations:
+\begin{eqnarray}
+\dot{Q}_{gen} & = & \dot{Q}_{EGB} + \dot{Q}_{HTHR} + \dot{Q}_{AB} \\
+\dot{Q}_{dem} & = & \dot{Q}_{HVAC,PH} + \dot{Q}_{HVAC,RH} + \dot{Q}_{HWH} + \dot{Q}_{TH} + \dot{Q}_{G} + \dot{Q}_{OT} + 	\dot{Q}_{HTH} + \dot{Q}_{MSH} \\
+\end{eqnarray}
+
+The main view of the ship heating and cooling systems is presented in Figure \ref{fig:ship:general}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.999\linewidth]{Figures/Heating_cooling_systems}
+	\caption{General view of the ship heating and cooling systems}
+	\label{fig:ship:general}
+\end{figure}
+
+	
+\subsubsection{Heat balance parameter estimation}
+	
+As not enough information and measurements are available to determine the various components of the heat balance, in this paper we determined them by means of a parameter estimation procedure, using the daily boiler fuel consumption for the calibration of the parameters. The parameter estimation problem is hence written as a minimization problem:
+\begin{eqnarray}
+min &  \left(\frac{\sum_i(y(\textbf{p})-\bar{y})^2}{\sum_i \bar{y}^2}\right)^{0.5} \\
+\end{eqnarray}
+	
+where the vector $\textbf{p}$ includes the calibration parameters that are part of the heat demand and generation estimation model that is explained in detail in the following sections. A list of the parameters $\textbf{p}$ is shown in Table REF, together with the chosen upper and lower boundaries for the calibration procedure.
+\begin{table}
+	\centering
+	\begin{tabular}{p{3cm}ccp{1.6cm}p{1.6cm}p{1.2cm}}
+		\hline 
+		Parameter name & Symbol  & Unit & Lower Boundary & Higher Boundary & Optimal value \\ 
+		\hline
+		Constant HTHR heat demand	 & $\dot{Q}_{k,HTHR}$ & kW & 0 & 1000 &  \\ 
+		Constant steam demand		 & $\dot{Q}_{k,steam}$ & kW & 0 & 1000 &  \\
+		Weight factor of the HVAC Re-heater & $f_{HVAC,RH}$ & - & 0.5 & 1 &  \\ 
+		Weight factor of the HVAC Pre-heater & $f_{HVAC,PH}$ & - & 0 & 1 &  \\ 
+		Weight factor of hot water heater & $f_{HWH}$ & - & 0.5 & 1 &  \\ 
+		Weight factor of the galley & $f_{G}$ & - & 0.5 & 1 &  \\ 
+		Weight factor of the other consumers & $f_{Other}$ & - & 0.5 & 1 &  \\ 
+		HTHR inlet temperature & $T_{HTHR,ER1,in}$ & K & 343 & 353 &  \\
+		Effectiveness of the HTHR HEX & $\epsilon_{HTHR} $ & - & 0.5 & 0.9 &  \\
+		Boiler drum steam storage capacity & $Q_{ab,max}$ & MJ & 100 & 100000 &  \\ 
+		Boiler heat rate & $\dot{Q}_{ab,des}$ & kW & 2000 & 8000 &  \\ 
+		\hline
+	\end{tabular}
+	\caption{Parameters optimized in the parameter estimation for the heat balance}
+	\label{tab:ParameterEstimation} 
+\end{table}
+	
+	
+	
+\subsubsection{Heat demand}
+	
+We calculated the heat demand as the sum of the contributions of the elements listed in the ship's heat balance documentation. As no direct measurement of these quantities was available in the dataset, they had to be estimated based on the following assumptions:
+\begin{table}
+	\centering
+	{\tablinesep=2ex\tabcolsep=10pt
+		\begin{tabular}{p{2.8cm}l}
+			\hline 
+			Heat flow name & Equation \\
+			\hline
+			HVAC Preheater & $\dot{Q}_{HVAC,PH} = f_{HVAC,RH} \dot{Q}_{HVAC,PH,des} \dfrac{\dot{W}_{HVAC}(t)}{\dot{W}_{HVAC,max}} $ \\
+			HVAC Reheater &	$\dot{Q}_{HVAC,RH} = f_{HVAC,PH} \dot{Q}_{HVAC,PH,des} \dfrac{T_{in} - T_{air,out}(t)}{T_{in} - T_{air,out,des}}$ \\
+			Hot water heater& $\dot{Q}_{HWH} = f_{HWH} \dot{Q}_{HWH,des} \Phi_{HWH}(\hat{t})$ \\
+			Galley & $\dot{Q}_{G} = f_{G} \dot{Q}_{G,des} \Phi_G(\hat{t})$ \\
+			Low temperature tank heating & $\dot{Q}_{TH} = f_{TH} \dot{Q}_{TH} \dfrac{T_{T} - T_{air,out}(t)}{T_{T} -T_{air,out,des}}$ \\
+			HFO tank heating & $\dot{Q}_{HTH} = f_{HTH} \dot{Q}_{HTH} \dfrac{T_{HT} - T_{air,out}(t)}{T_{HT} - T_{air,out,des}}$ \\
+			Machinery space heating & $\dot{Q}_{MSH} = f_{MSH} \dot{Q}_{MSH} \dfrac{T_{MS} - T_{air,out}(t)}{T_{MS} - T_{air,out,des}}$ \\
+			HFO heater & $\dot{Q}_{HH} = \dot{m}_{HFO}(t) c_{p,HFO} (T_{HFO,inj} - T_{HT})$ \\
+			\hline
+	\end{tabular}}
+	\caption{Summary of the heat demand contributions and their calculation}
+	\label{tab:HeatDemand}
+\end{table}
+	
+where all $f_i$ factors are treated as calibration parameters (see table \ref{tab:ParameterEstimation}). The $\Phi_G(\hat{t})$ and $\Phi_{HWH}(\hat{t})$ functions represent the assumption made on the daily evolution of the heating demand from the galley and the hot water heater respectively. The daily evolutions of the demand are considered to be the same over the whole year of operations and are represented graphically in Figure REF.
+	
+	
+	
+\subsubsection{Heat generation}
+	
+The heat recovered in the EGBs is the only contribution to the heat balance that is known with a reasonable certainty. The heat transferred from the exhaust gas to the steam ($\dot{Q}_{EGB}$) is calculated according to equation \ref{eq:egb}:
+\begin{equation}
+\dot{Q}_{EGB} = \dot{m}_{eg} c_{p,eg} (T_{eg,EGB,in} - T_{eg,EGB,out})
+\end{equation}\label{eq:egb}
+
+where $T_{eg,EGB,out}$ and $T_{eg,EGB,in}$ are measured for all EGBs, $c_{p,eg}$ is calculated as a function of the exhaust gas composition and temperature, and $ \dot{m}_{eg} $ is calculated based on the engine energy and mass balance as described in section REF and in the appendix REF
+
+It is known that the ship heating systems are designed for recovering energy from the high temperature cooling systems of all the ship's engines. However, measurements of this contribution and of other variables that could lead to its straight-forward identification are missing. In this work, we calculated the heat exchanged in the two HTHRs according to equation \label{eqn:HTHR2},
+
+\begin{eqnarray}
+\dot{Q}_{HTHR} & = & \dot{Q}_{HTHR,ER1} + \dot{Q}_{HTHR,ER2} \label{eqn:HTHR1} \\
+& = & \sum_{i=ER1,ER2}{\epsilon_{HTHR} * \dot{m}_{min,HTHR,i} * c_{p,w} * (T_{HT,out,i} - T_{HRHT,i,in})} \label{eqn:HTHR2}
+\end{eqnarray}
+
+where the effectiveness of the heat exchanger $\epsilon_{HTHR}$ is considered to be constant and its value is part of the parameter estimation problem (see table \ref{tab:ParameterEstimation}). The HT water outlet temperature for each engine room is calculated based on the thermal balance of the engines, and the HR water at the HTHR inlet ($T_{HRHT,ER1,in}$) is considered as a calibration parameter. 
+
+The heat generated by the auxiliary boilers is calculated as to close the heat balance of the ship energy systems. The contribution of the boiler heat storage capacity is taken into account by a calibration parameter $Q_{ab,max}$ that determines the maximum heat deficit. This corresponds, in practice, to assuming that the boiler is started up when the steam pressure inside the boiler drops below a certain value, and stopped once the pressure has achieved its maximum operative value. In this calculation, the calibration parameters are the heat storage capacity ($Q_{ab,max}$) and the fixed heat rate ($\dot{Q}_{ab,des}$) of the auxiliary boilers (see table \ref{tab:ParameterEstimation}).
+
+
+
+
+
+\subsubsection{Parameter estimation and uncertainty quantification}
+
+The results of the parameter estimation are represented graphically and quantitatively in Figure REF and Table REF. 
+
+
+
+Given the lack of input values for the estimation of the heat demand, the provided estimate based on the procedure described above should be integrated with an estimation of the uncertainty. 
+
+In this study, we base the estimation of the uncertainty on the production side, as it is the one that has the largest amount of information available. In these regards, the uncertainty can be reduced to the contribution of three elements: $U(\dot{Q}_{EGB})$, $U(\dot{Q}_{HTHR})$, $U(\dot{Q}_{AB})$.
+
+The uncertainty on the heat generated in the EGBs can be further subdivided based on its definition as a composition of the uncertainty of $T_{eg,EGB,in}$, $T_{eg,EGB,out}$, $\dot{m}_{eg}$, and $c_{p,eg}$. In the case of $T_{eg,EGB,in}$ and $T_{eg,EGB,out}$, measured values are used, where the uncertainty is related to the sensors (K-type thermocouples) that can be as high as 4\% [CIT]. The uncertainty on the $\dot{m}_{eg}$ is related to the calculation assumptions as described in Appendix REF, and can be estimated of being up to 10\%. The uncertainty of the $c_{p,eg}$ value, given that both composition and temperature are accounted for, should be within 5\% of the reference value. These assumptions lead to the following estimation of the uncertainty:
+\begin{equation}
+\frac{\delta \dot{Q}_{gen}}{\dot{Q}_{gen}} = \sqrt{\frac{\delta \dot{m}_{eg}^2}{\dot{m}_{eg}^2} + \frac{\delta c_{p,eg}^2}{c_{p,eg}^2} + \frac{\delta T_{EGB,in}^2 + \delta T_{EGB,out}^2}{(T_{EGB,in} - T_{EGB,out})^2}}
+\end{equation}
+
+That once typical values are assigned can be as high as 30\%, where most of the variability is related to the temperature measurements (result obtained for $\pm 20$ K uncertainty. The uncertainty is reduced to 20\% if the measurement uncertainty on the temperature is reduced to  $\pm 20$ K) 
+
+The uncertainty of the heat generated by the ABs can be reduced to the contribution of two elements: the uncertainty on $\dot{m}_{fuel,AB}$ and that on $\eta_{AB}$. The former will be at least as large as the calibration error (35\%) and will be considered equal to 50\% to be conservative and accounting also for errors in the aggregated boiler fuel measurements. In addition, the uncertainty on the efficiency can be considered to be around 10\% based on the discrepancy between the considered sources and on the expected variability of the efficiency with load. Similarly to the previous case, the combination of these efficiencies lead to a total uncertainty of 51\%, where the main contribution comes from the uncertainty of the model output compared to the actual fuel consumption.
+
+The estimation of the uncertainty of $\dot{Q}_{HTHR}$ can be based on \ref{eqn:HTHR2} having assigned an acceptable variation of 20\% to the effectiveness of the heat exchanger, 20\% on the estimation of the reference mass flow, $\pm 5$ K uncertainty on water temperature measurements and considering negligible the uncertainty on $c_{p,w}$, leading to a 145\% uncertainty on this measurement. 
+
+
+
+\subsection{Determination of typical operational days}
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Results (and discussion)}
 
@@ -440,41 +672,53 @@ By comparing the reference profile to the instantaneous one, the points where th
 
 In this section, we observe and analyze direct measurements from ship systems, with no pre-processing, that are expected to have an influence on the energy analysis.
 
-Figure \ref{fig:Tsea_vs_time} represents the distribution and the evolution over the year of the ambient air and sea water temperature. The relatively low temperatures that are experienced by the case study ship during its operations suggest that heating demand can be expected to be higher than cooling demand. On the other hand, the fact that, in summer, air temperatures reach up to 26 degrees Celsius justify the existence of an HVAC unit that can also operate in cooling mode. 
+Figures \ref{fig:TseaTairTIME} and \ref{fig:TseaTairDIST} represent the time evolution and the distribution over the year of the ambient air and sea water temperature. The relatively low temperatures that are experienced by the case study ship during its operations suggest that heating demand can be expected to be higher than cooling demand. On the other hand, the fact that, in summer, air temperatures reach up to 26 degrees Celsius justify the existence of an HVAC unit that can also operate in cooling mode. 
 
-The corresponding distributions are presented in Figure \ref{fig:Tsea_hist}
-
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/Tsea_vs_time}
-	\caption{Yearly evolution of sea water and ambient air temperatures. Landsort, 2014}
-	\label{fig:Tsea_vs_time}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=0.999\linewidth]{Figures/Tsea_vs_time}
+		\caption{Time series}
+		\label{fig:TseaTairTIME}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{Figures/Tsea_hist}
+		\caption{Distribution}
+		\label{fig:TseaTairDIST}
+	\end{subfigure}
+	\caption{Statistical representation of measured air and sea water temperatures based on yearly data. Landsort, 2014}
+	\label{fig:TseaTair}
 \end{figure}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/Tsea_hist}
-	\caption{Yearly distribution of sea water and ambient air temperatures. Landsort, 2014}
-	\label{fig:Tsea_hist}
-\end{figure}
 
 Figure \ref{fig:vship_hist} represents the distribution of the ship speed, both in terms of statistical distribution and in terms of a reference 24h period. The ship operates almost for the entire year according to a fix schedule, while there are a couple of periods (particularly during the summer months) when the ship operates at higher speed. This can also be seen from Figure \ref{fig:Pme_vs_vship}, where the main cluster of operations at middle-low speed can be clearly identified, as well as the smaller area of operations at high speed. 
 
-NOTE: It would be interesting to find a way to categorize all periods in each phase (sailing in the archipelago - sailing at open sea) and trying to analyze statistically their duration / mean power / etc.
-
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/vship_hist}
+	\includegraphics[width=0.8\linewidth]{Figures/vship_hist}
 	\caption{Yearly distribution of ship speed}
 	\label{fig:vship_hist}
 \end{figure}
 
-\begin{figure}
+figure --> Operational mode distribution
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/Pme_vs_vship}
-	\caption{Scatter plot, Propulsion power versus ship speed}
-	\label{fig:Pme_vs_vship}
+	\includegraphics[width=0.8\linewidth]{Figures/Hist_mainEngines}
+	\caption{Yearly load distribution, main engines}
+	\label{fig:loadME_hist}
 \end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Figures/Hist_auxEngines}
+	\caption{Yearly load distribution, auxiliary engines}
+	\label{fig:loadAE_hist}
+\end{figure}
+
+ANYTHING ELSE THAT CAN BE INTERESTING TO SHOW IN THE EXPLORATORY DATA ANALYSIS?
+
 
 
 
@@ -484,129 +728,275 @@ Here we can see the typical example (note: the day was not selected as "typical"
 
 
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{Figures/Demand_vs_time_W}
 	\caption{Energy demand during a day of operations, Winter}
 	\label{fig:Demand_vs_time_W}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\linewidth]{Figures/Demand_vs_time_S}
 	\caption{Energy demand during a day of operations, Summer}
 	\label{fig:Demand_vs_time_S}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/Pie_TotalEnergy}
-	\caption{Total energy demand over one year of opeartions}
-	\label{fig:Pie_TotalEnergy}
-\end{figure}
-
-The average HVAC daily demand, together with the average total electric power demand, is represented in Figure \ref{fig:PelHVAC_vs_time}. As it can be seen, the HVAC demand represents only a minor contribution to the total electric energy demand, as it is only present for a few months during summer, and at rather low power demand. This is not surprising, since it can be observed that (see Figure \ref{fig:Tair_cum}) the air is always below 27 degC, and 90\% of the time below 17 degC. 
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/PelHVAC_vs_time}
-	\caption{HVAC power demand versus total demand. Daily averages for one year of operations}
-	\label{fig:PelHVAC_vs_time}
+	\includegraphics[width=0.9\linewidth]{Figures/Pie_EnergyDemand}
+	\caption{Energy demand, aggregated data for one year of operations}
+	\label{fig:Pie_EnergyDemand}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.9\linewidth]{Figures/Tair_cum}
-	\caption{Cumulative distribution of measured ambient air temperatures}
-	\label{fig:Tair_cum}
+	\includegraphics[width=0.9\linewidth]{Figures/Pie_EnergyGeneration}
+	\caption{Energy generation, aggregated data for one year of operations}
+	\label{fig:Pie_EnergyGeneration}
 \end{figure}
 
-\subsection{Heat demand} \label{sec:res:heat}
+From Figure \ref{fig:Pie_EnergyDemand} it can be noted that nearly 50\% of the total energy demand is related to ship propulsion, while the remaining portion is approximately equally split between electric energy and heat demand.
 
-In Figure \ref{fig:Heat_vs_time} the heat generated by different hot utilities, as estimated by the model, is shown. It should be noticed that, while the heat generated by the HRSGs represents a rather accurate estimation, all other data series (auxiliary boilers, HTHR) are the consequence of rather strong assumptions. 
+Within the electric energy demand, the HVAC systems only represent a minor contribution (XX\%), as it is only present for a few months during summer, and at rather low power demand. This is not surprising, since it can be observed that (see Figure \ref{fig:TseaTairDIST}) the air is always below 27$^o$C, and rarely above 17$^o$C. Also the thrusters, although they represent a rather high instantaneous demand, they are only used for a very short time and, hence, their total contribution to the ship energy demand is limited to XX\%. As a consequence, most of the electric energy demand should be allocated to other consumers, and efforts should be directed towards providing additional measurements of how different users contribute to the total electric power demand.
 
-The figure also shows the operation of validation of the assumptions by comparison of the measured values for the boilers fuel consumption (here translated into an energy-per-day basis to ease the comparison). It should be noted that, although the absolute value is still quite different compared to the calculated one (mean error is 255\%, minimum 3\%), there is evidence that the order of magnitude is similar, and that some trends are followed.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.99\linewidth]{Figures/Heat_vs_time}
-	\caption{Yearly evolution of heat generated by different sources. "Measured" and "Calculated" relate to the auxiliary oil-fired boilers}
-	\label{fig:Heat_vs_time}
-\end{figure}
 
-Looking at Figure \ref{fig:HeatGen_hist} it is possible to appreciate the amount of heat that is recovered from on board available waste heat (cooling water and exhaust gas). It can be observed that the amount of heat recovered from the HT cooling systems is much lower than expected, with an average of around 350 kW. This value is quite unreasonable compared to the values found in the technical specifications from the yard, that go from 700 kW (when only one auxiliary engine is operted) to 4800 kW (when all main engines and two auxiliary engines are operated). 
+
+
+
+
+
+\subsection{Heat demand and generation} \label{sec:res:heat}
+
+FIGURE --> Pie, heat generated by source
+FIGURE --> filled lines, heat generated by source.
+
+Looking at Figure \ref{fig:HeatGen_hist} it is possible to appreciate the amount of heat that is recovered from on board available waste heat (cooling water and exhaust gas). It can be observed that the amount of heat recovered from the HT cooling systems is much lower than expected, with an average of around 350 kW. This value is quite unreasonable compared to the values found in the technical specifications from the yard, that go from 700 kW (when only one auxiliary engine is operated) to 4800 kW (when all main engines and two auxiliary engines are operated). 
 \\
 \begin{figure}
 	\centering
 	\includegraphics[width=0.99\linewidth]{Figures/HeatGen_hist}
 	\caption{Distribution of thermal power generated from on board waste heat recovery}
-	\label{fig:HeatGen_hist}
+	\label{fig:Hist_WHR}
 \end{figure}
 
-Looking at the assumptions, this is mostly related to the assumption that the flow of heat recovery water is fixed to 297 m3/h. When the heat demand is medium or low, since the temperature BEFORE the consumers is fixed to 90 degrees, this limits the temperature drop on the consumers, making the maximum heat exchangeable in the HTHR heat exchangers to be very low. This can be seen in Figure \ref{fig:HTHR_T_hist}, where the histograms of the inlet temperature of the HT water and the HR water in the HTHR24 heat exchanger are plotted together. Since the maximum amount of heat that can be exchanged depends directly on this difference, the explanation is clear.
+Regarding the heat demand onboard, it can be seen that the HVAC re-heater represents the largest contributor (XX\%) followed by the hot water heater (XX\%). The large contribution of the HVAC reheater can be explained by the former being important for long times and in relation to the low ambient temperatures encountered by the case study vessel during operation. The relatively large contribution of the hot water heater can instead be related to the fact that these systems are rather important consumers and are necessary during the whole ship operations (i.e. also during the summer months).
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.99\linewidth]{Figures/HTHR_T_hist}
-	\caption{Distribution of temperatures at the HTHR (24) inlet}
-	\label{fig:HTHR_T_hist}
-\end{figure}
 
-The alternative solution would be to assume a constant temperature at the HTHR24 HR water inlet instead. This would, on the one hand, dramatically increase the contribution of the HT water to the heat demand of the ship. On the other hand, there is no information of what this temperature is, and little certainty that this is how the system is regulated.
 
-Figure \ref{fig:Heat_comparison} shows the heat demand calculated based on different values assumed for the HTHR inlet temperature and of the reference outside temperature for the design demand of the HVAC preheater. The values of the average error (calculated both as absolute value and not) are given in Table \ref{tab:Heat_comparison}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.99\linewidth]{Figures/Heat_comparison}
-	\caption{Comparison of the calculated steam demand for different values of the fixed HTHR inlet temperature and of the reference temperature for the design HVAC preheater load. The shaded green area represents the time frame when no heating occurs}
-	\label{fig:Heat_comparison}
-\end{figure}
 
-\begin{table}
-	\centering
-	\begin{tabular}{cccc}
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} $T_{HTHR,in} $ & $T_{OUT,des} $ & $\epsilon$ & $\epsilon_{abs}$ \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 70 & -20 & 100\% & 80\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 65 & -20 & 76\% & 67\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 60 & -20 & 57\% & 57\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 55 & -20 & 42\% & 49\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 50 & -20 & 28\% & 42\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 70 & -30 & 70\% & 69\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} 50 & -30 & 8\% & 35\% \\ 
-		\hline 
-		\rule[-1ex]{0pt}{2.5ex} $\dot{m}=K$ = k & -30 & 207\% & 147\% \\ 
-		\hline 
-	\end{tabular} 
-	\label{tab:Heat_comparison}
-\end{table}
 
 \subsection{Exergy Analysis} \label{sec:res:exergy}
 
+The results of the exergy analysis of the ship energy systems are shown in Figure REF and Tables REF to REF. 
+
+Table(s) --> Exergy efficiencies
+- General at system level
+- One per system (MEs, AEs, CoolingSystems, SteamSystems)
+
+Figure --> Grassman diagram
 
 
 
 
-\section{Discussion}
-\label{sec:discussion}
+
+\subsection{Typical operational days}  \label{sec:res:typicalDays}
+
+
 
 
 \section{Conclusion}
 \label{sec:conclusion}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \appendix
+
+\section{Full tables of energy and exergy flows}
+
+\section{Full equation list}
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{p{4cm}l}
+		\hline
+		\multirow{2}{*}{Before compressor}		& $ T_{comp,in} = $ Measured \\
+												& $ p_{comp,in} = $ Measured \\
+		\multirow{3}{*}{After compressor}		& $ T_{comp,out} = T_{comp,in} + \frac{T_{comp,out,is} - T_{comp,in} }{\eta_{comp,is}}  $  \\
+												& $ p_{comp,out} = $ Measured \\
+												& $ \eta_{comp,is} = P_2(\frac{p_{comp,out}}{p_{comp,in}}) $ \\
+		\multirow{3}{*}{After CAC-HT stage}		& $ p_{CAC-HT,out} = p_{comp,out} $ \\
+												& $ T_{CAC-HT,out} = T_{comp,out} - \frac{\dot{Q}_{CAC,HT}}{\dot{m}_{air,cyl}} $ \\
+												& $ \dot{Q}_{CAC,HT} = P_2(\lambda) $ \\
+		\multirow{3}{*}{After CAC-LT stage}		& $ p_{CAC-LT,out} = p_{comp,out} $ \\
+												& $ T_{CAC-LT,out} = T_{CAC-HT,out} - \frac{\dot{Q}_{CAC,LT}}{\dot{m}_{air,cyl}} $ \\
+												& $ \dot{Q}_{CAC,LT} = P_2(\lambda) $ \\
+		\multirow{3}{*}{After CAC-LT stage}											
+												
+												
+	\end{tabular}
+\end{table}
 
 \section{Estimation of air and exhaust gas flows in the main engines}
 
-\section{Estimation of air and exhaust gas flows in the auxiliary engines}
+\subsection{Mass balances}
+
+Mass balance on the split after the compressor, with one flow going to the engine inlet valves and the other flow going to the bypass valve
+\begin{equation}
+\dot{m}_{air,comp} = \dot{m}_{air,cyl} + \dot{m}_{air,bypass} \\
+\end{equation}
+
+Mass balance on the mixer before the turbine, with one flow coming from the engine exhaust valves and the other flow coming from the bypass valve
+\begin{equation}
+\dot{m}_{eg,turb} = \dot{m}_{eg,cyl} + \dot{m}_{air,bypass} \\
+\end{equation}
+
+Note that the exhaust gas mass flow from the cylinders is fully defined as follows:
+\begin{equation}
+\dot{m}_{eg,cyl} = \dot{m}_{air,cyl} + \dot{m}_{fuel,cyl} \\
+\end{equation}
+
+\subsection{Energy balances}
+
+Energy balance on the turbocharger: the power generated by the turbine must be equal to the power absorbed by the compressor
+\begin{equation}
+\dot{m}_{air,comp} \Delta h_{comp} = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
+\end{equation}
+
+Energy balance on the mixer between the air flow after the bypass valve and the exhaust gas flow after the exhaust valve
+\begin{equation}
+\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0)
+\end{equation}
+
+
+The system of four equations is to be solved in the four following unknowns:
+\begin{itemize}
+	\item $ \dot{m}_{eg,turb} $
+	\item $ \dot{m}_{air,bypass} $
+	\item $ \dot{m}_{air,comp} $
+	\item $ T_{turb,in} $ (In the case of the Main engines)
+	\item $ T_{cyl,out} $ (In the case of the Auxiliary engines)
+\end{itemize}
+
+Include other assumptions:
+- TC efficiency
+- Compressor efficiency
+- Turbine efficiency
+
+
+\subsection{Main Engines}
+
+To calculate what we need, we must make the system explicit on the variables we need to calculate. This process is different for the main and auxiliary engines, mostly because the temperature measurement of the exhaust gas before the turbine is positioned differently. In the case of the main engines, the temperature at the \textbf{cylinder outlet} is measured and, hence, known. 
+
+First, we make all equations explicit in $ \dot{m}_{air,bypass} $ thus eliminating both 
+$ \dot{m}_{eg,turb} $ and $ \dot{m}_{air,comp} $
+
+$$
+(\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) \Delta h_{comp} = (\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech} 
+$$
+$$
+\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0)  = (\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_0)
+$$
+
+At this point, we use the first equation to simplify the system and make it explicit in the $ \dot{m}_{air,bypass} $ variable alone:
+
+\begin{eqnarray*}
+	(\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}  & = & (\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) \Delta h_{comp} \\
+	T_{turb,in} - T_{turb,out} & = & \frac{\dot{m}_{air,cyl} + \dot{m}_{air,bypass}}{\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}} \frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}} \\
+	T_{turb,in} & = & T_{turb,out} + \frac{\dot{m}_{air,cyl} + \dot{m}_{air,bypass}}{\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}} \frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}}  \\
+\end{eqnarray*}
+
+We can now substitute this expression in the second equation:
+
+\begin{multline}
+\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0)  =  \\ 
+(\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,out} + \frac{\dot{m}_{air,cyl} + \dot{m}_{air,bypass}}{\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}} \frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}} - T_0)
+\end{multline}
+
+
+We first execute the multiplication in the term on the right of the equal:
+\begin{multline}
+\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0)  =  \\
+\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_0) + \\
+\dot{m}_{air,bypass} c_{p,eg} (T_{turb,out} - T_0) + \\ 
+\frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}}(\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) c_{p,eg}
+\end{multline}
+
+Now, we can group together the elements in the variable of interest:
+\begin{multline}
+\dot{m}_{air,bypass} \left[ c_{p,air} (T_{comp,out} - T_0) - c_{p,eg} (T_{turb,out} - T_0) - \frac{\Delta h_{comp}}{\eta_{mech}} \right] = \\
+\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_0) - \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}
+\end{multline}
+
+This can be further simplified into:
+\begin{multline}
+\dot{m}_{air,bypass} \left[ c_{p,air} (T_{comp,out} - T_0) - c_{p,eg} (T_{turb,out} - T_0) - \frac{\Delta h_{comp}}{\eta_{mech}} \right] = \\
+\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_{cyl,out}) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}
+\end{multline}
+
+Finally, we can assume the specific heat at constant pressure of air and exhaust gas to be sufficiently similar for considering them equal in the term at the numerator (we ignored changes in the properties of the mixture in other points as well):
+\begin{multline}
+\dot{m}_{air,bypass} \left[ c_{p,eg} (T_{comp,out} - T_{turb,out}) - \frac{\Delta h_{comp}}{\eta_{mech}} \right] = \\
+\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_{cyl,out}) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}
+\end{multline}
+
+From which we can derive the final form:
+\begin{equation}
+\dot{m}_{air,bypass} = \frac{\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_{cyl,out}) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}}{c_{p,eg} (T_{comp,out} - T_{turb,out}) - \frac{\Delta h_{comp}}{\eta_{mech}}} 
+\end{equation}
+
+Which can be rewritten, in order to have both numerator and denominator positive, as follows:
+\begin{equation}
+\dot{m}_{air,bypass} = \frac{\dot{m}_{eg,cyl} c_{p,eg} (T_{cyl,out} - T_{turb,out}) - \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}}{c_{p,eg} (T_{turb,out} - T_{comp,out}) - \frac{\Delta h_{comp}}{\eta_{mech}}} 
+\end{equation}
+
+
+
+\subsection{Auxiliary Engines}
+
+In the case of the auxiliary engines, what we know instead is the temperature of the exhaust gas \textbf{before the turbine}, hence after the merging between the exhaust gas and the bypass.
+
+In this case, however, things appear to be simple: the energy balance on the turbocharger can be calculated as there is only one variable unknown: the total mass flow in the compressor, and hence the bypass flow:
+$$
+(\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) \Delta h_{comp} = (\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
+$$
+$$
+\dot{m}_{air,cyl} \Delta h_{comp} + \dot{m}_{air,bypass} \Delta h_{comp} = \dot{m}_{eg,cyl} c_{p,eg} (T_{turb,in} - T_{turb,out}) + \dot{m}_{air,bypass} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
+$$
+$$
+\dot{m}_{air,bypass} (\Delta h_{comp} - c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}) = \dot{m}_{eg,cyl} c_{p,eg} (T_{turb,in} - T_{turb,out}) - \dot{m}_{air,cyl} \Delta h_{comp}
+$$
+\begin{equation}
+\dot{m}_{air,bypass} = \frac{\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech} - \dot{m}_{air,cyl} \Delta h_{comp}}{\Delta h_{comp} - c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}}
+\end{equation}
+
+Now that we have the value for the bypass flow, it is easy to calculate backwards the temperature of the exhaust gas after the cylinder outlet valves, before the merging with the bypass flow:
+
+$$
+\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0)
+$$
+$$
+\dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0) - \dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0)
+$$
+\begin{equation}
+T_{cyl,out} = T_0 + \frac{\dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0) - \dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0)}{\dot{m}_{eg,cyl} c_{p,eg}}
+\end{equation}
+
+\section{Full list of available measurements}
 
 \bibliographystyle{unsrt}
 \bibliography{bibliography}

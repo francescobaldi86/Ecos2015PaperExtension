@@ -107,7 +107,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
     # HVAC Reheater
     processed["Demands:Heat:HVACreheater:Edot"] = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HVAC_REHEATER"] * (
         CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HVAC_REHEATER"] * processed["Demands:Electricity:HVAC:Edot"] / processed["Demands:Electricity:HVAC:Edot"].max())
-    processed["Demands:Heat:HVACreheater:Edot"][processed["Demands:Electricity:HVAC:Edot"] <= 0] = 0
+    processed.loc[processed["Demands:Electricity:HVAC:Edot"] <= 0,"Demands:Heat:HVACreheater:Edot"] = 0
     # Hot water heater
     processed["Demands:Heat:HotWaterHeater:Edot"] = (CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HOT_WATER_HEATER"] * (
         CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HOT_WATER_HEATER"] * processed["Passengers_calc"] / 1800 * (
@@ -116,7 +116,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
         CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["OTHER_HTHR"])
     # HVAC Preheater
     temp = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["DESIGN"]["HVAC_PREHEATER"] * (
-        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HVAC_PREHEATER"] * (297 - processed["T_air"]) / (297 - 248)) - 0.100 * processed["Passengers_calc"]
+        CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["LIN"]["HVAC_PREHEATER"] * (297 - processed["T_air"]) / (297 - 248))  - 0.100 * processed["Passengers_calc"]
     temp[processed["Demands:Electricity:HVAC:Edot"] > 20] = 0  # The preheater is never used when the AC compressors are on
     processed["Demands:Heat:HVACpreheater:Edot"] = temp  # The pre-heater is not working during summer
     # Galley
@@ -151,6 +151,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
             "ME3:Cyl:FuelPh_in:mdot"] + processed["ME4:Cyl:FuelPh_in:mdot"]) * (150 - 80)
 
     # Updating the steam mass flows
+    processed.loc[:,"Demands:Heat:Total:Edot"] = 0
     for flow in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
         if flow == "Total":
             pass
@@ -161,6 +162,7 @@ def heatDemand(processed, CONSTANTS, dict_structure):
         elif flow in dict_structure["systems"]["HTHR"]["units"]:
             processed[d2df("HTHR", flow, "Qdot_out", "Edot")] = processed[d2df("Demands", "Heat", flow, "Edot")]
 
+    # Calculating the total demand
     return processed
 
 
@@ -208,7 +210,7 @@ def HTHR(processed, CONSTANTS):
     mdot_min24 = pd.concat([processed["HTHR:SteamHeater:HRWater_out:mdot"], processed["CoolingSystems:HTcollector24:HTWater_out:mdot"]], axis=1).min(axis=1)
     mdot_min13 = pd.concat([processed["HTHR:SteamHeater:HRWater_out:mdot"], processed["CoolingSystems:HTcollector13:HTWater_out:mdot"]],axis=1).min(axis=1)
     # Now, the conditions at the HTHR inputs from the HT side are given, so we can calculate the heat flow using the eps NTU method
-    qdot_HTHR24 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * mdot_min24 * CONSTANTS["General"]["CP_WATER"] * (
+    qdot_HTHR24 = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HTHR_EPS"] * mdot_min24 * CONSTANTS["General"]["CP_WATER"] * (
         processed["CoolingSystems:HTcollector24:HTWater_out:T"] - processed[d2df("HTHR", "HTHR24", "HRWater_in", "T")])
     # Once again, to avoid risks, when all engines of the ER 24 are off, the heat flow here is 0
     qdot_HTHR24[ER24off] = 0
@@ -219,7 +221,7 @@ def HTHR(processed, CONSTANTS):
     processed.loc[ER24off, "HTHR:HTHR24:HTWater_out:T"] = processed["CoolingSystems:HTcollector24:HTWater_out:T"]
 
     # Finally, we can do the same for the HTHR 13 exchanger
-    qdot_HTHR13 = CONSTANTS["MainEngines"]["EPS_CAC_HTSTAGE"] * mdot_min13 * CONSTANTS["General"]["CP_WATER"] * (
+    qdot_HTHR13 = CONSTANTS["OtherUnits"]["HEAT_DEMAND"]["HTHR_EPS"] * mdot_min13 * CONSTANTS["General"]["CP_WATER"] * (
         processed["CoolingSystems:HTcollector13:HTWater_out:T"] - processed[d2df("HTHR", "HTHR24", "HRWater_out", "T")])
     qdot_HTHR13[ER13off] = 0
     qdot_HTHR13[qdot_HTHR13 < 0] = 0
@@ -231,7 +233,8 @@ def HTHR(processed, CONSTANTS):
     # Now, we know that the HR water before the users must be at 90 degrees
     processed["HTHR:SteamHeater:Steam_in:mdot"] = processed["HTHR:SteamHeater:HRWater_out:mdot"] * CONSTANTS["General"]["CP_WATER"] * (
         processed["HTHR:SteamHeater:HRWater_out:T"] - processed["HTHR:HTHR13:HRWater_out:T"]) / CONSTANTS["Steam"]["DH_STEAM"]
-    processed.loc[processed["HTHR:SteamHeater:HRWater_out:T"] < processed["HTHR:HTHR13:HRWater_out:T"], "HTHR:SteamHeater:Steam_in:mdot"] = 0
+    # Avoiding the case of the steam heater having a negative mass flow
+    #processed.loc[processed["HTHR:SteamHeater:Steam_in:mdot"] < 0, "HTHR:SteamHeater:Steam_in:mdot"] = 0
 
     # Now, what happens after the three heat exchangers? We assume equal temperature drop
     processed["HTHR:HTHRmerge:HRWater_HWH_in:T"] = processed["HTHR:HTHR24:HRWater_in:T"]
@@ -250,41 +253,70 @@ def HTHR(processed, CONSTANTS):
 
 
 def steamSystems(processed, CONSTANTS):
+    db_index = processed.index
     # This function assigns all calculations to the steam systems
-    Qdot_ab = pd.Series(index=processed.index)
+    Qdot_ab = pd.Series(index=db_index)
     Qdot_ab[:] = 0
     # First, we see how much heat is provided by the HRSGs
-    heat_from_HRSG = pd.Series(index=processed.index)
-    heat_from_HRSG[:] = 0
+    Qdot_hrsg = pd.Series(index=db_index)
+    Qdot_hrsg[:] = 0
     for system in {"ME2", "ME3", "AE1", "AE2", "AE3", "AE4"}:
-        heat_from_HRSG = heat_from_HRSG + processed[d2df(system,"HRSG","Steam_in","mdot")] * CONSTANTS["Steam"]["DH_STEAM"]
+        Qdot_hrsg = Qdot_hrsg + processed[d2df(system,"HRSG","Steam_in","mdot")] * CONSTANTS["Steam"]["DH_STEAM"]
     # Then, we calculate the total demand of heat that needs to be fulfilled by the steam systems
-    heat_steam = (processed["Demands:Heat:TankHeating:Edot"] + processed["Demands:Heat:OtherTanks:Edot"] +
+    Qdot_steam = (processed["Demands:Heat:TankHeating:Edot"] + processed["Demands:Heat:OtherTanks:Edot"] +
                   processed["Demands:Heat:HFOtankHeating:Edot"] + processed["Demands:Heat:MachinerySpaceHeaters:Edot"] +
                   processed["Demands:Heat:HFOheater:Edot"] + processed["Demands:Heat:Galley:Edot"] +
                   processed["HTHR:SteamHeater:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
-    steam_deficit = heat_from_HRSG - heat_steam
-    # The auxiliary boilers must provide the difference between the demand and the available heat
-    Qcumul_deficit = steam_deficit.cumsum()
-    total_deficit = Qcumul_deficit[processed.index[-1]]
-    dt_boiler = int(np.ceil(CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"] / CONSTANTS["OtherUnits"]["BOILER"]["REFERENCE_POWER"]))
-    limit = CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"]
-    while total_deficit < -limit:
-        idx = Qcumul_deficit.loc[Qcumul_deficit < -limit].index
-        if len(idx) > 0:
-            last = min(len(idx), dt_boiler)
-            Qdot_ab[idx[0]:idx[0] + dt.timedelta(minutes=15 * (last - 1))] = (CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"] - (
-            limit + Qcumul_deficit[idx[0]]) - steam_deficit[idx[0] + dt.timedelta(minutes=15):idx[0] + dt.timedelta(
-                minutes=15 * (last - 1))].sum()) / dt_boiler
-            # limit = limit + param[7] - Qdot_deficit[idx[0]+dt.timedelta(minutes=15):idx[0]+dt.timedelta(minutes=15*(last-1))].sum()
-            limit = limit + Qdot_ab[idx[0]:idx[0] + dt.timedelta(minutes=15 * (last - 1))].sum()
-    # The extra steam during summer is dumped in the hot well
-    Qdot_steam_dumped = (heat_from_HRSG + Qdot_ab[:] - heat_steam)
-    Qdot_steam_dumped[(heat_from_HRSG + Qdot_ab[:] - heat_from_HRSG).cumsum() < CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"] * 0.05] = 0
 
-    # Adding
+    Qdot_ab = np.zeros(len(db_index))
+    Qboiler = np.zeros(len(db_index) + 1)
+    Qboiler[0] = CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"]
+    Qdot_dumped = np.zeros(len(db_index))
+    Qdot_steam = Qdot_steam.values
+
+    for idx in range(len(db_index)):
+        if idx == 0:
+            pass
+        else:
+            test = Qboiler[idx] + (Qdot_hrsg[idx] - Qdot_steam[idx]) * 60 * 15
+            if Qdot_ab[idx - 1] > 0:
+                if test + CONSTANTS["OtherUnits"]["BOILER"]["REFERENCE_POWER"] * 60 * 15 > CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"]:
+                    Qdot_ab[idx] = 0
+                else:
+                    Qdot_ab[idx] = CONSTANTS["OtherUnits"]["BOILER"]["REFERENCE_POWER"]
+            elif test <= 0:
+                Qdot_ab[idx] = CONSTANTS["OtherUnits"]["BOILER"]["REFERENCE_POWER"]
+            elif test > CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"]:
+                Qdot_dumped[idx] = (test - CONSTANTS["OtherUnits"]["BOILER"]["STORAGE_SIZE"]) / 60 / 15
+            else:
+                pass
+        Qboiler[idx + 1] = Qboiler[idx] + (Qdot_hrsg[idx] + Qdot_ab[idx] - Qdot_dumped[idx] - Qdot_steam[idx]) * 60 * 15
+
+    # Converting Numpy arrays into Pandas Series
+    Qdot_ab = pd.Series(data=Qdot_ab, index=db_index)
+    Qdot_dumped = pd.Series(data=Qdot_dumped, index=db_index)
+    Qdot_hrsg = pd.Series(data=Qdot_hrsg, index=db_index)
+    Qdot_steam = pd.Series(data=Qdot_steam, index=db_index)
+
+    # Adding the boiler flow
     processed["Steam:Boiler1:Steam_in:mdot"] = Qdot_ab / CONSTANTS["Steam"]["DH_STEAM"]
-    # Filling in the rest
+    # Adding the steam dumped
+    processed["Steam:HotWell:LTWater_in:mdot"]= Qdot_dumped / CONSTANTS["General"]["CP_WATER"] / 20
+    processed["Steam:HotWell:Steam_Dumped_in:mdot"] = Qdot_dumped / CONSTANTS["Steam"]["DH_STEAM"]
+    # The temperature of the LT water inlet to the hot well is calculated as a weighted average of all the input temperatures
+    processed["Steam:HotWell:LTWater_in:T"] = (
+        processed["CoolingSystems:LTdistribution13:LTWater_AE1_out:T"] * processed["CoolingSystems:LTdistribution13:LTWater_AE1_out:mdot"] +
+        processed["CoolingSystems:LTdistribution13:LTWater_AE3_out:T"] * processed["CoolingSystems:LTdistribution13:LTWater_AE3_out:mdot"] +
+        processed["CoolingSystems:LTdistribution13:LTWater_ME1_out:T"] * processed["CoolingSystems:LTdistribution13:LTWater_ME1_out:mdot"] +
+        processed["CoolingSystems:LTdistribution13:LTWater_ME3_out:T"] * processed["CoolingSystems:LTdistribution13:LTWater_ME3_out:mdot"]) / (
+        processed["CoolingSystems:LTdistribution13:LTWater_AE1_out:mdot"] +
+        processed["CoolingSystems:LTdistribution13:LTWater_AE3_out:mdot"] +
+        processed["CoolingSystems:LTdistribution13:LTWater_ME1_out:mdot"] +
+        processed["CoolingSystems:LTdistribution13:LTWater_ME3_out:mdot"])
+    processed.loc[processed["Steam:HotWell:LTWater_in:T"].isnull(),"Steam:HotWell:LTWater_in:T"] = processed["Steam:HotWell:LTWater_in:T"].mean()
+    processed["Steam:HotWell:LTWater_out:T"] = processed["Steam:HotWell:LTWater_in:T"] + Qdot_dumped / CONSTANTS["General"]["CP_WATER"] / processed["Steam:HotWell:LTWater_in:mdot"]
+    # To avoid NaN values, the LT water outlet temperature is equal to the inlet when the Qdot_dumped is equal to 0
+    processed.loc[Qdot_dumped == 0, "Steam:HotWell:LTWater_out:T"] = processed["Steam:HotWell:LTWater_in:T"][Qdot_dumped == 0]
     processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
     processed["Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"] / CONSTANTS["General"]["HFO"]["LHV"]
     processed["Steam:Boiler1:Air_in:mdot"] = processed["Steam:Boiler1:FuelPh_in:mdot"] * CONSTANTS["OtherUnits"]["BOILER"]["LAMBDA"]

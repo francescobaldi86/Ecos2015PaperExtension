@@ -58,6 +58,22 @@ def enginesCheck(processed, CONSTANTS):
             temp = sum(processed[d2df(name, "CAC_HT", "HTWater_out", "T")][on] >= processed[d2df(name, "CAC_HT", "HTWater_in", "T")][on]) / tot * 100
             warn = "WARNING " if temp < 95 else ""
             text_file.write(warn+name + " CAC_HT temperatures (HT water side) are consistent for " + str(temp) + " % of the datapoints \n")
+            # Checking the overall engine balance
+            energyOutput = (
+                processed[d2df(name,"Cyl","Power_out","Edot")] +
+                processed[d2df(name,"Turbine","Mix_out","Edot")] +
+                (processed[d2df(name,"LOC","LTWater_out","Edot")] - processed[d2df(name,"CAC_LT","LTWater_in","Edot")]) +
+                (processed[d2df(name, "CAC_HT", "HTWater_out", "Edot")] - processed[d2df(name, "JWC", "HTWater_in", "Edot")]))
+            energyInput = (
+                processed[d2df(name, "Cyl", "FuelCh_in", "Edot")] +
+                processed[d2df(name, "Cyl", "FuelPh_in", "Edot")] +
+                processed[d2df(name, "Comp", "Air_in", "Edot")]
+            )
+            energyBalance = abs(((energyInput - energyOutput)/energyInput))
+            temp = sum(energyBalance[processed[name+":on"]] <= 0.01) / tot * 100
+            warn = "WARNING " if temp < 95 else ""
+            text_file.write(warn + name + " The overall energy balance of the engine is consistent for " + str(temp) + " % of the datapoints \n")
+
     text_file.close()
     print("...done!")
 
@@ -157,6 +173,7 @@ def massBalance(processed, dict_structure, CONSTANTS):
                     balance = balance + processed[d2df(system,unit,flow,"mdot")] * (2 * float("out" not in flow) - 1)
                     max_value = max(max_value,max(processed[d2df(system,unit,flow,"mdot")]))
             balance_occ = np.sum(balance < 0.001*max_value) / len(balance) * 100
+            balance_ave = np.sum(balance) / (len(balance) * (100 - balance_occ) / 100) / max_value * 100
             if balance_occ == 100:
                 text_file.write("The mass balance is fine for {}_{} unit \n".format(system, unit))
             elif (balance_occ >= 99) or (balance_ave <= 1):
@@ -164,7 +181,6 @@ def massBalance(processed, dict_structure, CONSTANTS):
             elif counter == 0:
                 text_file.write("There is no mass balance for {}_{} unit \n".format(system, unit))
             else:
-                balance_ave = np.sum(balance) / (len(balance)*(100 - balance_occ)/100) / max_value * 100
                 text_file.write("---Mass balance for {}_{} unit is respected {}% of the times, with {}% average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()
@@ -184,10 +200,12 @@ def energyBalance(processed, dict_structure, CONSTANTS):
                 balance = balance + processed[d2df(system,unit,flow,"Edot")] * (2 * float("out" not in flow) - 1)
                 max_value = max(max_value, max(processed[d2df(system, unit, flow, "Edot")]))
             balance_occ = np.sum(balance < 0.001 * max_value) / max(1, len(balance)) * 100
+            balance_ave = np.sum(balance) / (len(balance) * (100 - balance_occ) / 100) / max_value * 100
             if balance_occ == 100:
-                text_file.write("The Energy balance is fine for {}_{} unit \n".format(system, unit))
+                text_file.write("The energy balance is fine for {}_{} unit \n".format(system, unit))
+            elif (balance_occ >= 99) or (balance_ave <= 1):
+                text_file.write("The energy balance is ALMOST fine for {}_{} unit \n".format(system, unit))
             else:
-                balance_ave = np.sum(balance) / (len(balance)*(100 - balance_occ)/100) / max_value * 100
-                text_file.write("---Energy balance for {}_{} unit is respected {}% of the times, with {}% average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
+                text_file.write("---energy balance for {}_{} unit is respected {}% of the times, with {}% average error \n".format(system, unit, str(balance_occ), str(balance_ave)))
     print("...done!")
     text_file.close()

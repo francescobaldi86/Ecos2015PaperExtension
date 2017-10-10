@@ -9,19 +9,22 @@ import os
 
 
 def energyAnalysisLauncher(processed, dict_structure, CONSTANTS):
-    processed = propertyCalculator(processed, dict_structure, CONSTANTS)  # Calculates the energy and exergy flows
+    processed = propertyCalculator(processed, dict_structure, CONSTANTS, dict_structure["systems"])  # Calculates the energy and exergy flows
     processed = efficiencyCalculator(processed, dict_structure, CONSTANTS)
     return processed
 
 
 
 
-def propertyCalculator(processed, dict_structure, CONSTANTS):
+def propertyCalculator(processed, dict_structure, CONSTANTS, system_list):
     print("Started calculating flow properties...", end="", flush=True)
     df_index = processed.index
-    for system in dict_structure["systems"]:
+    for system in system_list:
         for unit in dict_structure["systems"][system]["units"]:
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                if system+":"+unit+":"+flow == "CoolingSystems:SWC13:SeaWater_out":
+                    aaa = 0
+                #  The calculation of the properties is done if and only if the exergy flow is completely empty
                 if processed[d2df(system,unit,flow,"Bdot")].isnull().sum() == len(processed[d2df(system,unit,flow,"Bdot")]):
                     if dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "CPF":
                         # Only doing the calculations if the values for p and T are not NaN
@@ -87,6 +90,11 @@ def propertyCalculator(processed, dict_structure, CONSTANTS):
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "IPF":
                         if processed[d2df(system,unit,flow,"T")].isnull().sum() != len(processed[d2df(system,unit,flow,"T")]):
                             if "Water" in flow:
+                                if flow == "SeaWater_in":
+                                    dh = pd.Series(index = df_index)
+                                    ds = pd.Series(index = df_index)
+                                    dh[:] = 0
+                                    ds[:] = 0
                                 dh = CONSTANTS["General"]["CP_WATER"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
                                 ds = CONSTANTS["General"]["CP_WATER"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
                             if "LubOil" in flow:
@@ -130,7 +138,7 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
     df_index = processed.index
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
-            if system+":"+unit == "ME1:Turbine":
+            if system+":"+unit == "Steam:SteamDistribution":
                 aaa = 0
             # Here I create eight (8) series: 4 Edot and 4 Bdot. 2 "Full" and 2 "useful".
             temp_flow_list = {"Edot_in", "Edot_in_useful", "Edot_out", "Edot_out_useful", "Bdot_in", "Bdot_in_useful", "Bdot_out", "Bdot_out_useful"}
@@ -176,6 +184,7 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
             processed[system + ":" + unit + ":" + "Idot"] = temp_df['Bdot_in'] - temp_df['Bdot_out']
             # Finally, we calculate the lambda
             processed[system + ":" + unit + ":" + "lambda"] = (temp_df['Bdot_in'] - temp_df['Bdot_out']) / temp_df['Bdot_in']
+            processed.loc[temp_df['Bdot_in'] == 0, system + ":" + unit + ":" + "lambda"] = 0
 
             #### ADD THE CALCULATION OF THE DELTA #####
     temp_total_idot = sum(processed[system + ":" + unit + ":" + "Idot"]

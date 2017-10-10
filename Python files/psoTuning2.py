@@ -143,6 +143,7 @@ def fitnessFunction(param, *args):
 
     Qdot_ab = pd.Series(index=db_index)
     Qdot_ab[:] = 0
+
     Qdot_deficit = -Qdot_steam + Qdot_hrsg
     Qcumul_deficit = Qdot_deficit.cumsum()
     total_deficit = Qcumul_deficit[db_index[-1]]

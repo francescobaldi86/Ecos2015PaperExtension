@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from helpers import d2df
+import pandas as pd
 
 def plotMain(type, dict_structure, processed, *args):
     # This function plots the contents of the analysed files.
@@ -214,7 +215,7 @@ def plottingFunction(plot_info, processed, data_type):
             else:
                 fig = plt.figure()
                 for plot in figure["variables"]:
-                    x = data[plot]
+                    x = processed[plot]
                     if figure["plot_mode"] == "hist":
                         num_bins = 50
                         # the histogram of the data
@@ -233,6 +234,9 @@ def plottingFunction(plot_info, processed, data_type):
 def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames):
     for filename in filenames:
         plt.figure()
+
+        ### TIME SERIES ###
+
         if filename == "TimeSeries:Heat_vs_time":
             # Contribution from the HRSGs
             temp = (processed["ME2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["ME3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE1:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE4:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
@@ -258,26 +262,7 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
             plt.plot(boilers_calculated, 'r:', label="Boilers (C)")
             plt.plot(total, 'g-', label='Total heating demand')
             plt.legend()
-        if filename == "Pie:TotalEnergy":
-            quantities = [processed["Demands:Mechanical:Total:Edot"].sum() , processed["Demands:Electricity:Total:Edot"].sum() , processed["Demands:Heat:Total:Edot"].sum()]
-            labels = ["Mechanical Power" , "Electric Power" , "Thermal Power"]
-            explode = (0.05 , 0.05 , 0.05)
-            plt.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', shadow=True,)
-        if filename == "Pie:Heat":
-            quantities = []
-            labels = []
-            explode = []
-            for demand in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
-                quantities.append(processed[d2df("Demands","Heat",demand,"Edot")].sum())
-                labels.append(demand)
-                explode.append(0.05)
-            plt.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', shadow=True,)
-        if filename == "Hist:WHR":
-            temp = processed["HTHR:HTHR13:HRWater_in:mdot"] * CONSTANTS["General"]["CP_WATER"] * (processed["HTHR:HTHR13:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"])
-            temp2 = (processed["ME2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["ME3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE1:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE4:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
-            plt.hist(temp, 50, normed=1, alpha=0.5, label="HTHR")
-            plt.hist(temp2, 50, normed=1, alpha=0.5, label="HRSG")
-            plt.legend()
+
         if filename == "TimeSeries:El+Tair_vs_time":
             # Plotting with two different y axis
             fig, ax1 = plt.subplots()
@@ -290,6 +275,138 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
             ax2.plot(processed["T_air"]["2014-04-01":"2014-11-01"].resample('D').mean(), 'r--', label="Ambient air temperature")
             ax2.set_ylabel('Temperature [K]')
             plt.legend()
+
+        if filename == "TimeSeries:HeatBalance":
+            # Contribution from the HRSGs
+            Qdot_hrsg = (processed["ME2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] +
+                    processed["ME3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] +
+                    processed["AE1:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] +
+                    processed["AE2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] +
+                    processed["AE3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] +
+                    processed["AE4:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
+            # Contribution from the HTHR
+            Qdot_hthr = processed["HTHR:HTHR13:HRWater_in:mdot"] * CONSTANTS["General"]["CP_WATER"] * (processed["HTHR:HTHR13:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"])
+            Qdot_ab = processed["Steam:Boiler1:FuelPh_in:mdot"] * CONSTANTS["General"]["HFO"]["LHV"] * CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
+            Qdot_dumped = processed["Steam:HotWell:LTWater_in:mdot"] * (
+                processed["Steam:HotWell:LTWater_out:T"] - processed["Steam:HotWell:LTWater_in:T"]
+            ) * CONSTANTS["General"]["CP_WATER"]
+            Qdot_balance = Qdot_hrsg + Qdot_hthr + Qdot_ab - processed["Demands:Heat:Total:Edot"] - Qdot_dumped
+            Qdot_balance.plot()
+            (Qdot_balance.cumsum()).plot()
+            plt.title("Heat balance")
+            plt.xlabel("Time")
+            plt.ylabel("Heat balance [kW]")
+
+
+        ### PIE CHARTS ###
+
+        if filename == "Pie:TotalEnergySimple":
+            quantities = [processed["Demands:Mechanical:Total:Edot"].sum() , processed["Demands:Electricity:Total:Edot"].sum() , processed["Demands:Heat:Total:Edot"].sum()]
+            labels = ["Mechanical Power" , "Electric Power" , "Thermal Power"]
+            explode = (0.05 , 0.05 , 0.05)
+            plt.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', shadow=True,)
+
+        if filename == "Pie:DemandFull":
+            quantities = [processed["Demands:Mechanical:Propeller1:Edot"].sum() ,
+                          processed["Demands:Mechanical:Propeller2:Edot"].sum(),
+                          processed["Demands:Electricity:HVAC:Edot"].sum() ,
+                          processed["Demands:Electricity:Thrusters:Edot"].sum(),
+                          processed["Demands:Electricity:Other:Edot"].sum(),
+                          processed["Demands:Heat:HVACpreheater:Edot"].sum(),
+                          processed["Demands:Heat:HVACreheater:Edot"].sum(),
+                          processed["Demands:Heat:HotWaterHeater:Edot"].sum(),
+                          processed["Demands:Heat:MachinerySpaceHeaters:Edot"].sum(),
+                          processed["Demands:Heat:OtherTanks:Edot"].sum(),
+                          processed["Demands:Heat:TankHeating:Edot"].sum(),
+                          processed["Demands:Heat:HFOheater:Edot"].sum(),
+                          processed["Demands:Heat:HFOtankHeating:Edot"].sum(),
+                          processed["Demands:Heat:Galley:Edot"].sum()]
+            labels = ["Propeller-1" , "Propeller-1" ,
+                      "HVAC", "Thrusters", "Other users",
+                      "HVAC Preheater", "HVAC Reheater", "Hot water heater",
+                      "Machinery space heaters", "Other tanks heating", "Fuel tanks heating", "HFO tanks heating", "HFO pre-injection heating", "Galley"]
+            explode = []
+            for idx in range(len(labels)):
+                explode.append((1-(quantities[idx]/sum(quantities))) * 0.1)
+            colors = ["green", "green",
+                     "blue", "blue", "blue",
+                     "sandybrown","sandybrown","sandybrown",
+                     "red","red","red","red","red","red"]
+            plt.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', colors=colors)
+
+        if filename == "Pie:GenerationFull":
+            quantities = [processed["ME1:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["ME2:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["ME3:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["ME4:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["AE1:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["AE2:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["AE3:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["AE4:Cyl:FuelPh_in:mdot"].sum(),
+                          processed["Steam:Boiler1:FuelPh_in:mdot"].sum()]
+            labels = ["ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4", "AB"]
+            colors = ["0.33", "0.33", "0.33", "0.33", "0.66", "0.66", "0.66", "0.66", "black"]
+            plt.pie(quantities, labels=labels, explode=(0.05, )*len(labels), autopct='%1.1f%%', colors=colors)
+
+        if filename == "Pie:Heat":
+            quantities = []
+            labels = []
+            explode = []
+            for demand in dict_structure["systems"]["Demands"]["units"]["Heat"]["flows"]:
+                quantities.append(processed[d2df("Demands","Heat",demand,"Edot")].sum())
+                labels.append(demand)
+                explode.append(0.05)
+            plt.pie(quantities, labels=labels, explode=tuple(explode), autopct='%1.1f%%', shadow=True)
+
+        if filename == "Pie:OperationalMode":
+            quantities = []
+            labels = []
+            colors = []
+            counter = 0
+            temp = pd.Series(processed["operationalMode"].values, dtype="category")
+            for category in temp.cat.categories:
+                quantities[counter] = sum(temp == category)
+                labels[counter] = category
+                colors[counter] = "white"
+                counter = counter + 1
+            patches = plt.pie(quantities, labels=labels, explode=(0.05, 0.05, 0.05, 0.05), autopct='%1.1f%%', shadow=True, colors=colors)[0]
+            patches[0].set_hatch('/')
+            patches[1].set_hatch('\\')
+            patches[2].set_hatch('x')
+
+        ### HISTOGRAMS ###
+
+        if filename == "Hist:WHR":
+            temp = processed["HTHR:HTHR13:HRWater_in:mdot"] * CONSTANTS["General"]["CP_WATER"] * (processed["HTHR:HTHR13:HRWater_out:T"] - processed["HTHR:HTHR24:HRWater_in:T"])
+            temp2 = (processed["ME2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["ME3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE1:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE2:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE3:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] + processed["AE4:HRSG:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"])
+            plt.hist(temp, 50, normed=1, alpha=0.5, label="HTHR")
+            plt.hist(temp2, 50, normed=1, alpha=0.5, label="HRSG")
+            plt.legend()
+
+        if filename == "Hist:AuxEngines":
+            temp1 = []
+            for engine in {"AE1", "AE2", "AE3", "AE4"}:
+                temp1.append(processed[engine+":Cyl:Power_out:Edot"][processed[engine+":on"]]/CONSTANTS["AuxEngines"]["MCR"])
+            plt.hist(tuple(temp1), normed=1, alpha=0.8, label=["AE1", "AE2", "AE3", "AE4"])
+            plt.legend()
+
+        if filename == "Hist:MainEngines":
+            for engine in {"ME1", "ME2", "ME3", "ME4"}:
+                plt.hist(processed[engine+":Cyl:Power_out:Edot"][processed[engine+":on"]]/CONSTANTS["MainEngines"]["MCR"], normed=1, alpha=0.5, label=engine)
+            plt.legend()
+
+
+        ### SCATTER PLOTS ###
+
+        if filename == "Scatter:Pmech_vs_Vship":
+            enginesOn = processed["ME1:on"].astype(int) + processed["ME2:on"].astype(int) + processed["ME3:on"].astype(int) + processed["ME4:on"].astype(int)
+            for idx in range(5):
+                plt.scatter(
+                    dataset_raw["SHIPS SPEED:79025:knot:Average:900"][enginesOn==idx],
+                    processed["Demands:Mechanical:Total:Edot"][enginesOn==idx],
+                    label=(str(idx) + "Engines on"))
+            plt.legend()
+
         plt.show()
 
 

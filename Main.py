@@ -25,7 +25,7 @@
 
 
 do_processed_data_preparation = "no"
-do_data_processing = "yes"
+do_data_processing = "no"
 
 
 
@@ -113,31 +113,27 @@ elif do_data_processing == "yes":
     # Calculating the central cooling systems
     processed = cs.centralCoolingSystems(processed, CONSTANTS)
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
-    # Assigning defined values to all flows for engines off
+    processed = cs.seaWaterCoolers(processed, CONSTANTS, dict_structure)
+    # Calculating energy and exergy properties
     processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS)
     # Re-doing the calculation of the connected points
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
-
+    # Assigning the operational mode
+    processed = ppo.operationalModeCalculator(processed, dataset_raw, CONSTANTS, header_names)
     # Saving the processed data
     processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
-
-
-######################################
-## RESULTS CHECK                	##
-######################################
-cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
-######################################
-## EXPORT EFFICIENCIES                	##
-######################################
+    # Result check log
+    cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
+    # Efficiency results export
 ex.exportEfficiecies(processed, CONSTANTS, dict_structure)
 
 #%%
 ######################################
-## PLOTTING	##
+## POSTPROCESSING	##
 ######################################
 
-plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, ["TimeSeries:Heat_vs_time"])
+# plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure,["Pie:OperationalMode" ])
 # plot.plotMain("prompt", dict_structure, processed)
 
 

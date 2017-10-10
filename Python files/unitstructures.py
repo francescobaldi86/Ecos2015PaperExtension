@@ -194,6 +194,7 @@ def flowStructure():
                 "LTWater_AE3_in": {"type": "IPF"},
                 "LTWater_ME1_in": {"type": "IPF"},
                 "LTWater_ME3_in": {"type": "IPF"},
+                "LTWater_AB1_in": {"type": "IPF"},
                 "LTWater_out": {"type": "IPF"}, "HTWater_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTcollector13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTcollector24"]["flows"] = {
@@ -209,7 +210,8 @@ def flowStructure():
                 "LTWater_AE3_out": {"type": "IPF"},
                 "LTWater_AE1_out": {"type": "IPF"},
                 "LTWater_ME1_out": {"type": "IPF"},
-                "LTWater_ME3_out": {"type": "IPF"}}
+                "LTWater_ME3_out": {"type": "IPF"},
+                "LTWater_AB1_out": {"type": "IPF"}}
             structure["systems"][system]["units"]["LTdistribution13"]["equations"] = ["MassBalance"]
             structure["systems"][system]["units"]["LTdistribution24"]["flows"] = {
                 "LTWater_in": {"type": "IPF"},
@@ -311,7 +313,7 @@ def flowStructure():
 
 
         elif system == "Steam":
-            structure["systems"][system]["units"] = {"Boiler1": {}, "Boiler2": {}, "SteamCollector": {}, "SteamDistribution": {},
+            structure["systems"][system]["units"] = {"Boiler1": {}, "Boiler2": {}, "HotWell": {}, "SteamDistribution": {},
                                                      "TankHeating": {}, "OtherTanks": {}, "HFOtankHeating": {}, "MachinerySpaceHeaters": {},
                                                      "HFOheater": {}, "Galley": {}}
             # Auxiliary boiler
@@ -347,10 +349,11 @@ def flowStructure():
                 "Steam_HH_out": {"type": "SF", "state": "SV"},
                 "Steam_G_out": {"type": "SF", "state": "SV"},
                 "Steam_SH_out": {"type": "SF", "state": "SV"},
-                "Steam_OT_out": {"type": "SF", "state": "SV"}}
+                "Steam_OT_out": {"type": "SF", "state": "SV"},
+                "Steam_Dumped_out": {"type": "SF", "state": "SV"}}
             structure["systems"][system]["units"]["SteamDistribution"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Steam distribution, sending around saturated vapor to all users
-            structure["systems"][system]["units"]["SteamCollector"]["flows"] = {
+            structure["systems"][system]["units"]["HotWell"]["flows"] = {
                 "Steam_HRSG_ME2_out": {"type": "SF", "state": "SL"},
                 "Steam_HRSG_ME3_out": {"type": "SF", "state": "SL"},
                 "Steam_AB1_out": {"type": "SF", "state": "SL"},
@@ -365,8 +368,11 @@ def flowStructure():
                 "Steam_HH_in": {"type": "SF", "state": "SL"},
                 "Steam_G_in": {"type": "SF", "state": "SL"},
                 "Steam_SH_in": {"type": "SF", "state": "SL"},
-                "Steam_OT_in": {"type": "SF", "state": "SV"}}
-            structure["systems"][system]["units"]["SteamCollector"]["equations"] = ["MassBalance", "ConstantPressure"]
+                "Steam_OT_in": {"type": "SF", "state": "SL"},
+                "Steam_Dumped_in": {"type": "SF", "state": "SV"},
+                "LTWater_in": {"type": "IPF"},
+                "LTWater_out": {"type": "IPF"}}
+            structure["systems"][system]["units"]["HotWell"]["equations"] = ["MassBalance", "ConstantPressure"]
             # Users
             structure["systems"][system]["units"]["TankHeating"]["flows"] = {
                 "Steam_out": {"type": "SF", "state": "SL", "IO": "input"},
@@ -584,9 +590,9 @@ def connectionAssignment(structure):
                 structure["systems"][system]["units"]["HRSG"]["flows"]["Mix_in"]["Connections"] = [system + ":" + "Turbine" + ":" + "Mix_out"]
                 structure["systems"][system]["units"]["Turbine"]["flows"]["Mix_out"]["Connections"] = [system + ":" + "HRSG" + ":" + "Mix_in"]
                 # On the steam side, the HRSG is connected to the Steam distribution and steam collector
-                structure["systems"][system]["units"]["HRSG"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_HRSG_" + system + "_out"]
+                structure["systems"][system]["units"]["HRSG"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_HRSG_" + system + "_out"]
                 structure["systems"][system]["units"]["HRSG"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_HRSG_" + system + "_in"]
-                structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_HRSG_" + system + "_out"]["Connections"] = [system + ":" + "HRSG" + ":" + "Steam_in"]
+                structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_HRSG_" + system + "_out"]["Connections"] = [system + ":" + "HRSG" + ":" + "Steam_in"]
                 structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_HRSG_" + system + "_in"]["Connections"] = [system + ":" + "HRSG" + ":" + "Steam_out"]
             if system[0] == "A":
                 structure["systems"][system]["units"]["AG"]["flows"]["Power_in"]["Connections"] = [system + ":" + "Cyl" + ":" + "Power_out"]
@@ -623,8 +629,8 @@ def connectionAssignment(structure):
             # On the other side, the Steam heater is connected to the steam distribution system
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_SH_out"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "Steam_in"]
             structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_SH_out"]
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_SH_in"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "Steam_out"]
-            structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_SH_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_SH_in"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "Steam_out"]
+            structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_SH_in"]
             # Following the HR water, we get to the splitter
             structure["systems"]["HTHR"]["units"]["SteamHeater"]["flows"]["HRWater_out"]["Connections"] = ["HTHR" + ":" + "HTHRsplit" + ":" + "HRWater_in"]
             structure["systems"]["HTHR"]["units"]["HTHRsplit"]["flows"]["HRWater_in"]["Connections"] = ["HTHR" + ":" + "SteamHeater" + ":" + "HRWater_out"]
@@ -673,47 +679,54 @@ def connectionAssignment(structure):
             ############    STEAM SYSTEMS  ##########
             # here we set the connection between the steam collector and the different steam generators
             # With the Auxiliary boiler 1
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_AB1_out"]["Connections"] = ["Steam" + ":" + "Boiler1" + ":" + "Steam_in"]
-            structure["systems"]["Steam"]["units"]["Boiler1"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_AB1_out"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_AB1_out"]["Connections"] = ["Steam" + ":" + "Boiler1" + ":" + "Steam_in"]
+            structure["systems"]["Steam"]["units"]["Boiler1"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_AB1_out"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_AB1_in"]["Connections"] = ["Steam" + ":" + "Boiler1" + ":" + "Steam_out"]
             structure["systems"]["Steam"]["units"]["Boiler1"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_AB1_in"]
             # With the Auxiliary boiler 2
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_AB2_out"]["Connections"] = ["Steam" + ":" + "Boiler2" + ":" + "Steam_in"]
-            structure["systems"]["Steam"]["units"]["Boiler2"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_AB2_out"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_AB2_out"]["Connections"] = ["Steam" + ":" + "Boiler2" + ":" + "Steam_in"]
+            structure["systems"]["Steam"]["units"]["Boiler2"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_AB2_out"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_AB2_in"]["Connections"] = ["Steam" + ":" + "Boiler2" + ":" + "Steam_out"]
             structure["systems"]["Steam"]["units"]["Boiler2"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_AB2_in"]
+            # Adding the Hot well connections to the cooling systems
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["LTWater_out"]["Connections"] = ["CoolingSystems" + ":" + "LTcollector13" + ":" + "LTWater_AB1_in"]
+            structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["flows"]["LTWater_AB1_in"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "LTWater_out"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["LTWater_in"]["Connections"] = ["CoolingSystems" + ":" + "LTdistribution13" + ":" + "LTWater_AB1_out"]
+            structure["systems"]["CoolingSystems"]["units"]["LTdistribution13"]["flows"]["LTWater_AB1_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "LTWater_in"]
             # Now it's the turn of all consumers
             # Let's start with the Tank heating
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_TH_in"]["Connections"] = ["Steam" + ":" + "TankHeating" + ":" + "Steam_out"]
-            structure["systems"]["Steam"]["units"]["TankHeating"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_TH_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_TH_in"]["Connections"] = ["Steam" + ":" + "TankHeating" + ":" + "Steam_out"]
+            structure["systems"]["Steam"]["units"]["TankHeating"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_TH_in"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_TH_out"]["Connections"] = ["Steam" + ":" + "TankHeating" + ":" + "Steam_in"]
             structure["systems"]["Steam"]["units"]["TankHeating"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_TH_out"]
             # Machinery Space Heating (MSH)
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_MSH_in"]["Connections"] = ["Steam" + ":" + "MachinerySpaceHeaters" + ":" + "Steam_out"]
-            structure["systems"]["Steam"]["units"]["MachinerySpaceHeaters"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_MSH_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_MSH_in"]["Connections"] = ["Steam" + ":" + "MachinerySpaceHeaters" + ":" + "Steam_out"]
+            structure["systems"]["Steam"]["units"]["MachinerySpaceHeaters"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_MSH_in"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_MSH_out"]["Connections"] = ["Steam" + ":" + "MachinerySpaceHeaters" + ":" + "Steam_in"]
             structure["systems"]["Steam"]["units"]["MachinerySpaceHeaters"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_MSH_out"]
             # HFO Tank Heating (HTH)
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_HTH_in"]["Connections"] = ["Steam" + ":" + "HFOtankHeating" + ":" + "Steam_out"]
-            structure["systems"]["Steam"]["units"]["HFOtankHeating"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_HTH_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_HTH_in"]["Connections"] = ["Steam" + ":" + "HFOtankHeating" + ":" + "Steam_out"]
+            structure["systems"]["Steam"]["units"]["HFOtankHeating"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_HTH_in"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_HTH_out"]["Connections"] = ["Steam" + ":" + "HFOtankHeating" + ":" + "Steam_in"]
             structure["systems"]["Steam"]["units"]["HFOtankHeating"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_HTH_out"]
             # HFO heater (HH)
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_HH_in"]["Connections"] = ["Steam" + ":" + "HFOheater" + ":" + "Steam_out"]
-            structure["systems"]["Steam"]["units"]["HFOheater"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_HH_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_HH_in"]["Connections"] = ["Steam" + ":" + "HFOheater" + ":" + "Steam_out"]
+            structure["systems"]["Steam"]["units"]["HFOheater"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_HH_in"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_HH_out"]["Connections"] = ["Steam" + ":" + "HFOheater" + ":" + "Steam_in"]
             structure["systems"]["Steam"]["units"]["HFOheater"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_HH_out"]
             # Galley (G)
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_G_in"]["Connections"] = ["Steam" + ":" + "Galley" + ":" + "Steam_out"]
-            structure["systems"]["Steam"]["units"]["Galley"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_G_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_G_in"]["Connections"] = ["Steam" + ":" + "Galley" + ":" + "Steam_out"]
+            structure["systems"]["Steam"]["units"]["Galley"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_G_in"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_G_out"]["Connections"] = ["Steam" + ":" + "Galley" + ":" + "Steam_in"]
             structure["systems"]["Steam"]["units"]["Galley"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_G_out"]
             # Other Tanks (OT)
-            structure["systems"]["Steam"]["units"]["SteamCollector"]["flows"]["Steam_OT_in"]["Connections"] = ["Steam" + ":" + "OtherTanks" + ":" + "Steam_out"]
-            structure["systems"]["Steam"]["units"]["OtherTanks"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "SteamCollector" + ":" + "Steam_OT_in"]
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_OT_in"]["Connections"] = ["Steam" + ":" + "OtherTanks" + ":" + "Steam_out"]
+            structure["systems"]["Steam"]["units"]["OtherTanks"]["flows"]["Steam_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_OT_in"]
             structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_OT_out"]["Connections"] = ["Steam" + ":" + "OtherTanks" + ":" + "Steam_in"]
             structure["systems"]["Steam"]["units"]["OtherTanks"]["flows"]["Steam_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_OT_out"]
-
+            # The dumped steam goes directly from the steam distribution system to the hot well
+            structure["systems"]["Steam"]["units"]["HotWell"]["flows"]["Steam_Dumped_in"]["Connections"] = ["Steam" + ":" + "SteamDistribution" + ":" + "Steam_Dumped_out"]
+            structure["systems"]["Steam"]["units"]["SteamDistribution"]["flows"]["Steam_Dumped_out"]["Connections"] = ["Steam" + ":" + "HotWell" + ":" + "Steam_Dumped_in"]
 
 
     print("...done!")

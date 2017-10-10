@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from helpers import d2df
 from helpers import polyvalHelperFunction
+import fillerfunctions as ff
 
 
 def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
@@ -9,14 +10,11 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
     # This function calculates the different flows related to the cooling systems of the main engines.
     for system in CONSTANTS["General"]["NAMES"][engine_type]:
         # Calculating the total energy flow going to the cooling systems, based on the energy balance on the engine
-        energy_2_cooling = (processed[d2df(system,"Cyl","FuelCh_in","Edot")] -
-            processed[d2df(system,"Cyl","Power_out","Edot")] +
-            CONSTANTS["General"]["HFO"]["CP"] * processed[d2df(system,"Cyl","FuelPh_in","mdot")] *
-                (processed[d2df(system,"Cyl","FuelPh_in","T")] - processed["T_0"]) -
-            CONSTANTS["General"]["CP_EG"] * processed[d2df(system,"Turbine","Mix_in","mdot")] *
-                (processed[d2df(system,"Turbine","Mix_out","T")] - processed["T_0"]) +
-            CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"Comp","Air_out","mdot")] *
-                (processed[d2df(system,"Comp","Air_in","T")] - processed["T_0"]))
+        energy_2_cooling = (processed[d2df(system,"Cyl","FuelCh_in","Edot")] +
+            CONSTANTS["General"]["HFO"]["CP"] * processed[d2df(system,"Cyl","FuelPh_in","mdot")] * (processed[d2df(system,"Cyl","FuelPh_in","T")] - processed["T_0"]) -
+            processed[d2df(system, "Cyl", "Power_out", "Edot")] -
+            processed[d2df(system,"Turbine","Mix_out","Edot")] +
+            processed[d2df(system,"Comp","Air_in","Edot")])
         # Calculating the energy going to the charge air cooler, based on the estimated temperatures on the air line
         energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"Cyl","Air_in","mdot")] * (processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"Cyl","Air_in","T")])
         # Calculating the energy going to the HT cooling systems, based on interpolation from the project guide
@@ -51,12 +49,13 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
         processed[d2df(system, "CAC_HT", "Air_out", "T")] = processed[d2df(system, "Comp", "Air_out", "T")] - energy_2_cac_ht / processed[d2df(system,"Cyl","Air_in","mdot")] / CONSTANTS["General"]["CP_AIR"]
         processed[d2df(system, "CAC_LT", "Air_out", "T")] = processed[d2df(system, "CAC_HT", "Air_out", "T")] - energy_2_cac_lt / processed[d2df(system, "Cyl", "Air_in", "mdot")] / CONSTANTS["General"]["CP_AIR"]
         # Finally, we have the HRSG (for some cases)
+        if system == "AE1":
+            aaa = 0
         if engine_type == "AuxEngines" or system in {"ME2", "ME3"}:
-            processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","T")] - processed[d2df(system,"HRSG","Mix_out","T")]) *
-                processed[d2df(system, "HRSG", "Mix_in", "mdot")] * processed[system+":CP_MIX"] /
+            processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","h")] - processed[d2df(system,"HRSG","Mix_out","h")]) *
+                processed[d2df(system, "HRSG", "Mix_in", "mdot")]  /
                 (CONSTANTS["Steam"]["H_STEAM_VS"] - CONSTANTS["Steam"]["H_STEAM_LS"]))
-            temp = processed[d2df(system,"HRSG","Mix_in","T")] < processed[d2df(system,"HRSG","Mix_out","T")]
-            processed.loc[temp, d2df(system, "HRSG", "Steam_in", "mdot")] = 0
+            processed.loc[processed[d2df(system, "HRSG", "Steam_in", "mdot")]<0, d2df(system, "HRSG", "Steam_in", "mdot")] = 0
         # Calculation of the mass recirculating from the LT outlet to the HT inlet (not exactly...)
         processed[d2df(system, "HTmerge", "LTWater_in", "mdot")] = processed[d2df(system,"JWC","HTWater_out","mdot")] * (
             processed[d2df(system, "CAC_HT", "HTWater_out", "T")] - processed[d2df(system,"JWC","HTWater_in","T")]) / (
@@ -67,14 +66,12 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
 
 def centralCoolingSystems(processed, CONSTANTS):
     # Doing the calculations for the 1-3 engine room
-    ER13set = {"AE1", "AE3", "ME1", "ME3"}
+    ER13set = {"AE1", "AE3", "ME1", "ME3", "AB1"}
     # Calculating the temperature at the LT collector outlet
     processed[d2df("CoolingSystems", "LTcollector13", "LTWater_out", "T")] = (
         (sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "T")] *
-            processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) +
-        processed["HTHR:HTHR13:HTWater_out:mdot"] * processed["HTHR:HTHR13:HTWater_out:T"]) / (
-        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set) +
-        processed["HTHR:HTHR13:HTWater_out:mdot"]))
+            processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set)) / (
+        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set)))
     # The temperature at the other output of the collector is the same
     processed["CoolingSystems:LTcollector13:HTWater_out:T"] = processed["CoolingSystems:LTcollector13:LTWater_out:T"]
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
@@ -90,10 +87,8 @@ def centralCoolingSystems(processed, CONSTANTS):
     # Calculating the temperature at the LT collector outlet
     processed[d2df("CoolingSystems", "LTcollector24", "LTWater_out", "T")] = (
         (sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "T")] *
-             processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) +
-         processed["HTHR:HTHR24:HTWater_out:mdot"] * processed["HTHR:HTHR24:HTWater_out:T"]) / (
-            sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set) +
-            processed["HTHR:HTHR24:HTWater_out:mdot"]))
+             processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set)) / (
+            sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set)))
     processed["CoolingSystems:LTcollector24:HTWater_out:T"] = processed["CoolingSystems:LTcollector24:LTWater_out:T"]
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
     processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")] = (
@@ -117,6 +112,30 @@ def centralCoolingSystems(processed, CONSTANTS):
     return processed
 
 
+def seaWaterCoolers(processed, CONSTANTS, dict_structure):
+    # Calculations for the seaWaterCoolers
+    processed[d2df("CoolingSystems", "SWC13", "SeaWater_in", "T")] = processed.loc[:, "T_0"]  # Inlet temperature equal to the sea water temperature
+    processed[d2df("CoolingSystems", "SWC24", "SeaWater_in", "T")] = processed.loc[:, "T_0"]  # Inlet temperature equal to the sea water temperature
+    dT_13 = processed[d2df("CoolingSystems", "SWC13", "SeaWater_out", "T")] - processed[d2df("CoolingSystems", "SWC13", "SeaWater_in", "T")]
+    dT_13[dT_13 < 5] = 5
+    dT_24 = processed[d2df("CoolingSystems", "SWC24", "SeaWater_out", "T")] - processed[d2df("CoolingSystems", "SWC24", "SeaWater_in", "T")]
+    dT_24[dT_24 < 5] = 5
+    processed[d2df("CoolingSystems", "SWC13", "SeaWater_in", "mdot")] = (
+        processed[d2df("CoolingSystems", "SWC13", "LTWater_out", "mdot")] *
+        (processed[d2df("CoolingSystems", "SWC13", "LTWater_in", "T")] - processed[d2df("CoolingSystems", "SWC13", "LTWater_out", "T")]) /
+        (dT_13))
+    processed[d2df("CoolingSystems", "SWC13", "SeaWater_out", "mdot")] = processed[d2df("CoolingSystems", "SWC13", "SeaWater_in", "mdot")]
+    processed[d2df("CoolingSystems", "SWC24", "SeaWater_in", "mdot")] = (
+        processed[d2df("CoolingSystems", "SWC24", "LTWater_out", "mdot")] *
+        (processed[d2df("CoolingSystems", "SWC24", "LTWater_in", "T")] - processed[d2df("CoolingSystems", "SWC24", "LTWater_out", "T")]) /
+        (dT_24))
+    processed[d2df("CoolingSystems", "SWC24", "SeaWater_out", "mdot")] = processed[d2df("CoolingSystems", "SWC24", "SeaWater_in", "mdot")]
+    # Extra calls to the mass balance calculation function to make sure all values are calculated
+    (counter, processed) = ff.massFill(processed, dict_structure, CONSTANTS, "CoolingSystems", "SWC13", dict_structure["systems"]["CoolingSystems"]["units"]["SWC13"]["streams"], "extra-1")
+    processed[d2df("CoolingSystems", "LTcollector13", "LTWater_out", "mdot")] = processed[d2df("CoolingSystems", "SWC13", "LTWater_in", "mdot")]
+    (counter, processed) = ff.massFill(processed, dict_structure, CONSTANTS, "CoolingSystems", "LTcollector13", dict_structure["systems"]["CoolingSystems"]["units"]["LTcollector13"]["streams"],"extra-1")
+    processed[d2df("CoolingSystems", "LTHTmerge13", "LTWater_in", "mdot")] = processed[d2df("CoolingSystems", "LTcollector13", "HTWater_out", "mdot")]
+    return processed
 
 
 def coolingFlows(processed, CONSTANTS, engine_type):
@@ -136,7 +155,7 @@ def coolingFlows(processed, CONSTANTS, engine_type):
         # Mass flow in the HT water cooling systems
         processed[d2df(system, "JWC", "HTWater_in", "mdot")] = pumpFlow(processed[d2df(system, "Cyl", "Power_out", "omega")],
                        processed[d2df(system, "JWC", "HTWater_in", "p")], head_HT, CONSTANTS, engine_type)
-        processed.loc[:, d2df(system, "JWC", "HTWater_in", "mdot")] = processed[d2df(system, "JWC", "HTWater_in","mdot")] / max(processed[d2df(system, "JWC", "HTWater_in", "mdot")]) * CONSTANTS[engine_type]["MFR_HT"]
+        processed.loc[:, d2df(system, "JWC", "HTWater_in", "mdot")] = processed[d2df(system, "JWC", "HTWater_in","mdot")] / max(processed[d2df(system, "JWC", "HTWater_in", "mdot")]) * CONSTANTS[engine_type]["MFR_HT"] * 2
         processed.loc[processed[d2df(system, "JWC", "HTWater_in", "mdot")] < 0, d2df(system, "JWC", "HTWater_in","mdot")] = 0
         processed.loc[processed[d2df(system, "JWC", "HTWater_in", "mdot")] > CONSTANTS[engine_type]["MFR_HT"], d2df(system,"JWC","HTWater_in","mdot")] = CONSTANTS[engine_type]["MFR_HT"]
         # Mass flow in the lubricating oil cooler
