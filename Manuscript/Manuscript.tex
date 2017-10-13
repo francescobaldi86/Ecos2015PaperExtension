@@ -282,14 +282,14 @@ Not all of the variables required to perform a full energy and exergy analysis o
 
 \subsubsection{Diesel engines}
 
-The setup of the engines and their connections to the other ship systems are summarized in Figure REF and REF for the main and auxiliary engines, respectively. The defining net energy flows are listed in Table REF. It should be noted that, in the case of the main engines, the engine power output was not measured and needed to be estimated. In this work, we calculated the engine power output based on measurements of engine fuel rack position (used as a proxy of the mass of fuel injected per cycle) and of the engine speed:
+The setup of the engines and their connections to the other ship systems are summarized in Figure \ref{fig:DieselEngines} for the main and auxiliary engines, respectively. The most relevant operative values are provided in Tables \ref{tab:ME_values} and \ref{tab:AE_values} and the main energy flows are listed in Tables \ref{tab:ME_flows} and \ref{tab:AE_flows}. It should be noted that, in the case of the main engines, the engine power output was not measured and needed to be estimated. In this work, we calculated the engine power output based on measurements of engine fuel rack position (used as a proxy of the mass of fuel injected per cycle) and of the engine speed:
 \begin{eqnarray}
 \dot{m}_{fuel} & = & \dot{m}_{fuel,des} \left(a_0 + a_1 \frac{frp}{frp_{des}}\right) \frac{\omega}{\omega_{des}} \\
 \eta_{ME} & = & a_0 + a_1 \frac{\dot{m}_{fuel}}{\dot{m}_{fuel,des}} + a_2 \left( \frac{\dot{m}_{fuel}}{\dot{m}_{fuel,des}} \right)^2 \\
 \dot{W}_{ME} & = & \dot{m}_{fuel} \eta_{ME} LHV
 \end{eqnarray}
 
-The validity of this assumption can be seen by observing Figure REF, representing the calculated total power from the main engines as a function of the ship speed
+The validity of this assumption can be seen by observing Figures \ref{fig:Pme_vs_vship_Neng} and \ref{fig:Pme_vs_TCspeed} where the calculated  power from the main engines is represented against the ship speed and the turbocharger speed, respectively.
 
 \begin{figure}
 	\centering
@@ -309,59 +309,64 @@ For both auxiliary and main engines, part of the relevant internal variables are
 	\label{fig:Pme_vs_vship_Neng}
 \end{figure}
 
-ALSO INCLUDE THE POWER VS TC SPEED RELATIONSHIP
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{Figures/Scatter_Pme_vs_TCspeed}
+	\caption{Scatter plot, Main engine power versus turbocharger speed (ME1)}
+	\label{fig:Pme_vs_TCspeed}
+\end{figure}
 
 
 \begin{table}
 	\small
 	\centering
-	\begin{tabular}{llccrrrrr}
+	\begin{tabular}{llccrrrr}
 		\hline
-		\multicolumn{2}{l}{Variable} & Unit & M/C & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		\multicolumn{2}{l}{Variable} & Unit & M/C & 30\% & 50\% & 70\% & 90\% \\
 		\hline
-		\multicolumn{2}{l}{Compressor} & & & & & & & \\ 
-		& 	$T_{air,in}$  		& $^o$C & M  & &  & & & \\ 
-		&	$T_{air,out}$  		& $^o$C & C  & & & & &  \\ 
-		&	$\dot{m}_{air}$  	& $kg/s$ & C  & & & & &  \\
-		&   $\beta_{comp}$		& - 	& M & & & & &  \\
-		\multicolumn{2}{l}{Turbine} & & & & & & &  \\
-		&	$T_{air,in}$   		& $^o$C & C  & & & & &  \\ 
-		&	$T_{air,out}$  		& $^o$C & M  & & & & &  \\ 
-		&	$\dot{m}_{eg}$  	& $kg/s$ & C  & & & & &  \\
-		&   $\beta_{exp}$		& - 	& C & & & & &  \\
-		\multicolumn{2}{l}{Bypass valve} & & & & & & &  \\
-		&	$\dot{m}_{air,BP}$	& $kg/s$ & C  & & & & &  \\ 
-		\multicolumn{2}{l}{Cylinders} & & & & & & &   \\
-		&	$\dot{m}_{air,in}$  & $kg/s$ & C  & & & & &  \\
-		&	$\dot{m}_{fuel,in}$ & $kg/s$ & C  & & & & &  \\
-		&	$\dot{m}_{eg,out}$  & $kg/s$ & C  & & & & &  \\
-		&	$T_{air,in}$  		& $^o$C & M  & & & & &  \\ 
-		&	$T_{eg,out}$  		& $^o$C & M  & & & & &  \\ 
-		\multicolumn{2}{l}{CAC-LT stage} & & & & & & &  \\
-		&	$T_{air,in}$  		& $^o$C & C  & & & & &  \\ 
-		&	$T_{air,out}$ 		& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,in}$   		& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
-		& 	$\dot{m}_{w,LT}$  	& $kg/s$ & & & & & &  \\
-		\multicolumn{2}{l}{CAC-HT stage} & & & & & & & \\
-		&	$T_{air,in}$   		& $^o$C & C  & & & & &  \\ 
-		&	$T_{air,out}$   	& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
-		& 	$\dot{m}_{w,HT}$  	& $kg/s$ & C & & & & &  \\
-		\multicolumn{2}{l}{LOC} & & & & & & &  \\
-		&	$T_{lo,in}$   		& $^o$C & C  & & & & &  \\  
-		&	$T_{lo,out}$    	& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
-		\multicolumn{2}{l}{JWC} & & & & & & &  \\
-		&	$T_{wall}$    		& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,in}$    		& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,out}$	   		& $^o$C & C  & & & & &  \\ 
-		& 	$\dot{m}_{w}$  		& $kg/s$ & C & & & & &  \\
+		\multicolumn{2}{l}{Compressor} & & & & & & \\ 
+		& 	$T_{air,in}$  		& $^o$C & M & \multicolumn{4}{c}{302} \\ 
+		&	$T_{air,out}$  		& $^o$C & C  & 356.0 & 409.4 & 434.1 & 461.7 \\ 
+		&	$\dot{m}_{air}$  	& $kg/s$ & C  & 4.24 & 7.62 & 8.51 & 10.28 \\
+		&   $\beta_{comp}$		& - 	& M & & & &  \\
+		\multicolumn{2}{l}{Turbine} & & & & & &  \\
+		&	$T_{eg,in}$   		& $^o$C & C  & 698.8 & 702.2 & 763.3 & 786.0 \\ 
+		&	$T_{eg,out}$  		& $^o$C & M  & 639.3 & 592.9 & 633.2 & 631.0 \\ 
+		&	$\dot{m}_{eg}$  	& $kg/s$ & C  & 4.35 & 7.79 & 8.73 & 10.57 \\
+		&   $\beta_{exp}$		& - 	& C & & & &  \\
+		\multicolumn{2}{l}{Bypass valve} & & & & & &  \\
+		&	$\dot{m}_{air,BP}$	& $kg/s$ & C  & 0.98 & 2.05 & 1.02 & 0.39 \\  
+		\multicolumn{2}{l}{Cylinders} & & & & & &   \\
+		&	$\dot{m}_{air,in}$  & $kg/s$ & C  & 3.25 & 5.57 & 7.49 & 9.89 \\
+		&	$\dot{m}_{fuel,in}$ & $kg/s$ & C  & 0.11 & 0.17 & 0.22 & 0.28 \\ 
+		&	$\dot{m}_{eg,out}$  & $kg/s$ & C  & 3.37 & 5.74 & 7.71 & 10.17 \\
+		&	$T_{air,in}$  		& $^o$C & M  & 323.7 & 323.2 & 323.1 & 323.5 \\ 
+		&	$T_{eg,out}$  		& $^o$C & M  & 698.8 & 702.2 & 763.3 & 786.0 \\ 
+		\multicolumn{2}{l}{CAC-LT stage} & & & & & &  \\
+		&	$T_{air,in}$  		& $^o$C & C  & 355.2 & 350.1 & 360.0 & 368.7 \\ 
+		&	$T_{air,out}$ 		& $^o$C & M  & 323.7 & 323.2 & 323.1 & 323.5 \\
+		&	$T_{w,in}$   		& $^o$C & M  & 309.3 & 309.6 & 309.5 & 309.6 \\
+		&	$T_{w,out}$   		& $^o$C & C  & 310.4 & 311.0 & 311.8 & 313.0 \\  
+		& 	$\dot{m}_{w,LT}$  	& $kg/s$ & C& 23.36 & 26.09 & 29.1 & 31.53 \\
+		\multicolumn{2}{l}{CAC-HT stage} & & & & & & \\
+		&	$T_{air,in}$   		& $^o$C & C  & 356.0 & 409.4 & 434.1 & 461.7 \\
+		&	$T_{air,out}$   	& $^o$C & C  & 355.2 & 350.1 & 360.0 & 368.7 \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & 360.8 & 360.2 & 359.6 & 358.7 \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & 360.8 & 362.6 & 363.6 & 365.4 \\
+		& 	$\dot{m}_{w,HT}$  	& $kg/s$ & C & 33.21 & 33.18 & 33.33 & 33.33 \\
+		\multicolumn{2}{l}{LOC} & & & & & &  \\
+		&	$T_{lo,in}$   		& $^o$C & C  &346.6 & 348.9 & 349.8 & 350.5 \\ 
+		&	$T_{lo,out}$    	& $^o$C & M  & 335.1 & 336.8 & 338.1 & 338.3 \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & 310.4 & 311.0 & 311.8 & 313.0 \\
+		&	$T_{w,out}$   		& $^o$C & C  & 317.4 & 317.6 & 317.5 & 318.5 \\ 
+		\multicolumn{2}{l}{JWC} & & & & & &  \\
+		&	$T_{wall}$    		& $^o$C & C  & \multicolumn{4}{c}{423}  \\ 
+		&	$T_{w,in}$    		& $^o$C & M  & 358.1 & 358.4 & 357.6 & 356.4 \\ 
+		&	$T_{w,out}$	   		& $^o$C & C  & 360.8 & 360.2 & 359.6 & 358.7 \\ 
 		\hline
 		\end{tabular}
 	\caption{Main engines, measured and calculated temperatures and flows at different engine loads}
+	\label{tab:ME_values}
 \end{table}
 
 INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
@@ -370,53 +375,51 @@ INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
 \begin{table}
 	\small
 	\centering
-	\begin{tabular}{llccrrrrr}
+	\begin{tabular}{llccrrrr}
 		\hline
-		\multicolumn{2}{l}{Variable} & Unit & M/C & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		\multicolumn{2}{l}{Variable} & Unit & M/C & 30\% & 50\% & 70\% & 90\% \\
 		\hline
-		\multicolumn{2}{l}{Compressor} & & & & & & & \\ 
-		& 	$T_{air,in}$  		& $^o$C & M  & &  & & & \\ 
-		&	$T_{air,out}$  		& $^o$C & C  & & & & &  \\ 
-		&	$\dot{m}_{air}$  	& $kg/s$ & C  & & & & &  \\
-		&   $\beta_{comp}$		& - 	& M & & & & &  \\
-		\multicolumn{2}{l}{Turbine} & & & & & & &  \\
-		&	$T_{air,in}$   		& $^o$C & M  & & & & &  \\ 
-		&	$T_{air,out}$  		& $^o$C & M  & & & & &  \\ 
-		&	$\dot{m}_{eg}$  	& $kg/s$ & C  & & & & &  \\
-		&   $\beta_{exp}$		& - 	& C & & & & &  \\
-		\multicolumn{2}{l}{Bypass valve} & & & & & & &  \\
-		&	$\dot{m}_{air,BP}$	& $kg/s$ & C  & & & & &  \\ 
-		\multicolumn{2}{l}{Cylinders} & & & & & & &   \\
-		&	$\dot{m}_{air,in}$  & $kg/s$ & C  & & & & &  \\
-		&	$\dot{m}_{fuel,in}$ & $kg/s$ & C  & & & & &  \\
-		&	$\dot{m}_{eg,out}$  & $kg/s$ & C  & & & & &  \\
-		&	$T_{air,in}$  		& $^o$C & M  & & & & &  \\ 
-		&	$T_{eg,out}$  		& $^o$C & C  & & & & &  \\ 
-		\multicolumn{2}{l}{CAC-LT stage} & & & & & & &  \\
-		&	$T_{air,in}$  		& $^o$C & C  & & & & &  \\ 
-		&	$T_{air,out}$ 		& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,in}$   		& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
-		& 	$\dot{m}_{w,LT}$  	& $kg/s$ & & & & & &  \\
-		\multicolumn{2}{l}{CAC-HT stage} & & & & & & & \\
-		&	$T_{air,in}$   		& $^o$C & C  & & & & &  \\ 
-		&	$T_{air,out}$   	& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
-		& 	$\dot{m}_{w,HT}$  	& $kg/s$ & C & & & & &  \\
-		\multicolumn{2}{l}{LOC} & & & & & & &  \\
-		&	$T_{lo,in}$   		& $^o$C & C  & & & & &  \\  
-		&	$T_{lo,out}$    	& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,in}$    		& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,out}$   		& $^o$C & C  & & & & &  \\ 
-		\multicolumn{2}{l}{JWC} & & & & & & &  \\
-		&	$T_{wall}$    		& $^o$C & C  & & & & &  \\ 
-		&	$T_{w,in}$    		& $^o$C & M  & & & & &  \\ 
-		&	$T_{w,out}$	   		& $^o$C & C  & & & & &  \\ 
-		& 	$\dot{m}_{w}$  		& $kg/s$ & C & & & & &  \\
+		\multicolumn{2}{l}{Compressor} & & & & & & \\ 
+		& 	$T_{air,in}$  		& $^o$C & M & 284.2 & 285.3 & 284.9 & 294.6 \\ 
+		&	$T_{air,out}$  		& $^o$C & C  & 323.2 & 357.9 & 391.6 & 430.9 \\
+		&	$\dot{m}_{air}$  	& $kg/s$ & C  & 1.96 & 2.65 & 3.5 & 4.27 \\
+		&   $\beta_{comp}$		& - 	& M & & & &  \\
+		\multicolumn{2}{l}{Turbine} & & & & & &  \\
+		&	$T_{eg,in}$   		& $^o$C & M  & 729.5 & 762.1 & 770.3 & 798.5 \\
+		&	$T_{eg,out}$  		& $^o$C & M  & 652.8 & 667.8 & 654.2 & 659.4 \\
+		&	$\dot{m}_{eg}$  	& $kg/s$ & C  & 2.02 & 2.74 & 3.61 & 4.41 \\
+		&   $\beta_{exp}$		& - 	& C & & & &  \\
+		\multicolumn{2}{l}{Cylinders} & & & & & &   \\
+		&	$\dot{m}_{air,in}$  & $kg/s$ & C  & 1.96 & 2.65 & 3.5 & 4.27 \\ 
+		&	$\dot{m}_{fuel,in}$ & $kg/s$ & C  & 0.05 & 0.08 & 0.11 & 0.14 \\
+		&	$\dot{m}_{eg,out}$  & $kg/s$ & C  & 2.02 & 2.74 & 3.61 & 4.41 \\
+		&	$T_{air,in}$  		& $^o$C & M  & 320.8 & 322.3 & 327.6 & 329.1 \\
+		&	$T_{eg,out}$  		& $^o$C & C  & 729.5 & 762.1 & 770.3 & 798.5 \\
+		\multicolumn{2}{l}{CAC-LT stage} & & & & & &  \\
+		&	$T_{air,in}$  		& $^o$C & C  & 323.2 & 356.3 & 366.7 & 372.0 \\ 
+		&	$T_{air,out}$ 		& $^o$C & M  & 320.8 & 322.3 & 327.6 & 329.1 \\ 
+		&	$T_{w,in}$   		& $^o$C & M  & 317.1 & 316.3 & 317.5 & 314.1 \\
+		&	$T_{w,out}$   		& $^o$C & C  & 317.2 & 318.2 & 320.5 & 318.3 \\
+		& 	$\dot{m}_{w,LT}$  	& $kg/s$ & C & 11.16 & 11.16 & 10.98 & 10.78 \\ 
+		\multicolumn{2}{l}{CAC-HT stage} & & & & & & \\
+		&	$T_{air,in}$   		& $^o$C & C  & 323.2 & 357.9 & 391.6 & 430.9 \\ 
+		&	$T_{air,out}$   	& $^o$C & C  & 323.2 & 356.3 & 366.7 & 372.0 \\ 
+		&	$T_{w,in}$    		& $^o$C & C  & 362.5 & 364.2 & 368.0 & 368.2 \\
+		&	$T_{w,out}$   		& $^o$C & C  & 362.5 & 364.3 & 369.3 & 371.9 \\
+		& 	$\dot{m}_{w,HT}$  	& $kg/s$ & C & 16.66 & 16.67 & 16.55 & 16.67 \\
+		\multicolumn{2}{l}{LOC} & & & & & &  \\
+		&	$T_{lo,in}$   		& $^o$C & C  & 348.2 & 350.3 & 354.0 & 357.3 \\
+		&	$T_{lo,out}$    	& $^o$C & M  & 336.6 & 337.4 & 339.7 & 340.4 \\
+		&	$T_{w,in}$    		& $^o$C & C & 317.2 & 318.2 & 320.5 & 318.3 \\ 
+		&	$T_{w,out}$   		& $^o$C & C  & 325.9 & 327.8 & 331.4 & 331.3 \\
+		\multicolumn{2}{l}{JWC} & & & & & & \\
+		&	$T_{wall}$    		& $^o$C & C  & \multicolumn{4}{c}{423}  \\
+		&	$T_{w,in}$    		& $^o$C & M  & 360.0 & 359.7 & 362.3 & 361.5 \\
+		&	$T_{w,out}$	   		& $^o$C & C  & 362.5 & 364.2 & 368.0 & 368.2 \\  
 		\hline
 	\end{tabular}
 	\caption{Auxiliary engines, measured and calculated temperatures and flows at different engine loads}
+	\label{tab:AE_values}
 \end{table}
 
 INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
@@ -424,37 +427,40 @@ INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
 \begin{table}
 	\small
 	\centering
-	\begin{tabular}{lcrrrrr}
+	\begin{tabular}{lcrrrr}
 		\hline
-		Energy flow & type & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		Energy flow & type & 30\% & 50\% & 70\% & 90\% \\
 		\hline
-		Power output & Mech &  &  &  &  &  \\
-		Exhaust gas & Heat &  &  &  &  &  \\
-		CAC-LT & Heat &  &  &  &  &  \\
-		CAC-HT & Heat &  &  &  &  &  \\
-		JWC & Heat &  &  &  &  &  \\
-		LOC & Heat &  &  &  &  &  \\
+		Power output & Mech &  1767 & 2946 & 4118 & 5293 \\	
+		Exhaust gas (after turbine) & Heat & 1672 & 2566 & 3227 & 3938 \\
+		CAC-LT & Heat & 104 & 152 & 279 & 454 \\
+		CAC-HT & Heat & 2 & 337  & 569 & 843  \\
+		JWC & Heat & 381 & 249 & 278 & 318 \\
+		LOC & Heat & 682 & 721 & 699 & 725  \\
 		\hline
 	\end{tabular}
 	\caption{Main engines, energy flows at different engine loads}
+	\label{tab:ME_flows}
 \end{table}
 
 \begin{table}
 	\small
 	\centering
-	\begin{tabular}{lcrrrrr}
+	\begin{tabular}{lcrrrr}
 		\hline
-		Energy flow & type & 20\% & 40\% & 60\% & 80\% & 100\% \\
+		Energy flow & type & 30\% & 50\% & 70\% & 90\% \\
 		\hline
-		Power output & Mech &  &  &  &  &  \\
-		Exhaust gas & Heat &  &  &  &  &  \\
-		CAC-LT & Heat &  &  &  &  &  \\
-		CAC-HT & Heat &  &  &  &  &  \\
-		JWC & Heat &  &  &  &  &  \\
-		LOC & Heat &  &  &  &  &  \\
+		Power output & Mech & 828 & 1381 & 1932 & 2482 \\
+		
+		Exhaust gas (after turbine) & Heat & 808 & 1144 & 1456 & 1753 \\
+		CAC-LT & Heat & 5 & 91 & 139 & 216 \\
+		CAC-HT & Heat & 0 & 5 & 89 & 257  \\
+		JWC & Heat & 176 & 314 & 396 & 467 \\ 
+		LOC & Heat & 405 & 448 & 499 & 587  \\
 		\hline
 	\end{tabular}
 	\caption{Auxiliary engines, energy flows at different engine loads}
+	\label{tab:AE_flows}
 \end{table}
 
 
@@ -763,12 +769,6 @@ Within the electric energy demand, the HVAC systems only represent a minor contr
 
 
 
-
-
-
-
-\subsection{Heat demand and generation} \label{sec:res:heat}
-
 FIGURE --> Pie, heat generated by source
 FIGURE --> filled lines, heat generated by source.
 
@@ -791,19 +791,39 @@ Regarding the heat demand onboard, it can be seen that the HVAC re-heater repres
 \subsection{Exergy Analysis} \label{sec:res:exergy}
 
 The results of the exergy analysis of the ship energy systems are shown in Figure REF and Tables REF to REF. 
+\begin{itemize}
+	\item Table(s) --> Exergy efficiencies
+	\begin{itemize}
+		\item General at system level
+		\item One per system (MEs, AEs, CoolingSystems, SteamSystems) 
+	\end{itemize}
+	\item Figure --> Grassman diagram
+\end{itemize}
 
-Table(s) --> Exergy efficiencies
-- General at system level
-- One per system (MEs, AEs, CoolingSystems, SteamSystems)
+It can be observed that there are large irreversibilities concentrated in some specific parts of the system that show potential for improvement. This is particularly the case of the LT/HT merging valves, where exergy is destroyed in the mixing process. Another substantial source of exergy destruction is the steam heater in the HTHR system, where heat at medium pressure (6 bar) is used to heat up water at 90$^o$C. The analysis of exergy destruction also points out the HVAC reheater as a potential source of improvement, based on the use of relatively high-temperature water for heating up air to around 30$^o$C and on the large energy demand of the component. Other important exergy destruction sources can be located in the engines, as expected, but the improvement of engine processes and technology goes beyond the scope of this work. 
 
-Figure --> Grassman diagram
-
+From the point of view of the exergy losses, it appears that the largest exergy losses are located in the exhaust gas. It should be noted that, even though a large part of this exergy cannot be recovered given the limitations on the exhaust gas outlet temperature to avoid the condensation of sulphuric acid, there is still a significant potential to be harvested if all the available exergy in the exhaust gas was recovered. This potential is further increased by the exergy destroyed in the process of dumping steam when it is produced in excess during summer. The exergy lost in the sea water coolers is much lower, highlighting the fact that the potential for improving the efficiency of the system is located in other parts of the cooling systems. 
 
 
 
 
 \subsection{Typical operational days}  \label{sec:res:typicalDays}
 
+
+
+
+
+\subsection{Potential for system improvement}
+
+Based on the results of the energy and exergy analysis, it is possible to identify a number of possible measures that could potentially improve the efficiency of the system. 
+
+Given the fact that many engines are operated at low load (both main and auxiliary engines), the system would benefit from both an electrification of the system and from the installation of batteries. The system electrification was explored by the authors \cite{Baldi2016b} and showed a relevant potential from both an environmental and an economic point of view. The installation of batteries was also considered in a previous publication by the authors \cite{Baldi2017} and proved the potential for yearly savings of 1-2\%. In this second case, however, it should be noted that the economic performance was not ensured. 
+
+The availability of waste heat that is not already recovered by the system suggests that the system could benefit from the installation of a Heat-to-power WHR. This possibility was tested by the authors both in the case that no additional retrofit is performed \cite{Ahlgren2016,Mondejar2017}, with estimated savings of 22\% of the auxiliary power demand for a reference voyge, and in the case of a full integration with the rest of the system \cite{Baldi2017}, with estimated savings of up to 6\% of the total fuel consumption for a year of ship operations. 
+
+It should be noted that in the second case the advantages in terms of system performance were obtained through a system-wide optimization of the system, where an improved utilization of the low-temperature waste heat available allowed "freeing" part of the high-temperature heat from the exhaust gas to the heat-to-power WHR system, hence improving the overall exergy efficiency of the system. This includes, for instance, the concept of using heat from the LT cooling systems (currently unused) for the HVAC preheater, hence reducing exergy destruction in the HVAC preheater itself and in the steam heater. This concept could be extended to other low-temperature heat consumers (such as the machinery space heating), but it would clearly constitute a larger benefit if applied to the HVAC preheater, which is the largest heat demand on board. 
+
+OTHER?
 
 
 

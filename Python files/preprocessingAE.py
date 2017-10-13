@@ -10,7 +10,7 @@ def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readAuxEnginesExistingValues(raw, processed, CONSTANTS, hd)
-    processed = ppo.engineStatusCalculation("AuxEngines", raw, processed, CONSTANTS, hd)
+    processed = ppo.engineStatusCalculation("AuxEngines", raw, processed, CONSTANTS, hd, dict_structure)
     # Calculating the cooling flows, so that they can be later assigned easily
     processed = cs.coolingFlows(processed, CONSTANTS, "AuxEngines")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "AuxEngines", "AE-1.1")

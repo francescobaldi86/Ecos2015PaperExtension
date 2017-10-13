@@ -25,7 +25,7 @@
 
 
 do_processed_data_preparation = "no"
-do_data_processing = "no"
+do_data_processing = "yes"
 
 
 
@@ -60,6 +60,7 @@ import auxiliaryDemand as aux
 import coolingsystems as cs
 from helpers import d2df
 import export as ex
+import postProcessing as post
 
 #%%
 ######################################
@@ -107,7 +108,7 @@ elif do_data_processing == "yes":
     processed = ppa.auxEngineProcessing(dataset_raw, processed, dict_structure, CONSTANTS, header_names)
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-1")
     # Calculating the auxiliary power demands: heating and electric power
-    processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure)
+    processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure, dataset_raw, header_names)
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Demands", "Demands-1")
     # Calculating the central cooling systems
@@ -119,8 +120,6 @@ elif do_data_processing == "yes":
     # Re-doing the calculation of the connected points
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
-    # Assigning the operational mode
-    processed = ppo.operationalModeCalculator(processed, dataset_raw, CONSTANTS, header_names)
     # Saving the processed data
     processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
     # Result check log

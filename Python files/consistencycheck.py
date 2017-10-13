@@ -63,7 +63,8 @@ def enginesCheck(processed, CONSTANTS):
                 processed[d2df(name,"Cyl","Power_out","Edot")] +
                 processed[d2df(name,"Turbine","Mix_out","Edot")] +
                 (processed[d2df(name,"LOC","LTWater_out","Edot")] - processed[d2df(name,"CAC_LT","LTWater_in","Edot")]) +
-                (processed[d2df(name, "CAC_HT", "HTWater_out", "Edot")] - processed[d2df(name, "JWC", "HTWater_in", "Edot")]))
+                (processed[d2df(name, "CAC_HT", "HTWater_out", "Edot")] - processed[d2df(name, "JWC", "HTWater_in", "Edot")]) +
+                processed[d2df(name, "Cyl", "QdotRad_out", "Edot")])
             energyInput = (
                 processed[d2df(name, "Cyl", "FuelCh_in", "Edot")] +
                 processed[d2df(name, "Cyl", "FuelPh_in", "Edot")] +

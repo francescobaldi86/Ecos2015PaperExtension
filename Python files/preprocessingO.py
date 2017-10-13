@@ -16,9 +16,11 @@ def operationalModeCalculator(processed, raw, CONSTANTS, hd):
     return processed
 
 
-def engineStatusCalculation(type, raw, processed, CONSTANTS, hd):
+def engineStatusCalculation(type, raw, processed, CONSTANTS, hd, dict_structure):
     for system in CONSTANTS["General"]["NAMES"][type]:
         processed[system + ":" + "on"] = raw[hd[system+"-TC__RPM_"]] > 5000
+        for unit in dict_structure["systems"][system]["units"]:
+            processed[system + ":" + unit + ":on"] = processed[system + ":" + "on"]
     return processed
 
 
@@ -59,12 +61,13 @@ def bsfcISOCorrection(bsfc_ISO, charge_air_temp, charge_air_cooling_temp, fuel_t
     return (bsfc, LHV)
 
 
-def mixtureComposition(mdot_air,mdot_fuel,temp_fuel,CONSTANTS):
+def mixtureComposition(mdot_eg,mdot_fuel,temp_fuel,CONSTANTS):
     # This value takes as input the flow of air and fuel and calculates the resulting composition of the exhaust gas, assuming full combustion
     # The composition is written in the code accepted by CoolProp, i.e. in the form:
     # "HEOS::COMP_1[%]&COMP_2[%]..."
     # Accepted components are: N2, O2, CO2, H2O (SO2?)
     # The composition is a dataframe of 4 columns, in the order above
+    mdot_air = mdot_eg - mdot_fuel
     mixture = pd.Series(index=mdot_air.index)
     fuel_C_x = pd.Series(0,index=mdot_air.index)
     fuel_H_x = pd.Series(0,index=mdot_air.index)

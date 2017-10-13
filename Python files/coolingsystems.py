@@ -14,7 +14,8 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
             CONSTANTS["General"]["HFO"]["CP"] * processed[d2df(system,"Cyl","FuelPh_in","mdot")] * (processed[d2df(system,"Cyl","FuelPh_in","T")] - processed["T_0"]) -
             processed[d2df(system, "Cyl", "Power_out", "Edot")] -
             processed[d2df(system,"Turbine","Mix_out","Edot")] +
-            processed[d2df(system,"Comp","Air_in","Edot")])
+            processed[d2df(system,"Comp","Air_in","Edot")] -
+            processed[d2df(system, "Cyl", "QdotRad_out", "Edot")])
         # Calculating the energy going to the charge air cooler, based on the estimated temperatures on the air line
         energy_2_cac = CONSTANTS["General"]["CP_AIR"] * processed[d2df(system,"Cyl","Air_in","mdot")] * (processed[d2df(system,"Comp","Air_out","T")] - processed[d2df(system,"Cyl","Air_in","T")])
         # Calculating the energy going to the HT cooling systems, based on interpolation from the project guide
@@ -31,11 +32,13 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
         # The energy going to the CAC, LT stage results as a consequence by thermal balance over the CAC
         energy_2_cac_lt = energy_2_cac - energy_2_cac_ht
         # The energy to the JWC results as a balance over the HT cooling systems
-        energy_2_jwc = energy_2_ht - energy_2_cac_ht
+        # energy_2_jwc = energy_2_ht - energy_2_cac_ht
+        energy_2_jwc = (energy_2_cooling - energy_2_cac) / 2
         processed[d2df(system,"JWC","QdotJW_in","Edot")] = energy_2_jwc
         processed[d2df(system, "Cyl", "QdotJW_out", "Edot")] = energy_2_jwc
         # The energy to the LOC results as a balance over the LT cooling systems
-        energy_2_loc = energy_2_lt - energy_2_cac_lt
+        # energy_2_loc = energy_2_lt - energy_2_cac_lt
+        energy_2_loc = (energy_2_cooling - energy_2_cac) / 2
         # Finally, the temperatures in the flows are calculated based on the calculated energy and mass flow values
         # For LT, first we have the CAC, then the LOC
         processed[d2df(system,"CAC_LT","LTWater_out","T")] = processed[d2df(system,"CAC_LT","LTWater_in","T")] + energy_2_cac_lt / processed[d2df(system,"CAC_LT","LTWater_out","mdot")] / CONSTANTS["General"]["CP_WATER"]
@@ -49,7 +52,7 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
         processed[d2df(system, "CAC_HT", "Air_out", "T")] = processed[d2df(system, "Comp", "Air_out", "T")] - energy_2_cac_ht / processed[d2df(system,"Cyl","Air_in","mdot")] / CONSTANTS["General"]["CP_AIR"]
         processed[d2df(system, "CAC_LT", "Air_out", "T")] = processed[d2df(system, "CAC_HT", "Air_out", "T")] - energy_2_cac_lt / processed[d2df(system, "Cyl", "Air_in", "mdot")] / CONSTANTS["General"]["CP_AIR"]
         # Finally, we have the HRSG (for some cases)
-        if system == "AE1":
+        if system == "ME1":
             aaa = 0
         if engine_type == "AuxEngines" or system in {"ME2", "ME3"}:
             processed[d2df(system,"HRSG","Steam_in","mdot")] = ((processed[d2df(system,"HRSG","Mix_in","h")] - processed[d2df(system,"HRSG","Mix_out","h")]) *

@@ -5,7 +5,7 @@ def exportEfficiecies(processed, CONSTANTS, dict_structure):
     text_file.write("Variable name,EnergyEfficiency,ExergyEfficiency,EfficiencyDefect,IrreversibilityShare\n")
     for system in ["ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4", "CoolingSystems", "HTHR", "Steam"]:
         text_file.write("\n")
-        text_file.write(system+"\n")
+        text_file.write(system+", , , ," + str(processed[system+":"+"delta"].mean()) + "\n")
         for unit in dict_structure["systems"][system]["units"]:
             text_file.write(unit)
             for efficiency in ["eta", "eps", "lambda", "delta"]:

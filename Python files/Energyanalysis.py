@@ -22,7 +22,7 @@ def propertyCalculator(processed, dict_structure, CONSTANTS, system_list):
     for system in system_list:
         for unit in dict_structure["systems"][system]["units"]:
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
-                if system+":"+unit+":"+flow == "CoolingSystems:SWC13:SeaWater_out":
+                if system+":"+unit+":"+flow == "Steam:Boiler1:Air_in":
                     aaa = 0
                 #  The calculation of the properties is done if and only if the exergy flow is completely empty
                 if processed[d2df(system,unit,flow,"Bdot")].isnull().sum() == len(processed[d2df(system,unit,flow,"Bdot")]):
@@ -42,44 +42,35 @@ def propertyCalculator(processed, dict_structure, CONSTANTS, system_list):
                                 ds = (pd.Series(entropyCalculator(np.array(temp), CONSTANTS), index=df_index) -
                                       pd.Series(entropyCalculator(np.array(processed["T_0"]), CONSTANTS),index=df_index) -
                                       R * np.log(np.array(press) / CONSTANTS["General"]["P_ATM"]))
-                                dh.loc[~processed[system + ":on"]] = 0
-                                ds.loc[~processed[system + ":on"]] = 0
                             elif ("Mix" in flow) or ("EG" in flow):
-                                #dh = pd.Series(index=processed.index)
-                                #ds = pd.Series(index=processed.index)
-                                mixture = ppo.mixtureCompositionNew(
-                                    processed[d2df(system,unit,flow,"mdot")],
-                                    processed[d2df(system,"Cyl","FuelPh_in","mdot")],
-                                    processed[d2df(system, "Cyl", "FuelPh_in", "T")],
-                                    CONSTANTS)
+                                if system in CONSTANTS["General"]["NAMES"]["MainEngines"].union(CONSTANTS["General"]["NAMES"]["AuxEngines"]):
+                                    mixture = ppo.mixtureCompositionNew(
+                                        processed[d2df(system,unit,flow,"mdot")],
+                                        processed[d2df(system,"Cyl","FuelPh_in","mdot")],
+                                        processed[d2df(system, "Cyl", "FuelPh_in", "T")],
+                                        CONSTANTS)
+                                elif system == "Steam":
+                                    mixture = ppo.mixtureCompositionNew(
+                                        processed[d2df(system, unit, flow, "mdot")],
+                                        processed[d2df(system, "Boiler1", "FuelPh_in", "mdot")],
+                                        processed[d2df(system, "Boiler1", "FuelPh_in", "T")],
+                                        CONSTANTS)
                                 R = CONSTANTS["General"]["R_0"] * sum(mixture[idx] / CONSTANTS["General"]["MOLAR_MASSES"][idx] for idx in {"N2", "O2", "CO2", "H2O"})
                                 dh = pd.Series(enthalpyCalculator(np.array(temp), CONSTANTS, mixture), index=df_index) - pd.Series(
                                     enthalpyCalculator(np.array(processed["T_0"]), CONSTANTS, mixture), index=df_index)
                                 ds = pd.Series(entropyCalculator(np.array(temp),  CONSTANTS, mixture), index=df_index) - pd.Series(
                                     entropyCalculator(np.array(processed["T_0"]), CONSTANTS, mixture), index=df_index) - (
                                     R * np.log(np.array(press) / CONSTANTS["General"]["P_ATM"]))
-                                # for idx in dh.index:
-                                #     if "Mix" in flow:
-                                #         mixture = processed[system+":Mix_Composition"][idx]
-                                #     else:
-                                #         mixture = processed[system + ":EG_Composition"][idx]
-                                #     if processed[system + ":on"][idx]:
-                                #         #dh.loc[idx] = cp.PropsSI('H', 'T', temp[idx], 'P', press[idx], mixture) - cp.PropsSI('H', 'T', processed["T_0"][idx], 'P', CONSTANTS["General"]["P_ATM"], mixture)
-                                #         #ds.loc[idx] = cp.PropsSI('S', 'T', temp[idx], 'P', press[idx], mixture) - cp.PropsSI('S', 'T', processed["T_0"][idx], 'P', CONSTANTS["General"]["P_ATM"], mixture)
-                                #         dh.loc[idx] = cp.PropsSI('H', 'T', temp[idx], 'P', press[idx], mixture) - cp.PropsSI('H', 'T', CONSTANTS["General"]["T_STANDARD"], 'P', CONSTANTS["General"]["P_ATM"], mixture)
-                                #         ds.loc[idx] = cp.PropsSI('S', 'T', temp[idx], 'P', press[idx], mixture) - cp.PropsSI('S', 'T', CONSTANTS["General"]["T_STANDARD"], 'P', CONSTANTS["General"]["P_ATM"], mixture)
-                                #     else:
-                                #         dh.loc[idx] = 0
-                                #         ds.loc[idx] = 0
-                                #dh = dh * (temp - processed["T_0"]) / (temp - CONSTANTS["General"]["T_STANDARD"])
-                                #ds = ds * np.log(temp / processed["T_0"]) / np.log((temp - CONSTANTS["General"]["T_STANDARD"]))
-                            elif "Steam" in flow:
-                                if "in" in flow:
-                                    dh = CONSTANTS["Steam"]["DH_STEAM"] + CONSTANTS["General"]["CP_WATER"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
-                                    ds = CONSTANTS["Steam"]["DS_STEAM"] + CONSTANTS["General"]["CP_WATER"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
-                                elif "out" in flow:
-                                    dh = CONSTANTS["General"]["CP_WATER"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
-                                    ds = CONSTANTS["General"]["CP_WATER"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
+                            #elif "Steam" in flow:
+                                #    if "in" in flow:
+                                #    dh = CONSTANTS["Steam"]["DH_STEAM"] + CONSTANTS["General"]["CP_WATER"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
+                                #    ds = CONSTANTS["Steam"]["DS_STEAM"] + CONSTANTS["General"]["CP_WATER"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
+                                #elif "out" in flow:
+                                #    dh = CONSTANTS["General"]["CP_WATER"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
+                                #    ds = CONSTANTS["General"]["CP_WATER"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
+                            if system + ":" + unit + ":on" in processed.keys():
+                                dh.loc[~processed[system + ":" + unit + ":on"]] = 0
+                                ds.loc[~processed[system + ":" + unit + ":on"]] = 0
                             processed[d2df(system, unit, flow, "h")] = dh
                             processed[d2df(system, unit, flow, "b")] = dh - processed["T_0"] * ds
                             processed[d2df(system, unit, flow, "Edot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "h")]
@@ -101,8 +92,11 @@ def propertyCalculator(processed, dict_structure, CONSTANTS, system_list):
                                 dh = CONSTANTS["General"]["CP_LO"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
                                 ds = CONSTANTS["General"]["CP_LO"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
                             if "Fuel" in flow:
-                                dh = CONSTANTS["General"]["CP_HFO"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
-                                ds = CONSTANTS["General"]["CP_HFO"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
+                                dh = CONSTANTS["General"]["HFO"]["CP"] * (processed[d2df(system, unit, flow, "T")] - processed["T_0"])
+                                ds = CONSTANTS["General"]["HFO"]["CP"] * np.log((processed[d2df(system, unit, flow, "T")] / processed["T_0"]))
+                            if system + ":" + unit + ":on" in processed.keys():
+                                dh.loc[~processed[system + ":" + unit + ":on"]] = 0
+                                ds.loc[~processed[system + ":" + unit + ":on"]] = 0
                             processed[d2df(system, unit, flow, "h")] = dh
                             processed[d2df(system, unit, flow, "b")] = dh - processed["T_0"] * ds
                             processed[d2df(system, unit, flow, "Edot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "h")]

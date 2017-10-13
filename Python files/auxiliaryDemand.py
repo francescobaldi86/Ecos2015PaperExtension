@@ -2,19 +2,23 @@ import numpy as np
 import pandas as pd
 from helpers import d2df
 import datetime as dt
+import preprocessingO as ppo
 
 
-def auxPowerAnalysis(processed, CONSTANTS, dict_structure):
+def auxPowerAnalysis(processed, CONSTANTS, dict_structure, dataset_raw, header_names):
     # Calculating the total auxiliary power demand
     processed = auxPowerTotalDemand(processed)
     processed = propPowerDemand(processed, CONSTANTS)
     # Calculating the contribution from the thrusters
     #processed = thrusters(processed, CONSTANTS)  # The second method works better. But I still keep it
     processed = thrusters(processed, CONSTANTS)
+    # Assigning the operational mode
+    processed = ppo.operationalModeCalculator(processed, dataset_raw, CONSTANTS, header_names)
+
     processed = HVAC(processed, CONSTANTS)
     processed = heatDemand(processed, CONSTANTS, dict_structure)
     processed = HTHR(processed, CONSTANTS)
-    processed = steamSystems(processed, CONSTANTS)
+    processed = steamSystems(processed, CONSTANTS, dataset_raw, header_names)
     return processed
 
 
@@ -252,7 +256,7 @@ def HTHR(processed, CONSTANTS):
 
 
 
-def steamSystems(processed, CONSTANTS):
+def steamSystems(processed, CONSTANTS, dataset_raw, header_names):
     db_index = processed.index
     # This function assigns all calculations to the steam systems
     Qdot_ab = pd.Series(index=db_index)
@@ -299,7 +303,14 @@ def steamSystems(processed, CONSTANTS):
     Qdot_steam = pd.Series(data=Qdot_steam, index=db_index)
 
     # Adding the boiler flow
-    processed["Steam:Boiler1:Steam_in:mdot"] = Qdot_ab / CONSTANTS["Steam"]["DH_STEAM"]
+    processed["Steam:Boiler1:Steam_out:mdot"] = (Qdot_steam + Qdot_dumped) / CONSTANTS["Steam"]["DH_STEAM"]
+    processed["Steam:Boiler1:Steam_HotWell_in:mdot"] = Qdot_ab / CONSTANTS["Steam"]["DH_STEAM"]
+    # Including the "Energy Storage" flows
+    Qdot_storage = Qdot_ab + Qdot_hrsg - Qdot_steam - Qdot_dumped
+    processed.loc[Qdot_storage >= 0, "Steam:Boiler1:Steam_TES_out:mdot"] = Qdot_storage[Qdot_storage >= 0] / CONSTANTS["Steam"]["DH_STEAM"]  # When there is excess steam, it goes to the storage
+    processed.loc[Qdot_storage < 0, "Steam:Boiler1:Steam_TES_out:mdot"] = 0
+    processed.loc[Qdot_storage < 0, "Steam:Boiler1:Steam_TES_in:mdot"] = -Qdot_storage[Qdot_storage < 0] / CONSTANTS["Steam"]["DH_STEAM"] # When the steam balance is negative, it becomes an input
+    processed.loc[Qdot_storage >= 0, "Steam:Boiler1:Steam_TES_in:mdot"] = 0
     # Adding the steam dumped
     processed["Steam:HotWell:LTWater_in:mdot"]= Qdot_dumped / CONSTANTS["General"]["CP_WATER"] / 20
     processed["Steam:HotWell:Steam_Dumped_in:mdot"] = Qdot_dumped / CONSTANTS["Steam"]["DH_STEAM"]
@@ -317,15 +328,22 @@ def steamSystems(processed, CONSTANTS):
     processed["Steam:HotWell:LTWater_out:T"] = processed["Steam:HotWell:LTWater_in:T"] + Qdot_dumped / CONSTANTS["General"]["CP_WATER"] / processed["Steam:HotWell:LTWater_in:mdot"]
     # To avoid NaN values, the LT water outlet temperature is equal to the inlet when the Qdot_dumped is equal to 0
     processed.loc[Qdot_dumped == 0, "Steam:HotWell:LTWater_out:T"] = processed["Steam:HotWell:LTWater_in:T"][Qdot_dumped == 0]
-    processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
-    processed["Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"] / CONSTANTS["General"]["HFO"]["LHV"]
+    # Calculating fuel flows
+    processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_HotWell_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
+    processed.loc[processed["operationalMode"] == "Port/Stay", "Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"][processed["operationalMode"] == "Port/Stay"] / CONSTANTS["General"]["MDO"]["LHV"]
+    processed.loc[processed["operationalMode"] != "Port/Stay", "Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"][processed["operationalMode"] != "Port/Stay"] / CONSTANTS["General"]["MDO"]["HHV"]
+    processed.loc[processed["operationalMode"] == "Port/Stay", "Steam:Boiler1:FuelPh_in:T"] = 60 + 273.15
+    processed.loc[processed["operationalMode"] != "Port/Stay", "Steam:Boiler1:FuelPh_in:T"] = 90 + 273.15
+    # Calculating air flows
     processed["Steam:Boiler1:Air_in:mdot"] = processed["Steam:Boiler1:FuelPh_in:mdot"] * CONSTANTS["OtherUnits"]["BOILER"]["LAMBDA"]
+    # Calculating exhaust flows
     processed["Steam:Boiler1:EG_out:mdot"] = processed["Steam:Boiler1:Air_in:mdot"] + processed["Steam:Boiler1:FuelPh_in:mdot"]
-    # Assuming the boiler 2 is never used. The thing is: we have no way of assessing whether one or the other is used!
-    processed.loc[:,"Steam:Boiler2:Steam_in:mdot"] = 0
-    processed.loc[:,"Steam:Boiler2:FuelCh_in:Edot"] = 0
-    processed.loc[:,"Steam:Boiler2:FuelPh_in:mdot"] = 0
-
+    processed["Steam:Boiler1:EG_out:T"] = processed["T_0"] + (
+        processed["Steam:Boiler1:FuelCh_in:Edot"] * (1-CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]) +
+        processed["Steam:Boiler1:Air_in:mdot"] * CONSTANTS["General"]["CP_AIR"] * (processed["Steam:Boiler1:Air_in:T"] - processed["T_0"])) / (
+        processed["Steam:Boiler1:EG_out:mdot"] * CONSTANTS["General"]["CP_EG"])
+    processed.loc[processed["Steam:Boiler1:EG_out:T"].isnull(), "Steam:Boiler1:EG_out:T"] = processed["T_0"]
+    processed.loc[:,"Steam:Boiler1:on"] = True  # With the new defition of the thermal systems, the steam boiler is always on
 
 
     return processed

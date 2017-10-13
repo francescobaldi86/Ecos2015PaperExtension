@@ -13,7 +13,7 @@ def mainEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
     # Reading existing values
     processed = readMainEnginesExistingValues(raw, processed, CONSTANTS, hd)
-    processed = ppo.engineStatusCalculation("MainEngines", raw, processed, CONSTANTS, hd)
+    processed = ppo.engineStatusCalculation("MainEngines", raw, processed, CONSTANTS, hd, dict_structure)
     processed = cs.coolingFlows(processed, CONSTANTS, "MainEngines")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-1.1")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "MainEngines", "ME-1.2")
@@ -144,7 +144,7 @@ def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
         processed[d2df(system, "Comp", "Air_out", "T")] = T_Comp_out
         # Calculating the air inflow aspired by the cylinder: calculated as inlet air density times the maximum volume,
         # times the engine speed
-        processed[d2df(system,"Cyl","Air_in","mdot")] = CONSTANTS["MainEngines"]["V_MAX"] * (
+        processed[d2df(system,"Cyl","Air_in","mdot")] = CONSTANTS["MainEngines"]["AIR_FLOW_MULT"] * CONSTANTS["MainEngines"]["V_MAX"] * (
             processed[d2df(system,"Comp","Air_out","p")]) / (
             CONSTANTS["General"]["R_AIR"] * processed[d2df(system,"Cyl","Air_in","T")]) * (
             processed[d2df(system,"Cyl","Power_out","omega")] / 60 / 2 * CONSTANTS["General"]["ETA_VOL"]) * (

@@ -80,25 +80,17 @@ def mainEngines(CONSTANTS):
     output["FRP_2_MFR"]["POLY"] = {"ME1": [-159.612, 24.23254], "ME2": [-159.612, 28.282788], "ME3": [-159.612, 28.282788], "ME4": [-159.612, 28.282788]}
     output["FRP_2_MFR"]["FRP_MIN"] = {"ME1": 18.0, "ME2": 16.6, "ME3": 17.5, "ME4": 16.4}
     output["FRP_2_MFR"]["FRP_MAX"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}
-    output["POLY_FUEL_LOAD_2_BSFC_ISO"] = np.polyfit(np.array([336.3, 587.8, 836.6, 953.1, 1141])/1141, [216.9, 187.1, 178.5, 179.2, 181.4], 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
-# output["POLY_RPM_2_POWER"] = polyfit([315 397 454 474 500 516], [1463 2925 4388 4973 5890 6435], 3)  
+    # output["POLY_FUEL_LOAD_2_BSFC_ISO"] = np.polyfit(np.array([336.3, 587.8, 836.6, 953.1, 1141])/1141, [216.9, 187.1, 178.5, 179.2, 181.4], 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
+    output["POLY_FUEL_LOAD_2_BSFC_ISO"] = np.polyfit(np.array([336.3, 587.8, 836.6, 953.1, 1141]) / 1141,
+                                                     [205, 187.1, 178.5, 179.2, 181.4], 2)  # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
     output["POLY_RPM_2_ISO_BSFC"] = np.polyfit([315.0, 397.0, 454.0, 474.0, 500.0, 516.0], [np.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1], 2)
-# output["POLY_PCA_2_LOAD"] = [0.25/0.24, 0, 0.2577, 0.1438, 0.5, 0]  
     output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit([0.25, 0.5, 0.75, 0.85, 1.0, 1.1], [np.mean([216.1, 207.6, 225.5, 209.9]), 188.2, 179.7, 181.6, 185, 191.1], 2)
     output["QDOT_HT_DES"] = 1650.0  # Heat flow to the HT cooling systems at design load, in [kW]
     output["QDOT_LT_DES"] = 1450.0  # Heat flow to the HT cooling systems at design load, in [kW]
-    # output["POLY_LOAD_2_QDOT_HT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
-    #                                     np.array([500.0, 1000.0, 1250.0, output["QDOT_HT_DES"]]) / output["QDOT_HT_DES"], 2)]
-    # output["POLY_LOAD_2_QDOT_LT"] = [np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
-    #                                     np.array([800.0, 1050.0, 1200.0, output["QDOT_LT_DES"]]) / output["QDOT_LT_DES"], 2)]
-    # output["POLY_LOAD_2_QDOT_HT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_HT"][0],0.5)]), 1))
-    # output["POLY_LOAD_2_QDOT_LT"].append(np.polyfit(np.array([0, 0.5]), np.array([0, np.polyval(output["POLY_LOAD_2_QDOT_LT"][0], 0.5)]), 1))
-    # output["POLY_LOAD_2_EPS_CACHT"] = np.polyfit(np.array([0.5, 0.75, 0.85, 1]),
-    #                                                 np.array([0.922, 0.902, 0.876, 0.871]), 1)
-    output["POLY_LOAD_2_QDOT_HT"] = np.array([0.7826 , 0.2204 , 0])
+    # output["POLY_LOAD_2_QDOT_HT"] = np.array([0.7826 , 0.2204 , 0])
+    output["POLY_LOAD_2_QDOT_HT"] = np.array([0.5826, 0.5204, 0])
     output["POLY_LOAD_2_QDOT_LT"] = np.array([-0.1206 , 1.0978 , 0])
     output["POLY_H_2_QDOT"] = np.array([-3.65E-4, +3.17E-2, 2.85E1])
-# output["POLY_FUEL_RACK_2_MASS_FUEL_CYCLE"] = polyfit([0.233333, 0.5, 0.7, 0.8, 1],[0.01726, 0.02435, 0.03081, 0.03397, 0.03869],1)  
     output["BSFC_ISO_DES"] = np.polyval(output["POLY_LOAD_2_ISO_BSFC"], 1)
 # Function handle that allows to calculate the fuel load
     output["BORE"] = 0.46   # Main engine bore
@@ -114,13 +106,14 @@ def mainEngines(CONSTANTS):
     output["ETA_CORR"] = 1.05
     output["ETA_MECH_TC"] = 0.9   # Mechanical efficiency of the turbocharger [-]. Variations from "Development and validation of a new turbocharger simulation methodology for marine two stroke diesel engine modelling and diagnostic applications"
     output["POLY_TC_RPM_2_ETA_MECH"] = np.polyfit([6000, 9500, 13000, 16500, 20000], [0.7 , 0.76 , 0.84 , 0.91 , 0.91], 2)
-    output["EPS_CAC_HTSTAGE"] = 0.85  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
+    output["EPS_CAC_HTSTAGE"] = 0.7  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
     output["FRP_DES"] = {"ME1": 51, "ME2": 47, "ME3": 47, "ME4": 46}  # Value of the fuel rack position at 100% load
     # output["BYPASS_FLOW"] = 1.1
     output["STATIC_HEAD"] = 19
     output["T_COOLING_MIX"] = 71 + 273.15  # Temperature of the LT/HT mix before the mixing with the HT cooling systems
+    output["AIR_FLOW_MULT"] = 0.95
     return output
     
     
