@@ -40,7 +40,7 @@ def assumptions(raw, processed, CONSTANTS, hd):
         # Temperature in the engine room, i.e. inlet to the compressor of the TC
         processed[d2df(system, "Comp", "Air_in", "T")] = raw[hd["ER_AIR_T_"]] + 273.15
         # Assuming that the pressure in the exhaust gas is 90% of the pressure in the inlet manifold. Somewhat reasonable
-        processed[d2df(system, "Cyl", "EG_out", "p")] = (0.9 * raw[hd[system + "-CAC_AIR_P_OUT"]] + 1.01325) * 100000
+        processed[d2df(system, "Cyl", "EG_out", "p")] = (0.98 * raw[hd[system + "-CAC_AIR_P_OUT"]] + 1.01325) * 100000
         # Assuming the pressure of the fuel to be around 9 barg, based on measurements from ME4
         processed.loc[:,d2df(system, "Cyl", "FuelPh_in", "p")] = (9 + 1.01325) * 10e5
         # Assuming the temperature of the cylinder wall to be 150 degC

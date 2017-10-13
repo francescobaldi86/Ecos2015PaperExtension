@@ -10,7 +10,7 @@ def exportEfficiecies(processed, CONSTANTS, dict_structure):
             text_file.write(unit)
             for efficiency in ["eta", "eps", "lambda", "delta"]:
                 if system + ":" + unit + ":" + efficiency in processed.columns:
-                    text_file.write("," + str(processed[system+":"+unit+":"+ efficiency].mean()))
+                    text_file.write("," + str(dict_structure["systems"][system]["units"][unit][efficiency]))
                 else:
                     text_file.write(",")
             text_file.write("\n")

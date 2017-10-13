@@ -73,5 +73,20 @@ If you just want to look at / elaborate the results previously calculated, simpl
 Otherwise, if you make changes somewhere in the code in such a way that the results are expected to change, change it to "yes".
 Please always leave the "do_processed_data_preparation" to "yes". 
 
+
+
+
+3 - How to get useful things out of it
+
 If you want to play with the output results, you have two main ways:
--  
+- Using a Python IDE that supports debugging mode (such as PyCharm)
+- Running the Main.py, then writing your own script where you load the results and you play with them
+
+Then, there are several ways to get some info out:
+- The code automatically generates tables with some aggregate figures. Check the folder "results". 
+- In the "plotting" module there are some info on how to plot what you need. For some predefined plot, check the "predefinedPlots" function. You call it by doing:
+		plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, "NameOfThePredefinedPlot")
+		example: plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, "Pie:DemandFull")
+- If you take whatever field of the output dataframe, you can get quite some useful information by inserting the command:
+		processed["fieldName"].describe()
+		example: processed["ME1:Cyl:Air_in:T"].describe()

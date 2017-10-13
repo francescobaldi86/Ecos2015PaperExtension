@@ -138,6 +138,8 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
             temp_flow_list = {"Edot_in", "Edot_in_useful", "Edot_out", "Edot_out_useful", "Bdot_in", "Bdot_in_useful", "Bdot_out", "Bdot_out_useful"}
             temp_df = pd.DataFrame(0, columns=temp_flow_list, index=df_index)
             for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
+                dict_structure["systems"][system]["units"][unit]["flows"][flow]["E"] = processed[d2df(system, unit, flow, "Edot")].sum() * 60 * 15 * 1e-6
+                dict_structure["systems"][system]["units"][unit]["flows"][flow]["B"] = processed[d2df(system, unit, flow, "Bdot")].sum() * 60 * 15 * 1e-6
                 if flow[-2:] == "in":
                     temp_df['Edot_in'] = temp_df['Edot_in'] + processed[d2df(system, unit, flow, "Edot")]
                     temp_df['Bdot_in'] = temp_df['Bdot_in'] + processed[d2df(system, unit, flow, "Bdot")]
@@ -168,17 +170,50 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
                             text_file.write("Flow {}:{}:{} is not recognised as either input or output \n".format(system, unit,flow))
                     else:
                         text_file.write("Flow {}:{}:{} is not recognised as either USEFEUL input or output \n".format(system, unit, flow))
+            # Saving the total energy flows
+            dict_structure["systems"][system]["units"][unit]["E_in"] = temp_df["Edot_in"].sum() * 60 * 15 * 1e-6
+            dict_structure["systems"][system]["units"][unit]["E_out"] = temp_df["Edot_out"].sum() * 60 * 15 * 1e-6
+            dict_structure["systems"][system]["units"][unit]["E_in_useful"] = temp_df["Edot_in_useful"].sum() * 60 * 15 * 1e-6
+            dict_structure["systems"][system]["units"][unit]["E_out_useful"] = temp_df["Edot_out_useful"].sum() * 60 * 15 * 1e-6
+            # Saving total exergy flows
+            dict_structure["systems"][system]["units"][unit]["B_in"] = temp_df["Bdot_in"].sum() * 60 * 15 * 1e-6
+            dict_structure["systems"][system]["units"][unit]["B_out"] = temp_df["Bdot_out"].sum() * 60 * 15 * 1e-6
+            dict_structure["systems"][system]["units"][unit]["B_in_useful"] = temp_df["Bdot_in_useful"].sum() * 60 * 15 * 1e-6
+            dict_structure["systems"][system]["units"][unit]["B_out_useful"] = temp_df["Bdot_out_useful"].sum() * 60 * 15 * 1e-6
+
             # We first calculate the energy efficiency (if possible)
             if system+":"+unit+":"+"eta" in processed.columns:
                 processed[system+":"+unit+":"+"eta"] = temp_df['Edot_out_useful'] / temp_df['Edot_in_useful']
+                processed.loc[temp_df['Edot_in_useful']==0,system + ":" + unit + ":" + "eta"] = 0
+                # Calculating the average value
+                if dict_structure["systems"][system]["units"][unit]["E_in_useful"] == 0:
+                    dict_structure["systems"][system]["units"][unit]["eta"] = 0
+                else:
+                    dict_structure["systems"][system]["units"][unit]["eta"] = dict_structure["systems"][system]["units"][unit]["E_out_useful"] / dict_structure["systems"][system]["units"][unit]["E_in_useful"]
+
             # Then exergy efficiency (again, if possible)
             if system + ":" + unit + ":" + "eps" in processed.columns:
                 processed[system + ":" + unit + ":" + "eps"] = temp_df['Bdot_out_useful'] / temp_df['Bdot_in_useful']
+                processed.loc[temp_df['Bdot_in_useful'] == 0, system + ":" + unit + ":" + "eps"] = 0
+                # Calculating the average value
+                if dict_structure["systems"][system]["units"][unit]["B_in_useful"] == 0:
+                    dict_structure["systems"][system]["units"][unit]["eps"] = 0
+                else:
+                    dict_structure["systems"][system]["units"][unit]["eps"] = dict_structure["systems"][system]["units"][unit]["B_out_useful"] / dict_structure["systems"][system]["units"][unit]["B_in_useful"]
+
             # We calculate also the irreversibility ratio. Might come in handy
             processed[system + ":" + unit + ":" + "Idot"] = temp_df['Bdot_in'] - temp_df['Bdot_out']
+            dict_structure["systems"][system]["units"][unit]["Idot"] = processed[system + ":" + unit + ":" + "Idot"].sum() * 60 * 15 * 1e-6
+
             # Finally, we calculate the lambda
             processed[system + ":" + unit + ":" + "lambda"] = (temp_df['Bdot_in'] - temp_df['Bdot_out']) / temp_df['Bdot_in']
             processed.loc[temp_df['Bdot_in'] == 0, system + ":" + unit + ":" + "lambda"] = 0
+            # Calculate the average value
+            if dict_structure["systems"][system]["units"][unit]["B_in"] == 0:
+                dict_structure["systems"][system]["units"][unit]["lambda"] = 0
+            else:
+                dict_structure["systems"][system]["units"][unit]["lambda"] = 1 - dict_structure["systems"][system]["units"][unit]["B_out"] / dict_structure["systems"][system]["units"][unit]["B_in"]
+
 
             #### ADD THE CALCULATION OF THE DELTA #####
     temp_total_idot = sum(processed[system + ":" + unit + ":" + "Idot"]
@@ -186,9 +221,14 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
     for system in dict_structure["systems"]:
         temp_system_idot = sum(processed[system + ":" + unit + ":" + "Idot"] for unit in dict_structure["systems"][system]["units"])
         processed[system + ":delta"] = temp_system_idot / temp_total_idot
+        dict_structure["systems"][system]["delta"] = temp_system_idot.sum() / temp_total_idot.sum()
         for unit in dict_structure["systems"][system]["units"]:
             processed[system + ":" + unit + ":" + "delta"] = processed[system + ":" + unit + ":" + "Idot"] / temp_system_idot
-
+            processed.loc[temp_system_idot==0, system + ":" + unit + ":" + "Idot"] = 0
+            if temp_system_idot.sum() == 0:
+                dict_structure["systems"][system]["units"][unit]["delta"] = 0
+            else:
+                dict_structure["systems"][system]["units"][unit]["delta"] = dict_structure["systems"][system]["units"][unit]["Idot"] / temp_system_idot.sum() / 60 / 15 / 1e-6
     text_file.close()
     return processed
 

@@ -12,7 +12,7 @@ def operationalModeCalculator(processed, raw, CONSTANTS, hd):
     temp[(raw[hd["SHIP_SPEED_KNOT_"]] < 15) * (raw[hd["SHIP_SPEED_KNOT_"]] > 4)] = "Low Speed Sailing"
     temp[((processed["Demands:Electricity:Thrusters:Edot"] > 0) + ((raw[hd["SHIP_SPEED_KNOT_"]] < 4) * (raw[hd["SHIP_SPEED_KNOT_"]] > 2)))] = "Maneuvering"
     temp[temp.isnull()] = "Port/Stay"
-    processed["operationalMode"] = pd.Series(temp.values)
+    processed["operationalMode"] = temp
     return processed
 
 

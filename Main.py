@@ -25,7 +25,7 @@
 
 
 do_processed_data_preparation = "no"
-do_data_processing = "yes"
+do_data_processing = "no"
 
 
 
@@ -125,19 +125,20 @@ elif do_data_processing == "yes":
     # Result check log
     cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
     # Efficiency results export
-ex.exportEfficiecies(processed, CONSTANTS, dict_structure)
+    ex.exportEfficiecies(processed, CONSTANTS, dict_structure)
 
 #%%
 ######################################
 ## POSTPROCESSING	##
 ######################################
 
-# plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure,["Pie:OperationalMode" ])
-# plot.plotMain("prompt", dict_structure, processed)
+processed = ppo.operationalModeCalculator(processed, dataset_raw, CONSTANTS, header_names)
+plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure,["TimeSeries:HeatGenerationStacked"])
 
 
 
 
+# processed = ea.efficiencyCalculator(processed, dict_structure, CONSTANTS)
 
 
 
