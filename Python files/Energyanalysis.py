@@ -132,7 +132,7 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
     df_index = processed.index
     for system in dict_structure["systems"]:
         for unit in dict_structure["systems"][system]["units"]:
-            if system+":"+unit == "Steam:SteamDistribution":
+            if system+":"+unit == "CoolingSystems:LTdistribution13":
                 aaa = 0
             # Here I create eight (8) series: 4 Edot and 4 Bdot. 2 "Full" and 2 "useful".
             temp_flow_list = {"Edot_in", "Edot_in_useful", "Edot_out", "Edot_out_useful", "Bdot_in", "Bdot_in_useful", "Bdot_out", "Bdot_out_useful"}
@@ -171,7 +171,7 @@ def efficiencyCalculator(processed, dict_structure, CONSTANTS):
                     else:
                         text_file.write("Flow {}:{}:{} is not recognised as either USEFEUL input or output \n".format(system, unit, flow))
             # Saving the total energy flows
-            dict_structure["systems"][system]["units"][unit]["E_in"] = temp_df["Edot_in"].sum() * 60 * 15 * 1e-6
+                        dict_structure["systems"][system]["units"][unit]["E_in"] = temp_df["Edot_in"].sum() * 60 * 15 * 1e-6
             dict_structure["systems"][system]["units"][unit]["E_out"] = temp_df["Edot_out"].sum() * 60 * 15 * 1e-6
             dict_structure["systems"][system]["units"][unit]["E_in_useful"] = temp_df["Edot_in_useful"].sum() * 60 * 15 * 1e-6
             dict_structure["systems"][system]["units"][unit]["E_out_useful"] = temp_df["Edot_out_useful"].sum() * 60 * 15 * 1e-6

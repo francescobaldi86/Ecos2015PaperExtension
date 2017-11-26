@@ -18,8 +18,9 @@ def filenames(project_path):
     output["dataset_output"] = project_path + os.sep +'Data_Process' + os.sep + 'database_out.h5'
     output["consistency_check_report"] = project_path + os.sep + 'Data_Process' + os.sep + 'check_report.txt'
     output["aggregated_efficiencies"] = project_path + os.sep + 'Results' + os.sep + 'aggregated_efficiencies.csv'
-    output["aggregated_flows_total"] = project_path + os.sep + 'Results' + os.sep + 'aggregated_flows_total.csv'
-    output["aggregated_flows_opmode"] = project_path + os.sep + 'Results' + os.sep + 'aggregated_flows_opmode.csv'
+    output["aggregated_flows_energy"] = project_path + os.sep + 'Results' + os.sep + 'aggregated_flows_energy.csv'
+    output["aggregated_flows_exergy"] = project_path + os.sep + 'Results' + os.sep + 'aggregated_flows_exergy.csv'
+    output["flows_clustering"] = project_path + os.sep + 'Results' + os.sep + 'flows_clustering.csv'
     output["latex_table"] = project_path + os.sep + 'Manuscript' + os.sep + 'Figures' + os.sep + 'table.tex'
     # opening the report file and inititing it
     text_file = open(output["consistency_check_report"],"w") # Cleaning the file
@@ -63,6 +64,7 @@ def assumptions(raw, processed, CONSTANTS, hd):
     # Others
     processed.loc[:,"T_0"] = raw[hd["water_T_forsmark_smhi-opendata"]] + 273.15
     processed.loc[:,"T_air"] = raw[hd["air_T_sv_hogarna_smhi-opendata"]] + 273.15
+    processed.loc[:,"ShipSpeed"] = raw[hd["SHIP_SPEED_KNOT_"]]
     processed[d2df("CoolingSystems","SWC13","SeaWater_out","T")] = raw[hd["SWC13_SW_T_OUT"]] + 273.15 # CHECK IF IT IS IN OR OUT
     processed[d2df("CoolingSystems","SWC24","SeaWater_out","T")] = raw[hd["SWC24_SW_T_OUT"]] + 273.15 # CHECK IF IT IS IN OR OUT
     # Boilers

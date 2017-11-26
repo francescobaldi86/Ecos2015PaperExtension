@@ -1,0 +1,148 @@
+\documentclass[]{article}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{tabls}
+
+%opening
+\title{Estimation of the heat demand}
+\author{Francesco Baldi}
+
+\begin{document}
+
+\maketitle
+
+As the heat demand is not measured, it is necessary to determine it based on the available indirect measurements. 
+
+The heat demand and generation can be summarized according to the following equations:
+\begin{eqnarray}
+\dot{Q}_{gen} & = & \dot{Q}_{EGB} + \dot{Q}_{HTHR} + \dot{Q}_{AB} \\
+\dot{Q}_{dem} & = & \dot{Q}_{HVAC,PH} + \dot{Q}_{HVAC,RH} + \dot{Q}_{HWH} + \dot{Q}_{TH} + \dot{Q}_{G} + \dot{Q}_{OT} + \dot{Q}_{HTH} + \dot{Q}_{MSH} \\
+\end{eqnarray}
+
+\section{Heat balance parameter estimation}
+
+As not enough information and measurements are available to determine the various components of the heat balance, in this paper we determined them by means of a parameter estimation procedure, using the daily boiler fuel consumption for the calibration of the parameters. The parameter estimation problem is hence written as a minimization problem:
+\begin{eqnarray}
+	min &  \left(\frac{\sum_i(y(\textbf{p})-\bar{y})^2}{\sum_i \bar{y}^2}\right)^{0.5} \\
+\end{eqnarray}
+
+where the vector $\textbf{p}$ includes the calibration parameters that are part of the heat demand and generation estimation model that is explained in detail in the following sections. A list of the parameters $\textbf{p}$ is shown in Table REF, together with the chosen upper and lower boundaries for the calibration procedure.
+\begin{table}
+	\centering
+	\begin{tabular}{p{3cm}ccp{1.6cm}p{1.6cm}p{1.2cm}}
+		\hline 
+		Parameter name & Symbol  & Unit & Lower Boundary & Higher Boundary & Optimal value \\ 
+		\hline
+		Constant HTHR heat demand	 & $\dot{Q}_{k,HTHR}$ & kW & 0 & 1000 & 137 \\ 
+		Constant steam demand		 & $\dot{Q}_{k,steam}$ & kW & 0 & 1000 & 177 \\
+		Weight factor of the HVAC Re-heater & $f_{HVAC,RH}$ & - & 0.5 & 1 & 0.59 \\ 
+		Weight factor of the HVAC Pre-heater & $f_{HVAC,PH}$ & - & 0 & 1 & 0.98 \\ 
+		Weight factor of hot water heater & $f_{HWH}$ & - & 0.5 & 1 & 0.71 \\ 
+		Weight factor of the galley & $f_{G}$ & - & 0.5 & 1 & 0.55 \\ 
+		Weight factor of the other consumers & $f_{Other}$ & - & 0.5 & 1 & 0.27 \\ 
+		HTHR inlet temperature & $T_{HTHR,ER1,in}$ & K & 343 & 353 & 345 \\
+		Effectiveness of the HTHR HEX & $\epsilon_{HTHR} $ & - & 0.5 & 0.9 & 0.72 \\
+		Boiler drum steam storage capacity & $Q_{ab,max}$ & MJ & 100 & 100000 & 5580 \\ 
+		Boiler heat rate & $\dot{Q}_{ab,des}$ & kW & 2000 & 8000 & 2920 \\ 
+		\hline
+	\end{tabular}
+	\caption{Parameters optimized in the parameter estimation for the heat balance}
+	\label{tab:ParameterEstimation} 
+\end{table}
+
+
+
+\section{Heat demand}
+
+We calculated the heat demand as the sum of the contributions of the elements listed in the ship's heat balance documentation. As no direct measurement of these quantities was available in the dataset, they had to be estimated based on the following assumptions:
+\begin{table}
+	\centering
+	{\tablinesep=2ex\tabcolsep=10pt
+	\begin{tabular}{p{2.8cm}l}
+		\hline 
+		Heat flow name & Equation \\
+		\hline
+		HVAC Preheater & $\dot{Q}_{HVAC,PH} = f_{HVAC,RH} \dot{Q}_{HVAC,PH,des} \dfrac{\dot{W}_{HVAC}(t)}{\dot{W}_{HVAC,max}} $ \\
+		HVAC Reheater &	$\dot{Q}_{HVAC,RH} = f_{HVAC,PH} \dot{Q}_{HVAC,PH,des} \dfrac{T_{in} - T_{air,out}(t)}{T_{in} - T_{air,out,des}}$ \\
+		Hot water heater& $\dot{Q}_{HWH} = f_{HWH} \dot{Q}_{HWH,des} \Phi_{HWH}(\hat{t})$ \\
+		Galley & $\dot{Q}_{G} = f_{G} \dot{Q}_{G,des} \Phi_G(\hat{t})$ \\
+		Low temperature tank heating & $\dot{Q}_{TH} = f_{TH} \dot{Q}_{TH} \dfrac{T_{T} - T_{air,out}(t)}{T_{T} -T_{air,out,des}}$ \\
+		HFO tank heating & $\dot{Q}_{HTH} = f_{HTH} \dot{Q}_{HTH} \dfrac{T_{HT} - T_{air,out}(t)}{T_{HT} - T_{air,out,des}}$ \\
+		Machinery space heating & $\dot{Q}_{MSH} = f_{MSH} \dot{Q}_{MSH} \dfrac{T_{MS} - T_{air,out}(t)}{T_{MS} - T_{air,out,des}}$ \\
+		HFO heater & $\dot{Q}_{HH} = \dot{m}_{HFO}(t) c_{p,HFO} (T_{HFO,inj} - T_{HT})$ \\
+		\hline
+	\end{tabular}}
+	\caption{Summary of the heat demand contributions and their calculation}
+	\label{tab:HeatDemand}
+\end{table}
+
+where all $f_i$ factors are treated as calibration parameters (see table \ref{tab:ParameterEstimation}). The $\Phi_G(\hat{t})$ and $\Phi_{HWH}(\hat{t})$ functions represent the assumption made on the daily evolution of the heating demand from the galley and the hot water heater respectively. The daily evolutions of the demand are considered to be the same over the whole year of operations and are represented graphically in Figure REF.
+
+
+
+\section{Heat generation}
+
+\subsection{Exhaust gas boilers}
+
+The heat recovered in the EGBs is the only contribution to the heat balance that is known with a reasonable certainty. The heat transferred from the exhaust gas to the steam ($\dot{Q}_{EGB}$) is calculated according to equation \ref{eq:egb}:
+\begin{equation}
+\dot{Q}_{EGB} = \dot{m}_{eg} c_{p,eg} (T_{eg,EGB,in} - T_{eg,EGB,out})
+\end{equation}\label{eq:egb}
+
+where $T_{eg,EGB,out}$ and $T_{eg,EGB,in}$ are measured for all EGBs, $c_{p,eg}$ is calculated as a function of the exhaust gas composition and temperature, and $ \dot{m}_{eg} $ is calculated based on the engine energy and mass balance as described in section REF and in the appendix REF
+
+\subsection{High Temperature Heat Recovery}
+
+It is known that the ship heating systems are designed for recovering energy from the high temperature cooling systems of all the ship's engines. However, measurements of this contribution and of other variables that could lead to its straight-forward identification are missing. In this work, we calculated the heat exchanged in the two HTHRs according to equation \label{eqn:HTHR2},
+
+\begin{eqnarray}
+\dot{Q}_{HTHR} & = & \dot{Q}_{HTHR,ER1} + \dot{Q}_{HTHR,ER2} \label{eqn:HTHR1} \\
+ & = & \sum_{i=ER1,ER2}{\epsilon_{HTHR} * \dot{m}_{min,HTHR,i} * c_{p,w} * (T_{HT,out,i} - T_{HRHT,i,in})} \label{eqn:HTHR2}
+\end{eqnarray}
+
+where the effectiveness of the heat exchanger $\epsilon_{HTHR}$ is considered to be constant and its value is part of the parameter estimation problem (see table \ref{tab:ParameterEstimation}). The HT water outlet temperature for each engine room is calculated based on the thermal balance of the engines, and the HR water at the HTHR inlet ($T_{HRHT,ER1,in}$) is considered as a calibration parameter. 
+
+\subsection{Auxiliary boilers}
+
+The heat generated by the auxiliary boilers is calculated as to close the heat balance of the ship energy systems. The contribution of the boiler heat storage capacity is taken into account by a calibration parameter $Q_{ab,max}$ that determines the maximum heat deficit. This corresponds, in practice, to assuming that the boiler is started up when the steam pressure inside the boiler drops below a certain value, and stopped once the pressure has achieved its maximum operative value. The calculation can be represented as follows
+
+
+	\begin{algorithmic}[1]
+		\State{Calculate the heat balance with no contribution from oil fired boilers}
+		\While{$\int{(\dot{Q}_{HTHR}(t) + \dot{Q}_{EGB}(t) - \dot{Q}_{dem}(t)) dt} < - Q_{ab,max}$}
+			\State{Find $ t^* | \int_{t_0}^{t^*}{(\dot{Q}_{HTHR}(t) + \dot{Q}_{EGB}(t) - \dot{Q}_{dem}(t))dt} = 0 $}
+			\State{$\dot{Q}_{ab}(t^*:t^*+\frac{Q_{ab,max}}{\dot{Q}_{ab,des}}) = \dot{Q}_{ab,des}$}
+		\EndWhile
+	\end{algorithmic}
+
+where the calibration parameters are the heat storage capacity ($Q_{ab,max}$) and the fixed heat rate ($\dot{Q}_{ab,des}$) of the auxiliary boilers (see table \ref{tab:ParameterEstimation}).
+
+
+
+
+
+\section{Parameter estimation and uncertainty quantification}
+
+The results of the parameter estimation are represented graphically and quantitatively in Figure REF and Table REF. 
+
+
+
+Given the lack of input values for the estimation of the heat demand, the provided estimate based on the procedure described above should be integrated with an estimation of the uncertainty. 
+
+In this study, we base the estimation of the uncertainty on the production side, as it is the one that has the largest amount of information available. In these regards, the uncertainty can be reduced to the contribution of three elements: $U(\dot{Q}_{EGB})$, $U(\dot{Q}_{HTHR})$, $U(\dot{Q}_{AB})$.
+
+The uncertainty on the heat generated in the EGBs can be further subdivided based on its definition as a composition of the uncertainty of $T_{eg,EGB,in}$, $T_{eg,EGB,out}$, $\dot{m}_{eg}$, and $c_{p,eg}$. In the case of $T_{eg,EGB,in}$ and $T_{eg,EGB,out}$, measured values are used, where the uncertainty is related to the sensors (K-type thermocouples) that can be as high as 4\% [CIT]. The uncertainty on the $\dot{m}_{eg}$ is related to the calculation assumptions as described in Appendix REF, and can be estimated of being up to 10\%. The uncertainty of the $c_{p,eg}$ value, given that both composition and temperature are accounted for, should be within 5\% of the reference value. These assumptions lead to the following estimation of the uncertainty:
+\begin{equation}
+\frac{\delta \dot{Q}_{gen}}{\dot{Q}_{gen}} = \sqrt{\frac{\delta \dot{m}_{eg}^2}{\dot{m}_{eg}^2} + \frac{\delta c_{p,eg}^2}{c_{p,eg}^2} + \frac{\delta T_{EGB,in}^2 + \delta T_{EGB,out}^2}{(T_{EGB,in} - T_{EGB,out})^2}}
+\end{equation}
+
+That once typical values are assigned can be as high as 30\%, where most of the variability is related to the temperature measurements (result obtained for $\pm 20$ K uncertainty. The uncertainty is reduced to 20\% if the measurement uncertainty on the temperature is reduced to  $\pm 20$ K) 
+
+The uncertainty of the heat generated by the ABs can be reduced to the contribution of two elements: the uncertainty on $\dot{m}_{fuel,AB}$ and that on $\eta_{AB}$. The former will be at least as large as the calibration error (35\%) and will be considered equal to 50\% to be conservative and accounting also for errors in the aggregated boiler fuel measurements. In addition, the uncertainty on the efficiency can be considered to be around 10\% based on the discrepancy between the considered sources and on the expected variability of the efficiency with load. Similarly to the previous case, the combination of these efficiencies lead to a total uncertainty of 51\%, where the main contribution comes from the uncertainty of the model output compared to the actual fuel consumption.
+
+The estimation of the uncertainty of $\dot{Q}_{HTHR}$ can be based on \ref{eqn:HTHR2} having assigned an acceptable variation of 20\% to the effectiveness of the heat exchanger, 20\% on the estimation of the reference mass flow, $\pm 5$ K uncertainty on water temperature measurements and considering negligible the uncertainty on $c_{p,w}$, leading to a 145\% uncertainty on this measurement. 
+
+
+\end{document}

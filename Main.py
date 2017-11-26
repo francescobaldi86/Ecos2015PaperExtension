@@ -60,6 +60,7 @@ import auxiliaryDemand as aux
 import coolingsystems as cs
 from helpers import d2df
 import export as ex
+import clustering
 import postProcessing as post
 
 #%%
@@ -110,22 +111,23 @@ elif do_data_processing == "yes":
     # Calculating the auxiliary power demands: heating and electric power
     processed = aux.auxPowerAnalysis(processed, CONSTANTS, dict_structure, dataset_raw, header_names)
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-2")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Demands", "Demands-1")
     # Calculating the central cooling systems
     processed = cs.centralCoolingSystems(processed, CONSTANTS)
-    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-3")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
     processed = cs.seaWaterCoolers(processed, CONSTANTS, dict_structure)
     # Calculating energy and exergy properties
     processed = ea.energyAnalysisLauncher(processed, dict_structure, CONSTANTS)
     # Re-doing the calculation of the connected points
-    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-4")
+    processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Other-5")
     processed = ff.systemFill(processed, dict_structure, CONSTANTS, "Other", "Demands-2")
     # Saving the processed data
     processed.to_hdf(CONSTANTS["filenames"]["dataset_output"], "processed", format='fixed', mode='w')
     # Result check log
     cc.systemCheck(processed, CONSTANTS, dict_structure, dataset_raw)
     # Efficiency results export
-    ex.exportEfficiecies(processed, CONSTANTS, dict_structure)
+
 
 #%%
 ######################################
@@ -133,10 +135,15 @@ elif do_data_processing == "yes":
 ######################################
 
 processed = ppo.operationalModeCalculator(processed, dataset_raw, CONSTANTS, header_names)
+processed = ppo.seasonCalculator(processed)
+exported = ex.exportAggregatedEyergyFlows(processed, CONSTANTS, dict_structure)
+# clusteringEvaluation = clustering.punctualClustering(exported, "kmeans")
+# clustering.clusteringTest(exported, "kmeans", 10, (1,20))
+
+######################################
+## PLOTTING	##
+######################################
 plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure,["TimeSeries:HeatGenerationStacked"])
-
-
-
 
 # processed = ea.efficiencyCalculator(processed, dict_structure, CONSTANTS)
 

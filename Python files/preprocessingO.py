@@ -6,13 +6,23 @@ import CoolProp.CoolProp as cp
 
 
 def operationalModeCalculator(processed, raw, CONSTANTS, hd):
+    # This function assigns to each point an operational mode based on a set of assumptions
     # Initializing the data series
     temp = pd.Series(index=processed.index)
     temp[raw[hd["SHIP_SPEED_KNOT_"]] > 15] = "High Speed Sailing"
     temp[(raw[hd["SHIP_SPEED_KNOT_"]] < 15) * (raw[hd["SHIP_SPEED_KNOT_"]] > 4)] = "Low Speed Sailing"
     temp[((processed["Demands:Electricity:Thrusters:Edot"] > 0) + ((raw[hd["SHIP_SPEED_KNOT_"]] < 4) * (raw[hd["SHIP_SPEED_KNOT_"]] > 2)))] = "Maneuvering"
     temp[temp.isnull()] = "Port/Stay"
-    processed["operationalMode"] = temp
+    processed["OperationalMode"] = temp
+    return processed
+
+def seasonCalculator(processed):
+    # This function assigns to each point a season identifier based on a set of assumptions
+    temp = pd.Series(index=processed.index)
+    temp[processed["T_0"] < 280] = "Winter"
+    temp[processed["T_0"] >= 280] = "Mid-Season"
+    temp[processed["Demands:Electricity:HVAC:Edot"] > 0] = "Summer"
+    processed["Season"] = temp
     return processed
 
 

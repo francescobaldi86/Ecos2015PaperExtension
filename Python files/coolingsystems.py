@@ -68,48 +68,63 @@ def engineCoolingSystemsCalculation(processed, CONSTANTS, engine_type):
 
 
 def centralCoolingSystems(processed, CONSTANTS):
+
     # Doing the calculations for the 1-3 engine room
     ER13set = {"AE1", "AE3", "ME1", "ME3", "AB1"}
     # Calculating the temperature at the LT collector outlet
+    mdot_temp = sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_" + idx + "_in", "mdot")] for idx in ER13set)
     processed[d2df("CoolingSystems", "LTcollector13", "LTWater_out", "T")] = (
         (sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "T")] *
             processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set)) / (
-        sum(processed[d2df("CoolingSystems", "LTcollector13", "LTWater_"+idx+"_in", "mdot")] for idx in ER13set)))
+            mdot_temp))
+    processed.loc[mdot_temp == 0, d2df("CoolingSystems", "LTcollector13", "LTWater_out", "T")] = processed['T_0']
     # The temperature at the other output of the collector is the same
     processed["CoolingSystems:LTcollector13:HTWater_out:T"] = processed["CoolingSystems:LTcollector13:LTWater_out:T"]
-    # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
+    # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets.
+    # The idea is that we have different temperatures at different instants, and we need to average them
+    mdot_temp = sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set)
     processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")] = (
         sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "T")] *
-            processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set) /
-        sum(processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set))
+            processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_" + idx + "_out", "mdot")] for idx in ER13set) / (
+        mdot_temp))
+    processed.loc[mdot_temp==0, d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")] = processed['T_0']
     # The temperature at the Sea water cooler outlet is then equal to the inlet to the distribution systems
     #processed[d2df("CoolingSystems", "SWC13", "LTWater_out", "T")] = processed[d2df("CoolingSystems", "LTdistribution13", "LTWater_in", "T")]
 
     # Doing the calculations for the "2-4 engine room
     ER24set = {"AE2", "AE4", "ME2", "ME4"}
     # Calculating the temperature at the LT collector outlet
+    mdot_temp = sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set)
     processed[d2df("CoolingSystems", "LTcollector24", "LTWater_out", "T")] = (
         (sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "T")] *
              processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set)) / (
-            sum(processed[d2df("CoolingSystems", "LTcollector24", "LTWater_" + idx + "_in", "mdot")] for idx in ER24set)))
+            mdot_temp))
+    processed.loc[mdot_temp==0, d2df("CoolingSystems", "LTcollector24", "LTWater_out", "T")] = processed['T_0']
     processed["CoolingSystems:LTcollector24:HTWater_out:T"] = processed["CoolingSystems:LTcollector24:LTWater_out:T"]
     # Note that the temperature at the LT distribution inlet is calculated based on the average temperature at the LT collector outlets
+    mdot_temp = sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set)
     processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")] = (
         sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "T")] *
-            processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set) /
-        sum(processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set))
+            processed[d2df("CoolingSystems", "LTdistribution24", "LTWater_" + idx + "_out", "mdot")] for idx in ER24set) / (
+        mdot_temp))
+    processed.loc[mdot_temp == 0, d2df("CoolingSystems", "LTdistribution24", "LTWater_in", "T")] = processed['T_0']
 
     # We can now calculate the flows into the LTHT merge for the ER 13
     mdot_HTHR13_tot = processed["CoolingSystems:LTHTmerge13:HTWater_ME1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_ME3_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE3_out:mdot"]
     processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = mdot_HTHR13_tot * (
         CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"]) / (
         processed["CoolingSystems:LTHTmerge13:HTWater_in:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"])
+    # If the previously calculated mass flow is NaN, we set it equal to 0
+    processed.loc[np.isnan(processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"]), "CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = 0
     processed["CoolingSystems:LTHTmerge13:LTWater_in:mdot"] = mdot_HTHR13_tot - processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"]
+
     # We can now calculate the flows into the LTHT merge for the ER 24
     mdot_HTHR24_tot = processed["CoolingSystems:LTHTmerge24:HTWater_ME2_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_ME4_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_AE2_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_AE4_out:mdot"]
     processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"] = mdot_HTHR24_tot * (
-        processed["CoolingSystems:LTHTmerge24:HTWater_ME2_out:T"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"]) / (
+        CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"]) / (
         processed["CoolingSystems:LTHTmerge24:HTWater_in:T"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"])
+    # If the previously calculated mass flow is NaN, we set it equal to 0
+    processed.loc[np.isnan(processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"]), "CoolingSystems:LTHTmerge24:HTWater_in:mdot"] = 0
     processed["CoolingSystems:LTHTmerge24:LTWater_in:mdot"] = mdot_HTHR24_tot - processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"]
 
     return processed
