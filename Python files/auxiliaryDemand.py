@@ -330,10 +330,10 @@ def steamSystems(processed, CONSTANTS, dataset_raw, header_names):
     processed.loc[Qdot_dumped == 0, "Steam:HotWell:LTWater_out:T"] = processed["Steam:HotWell:LTWater_in:T"][Qdot_dumped == 0]
     # Calculating fuel flows
     processed["Steam:Boiler1:FuelCh_in:Edot"] = processed["Steam:Boiler1:Steam_HotWell_in:mdot"] * CONSTANTS["Steam"]["DH_STEAM"] / CONSTANTS["OtherUnits"]["BOILER"]["ETA_DES"]
-    processed.loc[processed["operationalMode"] == "Port/Stay", "Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"][processed["operationalMode"] == "Port/Stay"] / CONSTANTS["General"]["MDO"]["LHV"]
-    processed.loc[processed["operationalMode"] != "Port/Stay", "Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"][processed["operationalMode"] != "Port/Stay"] / CONSTANTS["General"]["MDO"]["HHV"]
-    processed.loc[processed["operationalMode"] == "Port/Stay", "Steam:Boiler1:FuelPh_in:T"] = 60 + 273.15
-    processed.loc[processed["operationalMode"] != "Port/Stay", "Steam:Boiler1:FuelPh_in:T"] = 90 + 273.15
+    processed.loc[processed["OperationalMode"] == "Port/Stay", "Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"][processed["OperationalMode"] == "Port/Stay"] / CONSTANTS["General"]["MDO"]["LHV"]
+    processed.loc[processed["OperationalMode"] != "Port/Stay", "Steam:Boiler1:FuelPh_in:mdot"] = processed["Steam:Boiler1:FuelCh_in:Edot"][processed["OperationalMode"] != "Port/Stay"] / CONSTANTS["General"]["MDO"]["HHV"]
+    processed.loc[processed["OperationalMode"] == "Port/Stay", "Steam:Boiler1:FuelPh_in:T"] = 60 + 273.15
+    processed.loc[processed["OperationalMode"] != "Port/Stay", "Steam:Boiler1:FuelPh_in:T"] = 90 + 273.15
     # Calculating air flows
     processed["Steam:Boiler1:Air_in:mdot"] = processed["Steam:Boiler1:FuelPh_in:mdot"] * CONSTANTS["OtherUnits"]["BOILER"]["LAMBDA"]
     # Calculating exhaust flows

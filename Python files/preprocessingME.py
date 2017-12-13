@@ -133,7 +133,7 @@ def mainEngineAirFlowCalculation(raw, processed, dict_structure, CONSTANTS):
         # Calculating the compressor's compression ratio
         beta_comp = processed[d2df(system,"Comp","Air_out","p")] / processed[d2df(system,"Comp","Air_in","p")]
         # Calculating the turbocharger's mechancial efficiency based on the regression
-        eta_tc = processed[d2df(system, "TCshaft", "Power_in", "omega")].apply(polyvalHelperFunction,args=(CONSTANTS["MainEngines"]["POLY_TC_RPM_2_ETA_MECH"],))
+        eta_tc = (processed[d2df(system, "TCshaft", "Power_in", "omega")]/CONSTANTS["MainEngines"]["RPM_TC_DES"]).apply(polyvalHelperFunction,args=(CONSTANTS["MainEngines"]["POLY_TC_RPM_2_ETA_MECH"],))
         #  Calculating the compressor isentropic efficiency
         comp_isentropic_efficiency = beta_comp.apply(polyvalHelperFunction,args=(CONSTANTS["MainEngines"]["POLY_PIN_2_ETA_IS"],))
         # Calculating the temperature after the compressor, based on ideal gas assumption

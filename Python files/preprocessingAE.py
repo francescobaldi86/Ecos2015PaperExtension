@@ -5,6 +5,8 @@ import preprocessingO as ppo
 import coolingsystems as cs
 from energyanalysis import propertyCalculator
 from helpers import d2df
+from helpers import polyvalHelperFunction
+
 
 def auxEngineProcessing(raw, processed, dict_structure, CONSTANTS, hd):
     # This script summarizes all the functions that calculate the required data for the Main Engines different flows
@@ -164,6 +166,7 @@ def auxEngineAirFlowPostCalculation(processed, CONSTANTS):
         processed[d2df(system, "Comp", "Power_in", "Edot")] = processed[d2df(system, "BPsplit", "Air_in", "mdot")] * (
             processed[d2df(system, "Comp", "Air_out", "h")] - processed[d2df(system, "Comp", "Air_in", "h")])
         # Losses at the TC shaft level are calculated
-        processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] * CONSTANTS["MainEngines"]["ETA_MECH_TC"]
+        etaTcMech = (processed[d2df(system, "TCshaft", "Power_in", "omega")]/CONSTANTS["AuxEngines"]["RPM_TC_DES"]).apply(polyvalHelperFunction,args=(CONSTANTS["MainEngines"]["POLY_TC_RPM_2_ETA_MECH"],))
+        processed[d2df(system, "TCshaft", "Losses_out", "Edot")] = processed[d2df(system, "Turbine", "Power_out", "Edot")] * (1 - etaTcMech)
 
     return processed
