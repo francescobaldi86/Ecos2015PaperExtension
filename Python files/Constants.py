@@ -73,6 +73,7 @@ def steamProperties():
 def mainEngines(CONSTANTS):
     output = {"MCR": 5890}   # Main engines maximum power, in [kW]
     output["RPM_DES"] = 500  # Main engine design speed, in [rpm]
+    output["RPM_TC_DES"] = 22000  # Main engine Turbocharger design speed, in [rpm]
     output["MFR_FUEL_DES_ISO"] = 184 * output["MCR"] / 1000 / 3600 # Fuel flow at 100# load at ISO conditions, in [kg/s]. 184 is the ISO bsfc at 100% load (average for the 4 MEs)
 # output["POLY_FUEL_RACK_2_MFR_FUEL"] = polyfit([24 31 38 42 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2)   # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
     # Here we write all the required info for the fuel rack position to mass flow rate relation
@@ -105,7 +106,7 @@ def mainEngines(CONSTANTS):
     output["POLY_PIN_2_ETA_IS"] = [-1.18e-2, 8.74e-2, 6.81e-1] # Polynoimial regression for isentropic efficiency of the compressor
     output["ETA_CORR"] = 1.05
     output["ETA_MECH_TC"] = 0.9   # Mechanical efficiency of the turbocharger [-]. Variations from "Development and validation of a new turbocharger simulation methodology for marine two stroke diesel engine modelling and diagnostic applications"
-    output["POLY_TC_RPM_2_ETA_MECH"] = np.polyfit([6000, 9500, 13000, 16500, 20000], [0.7 , 0.76 , 0.84 , 0.91 , 0.91], 2)
+    output["POLY_TC_RPM_2_ETA_MECH"] = np.polyfit(np.array([6000, 9500, 13000, 16500, 20000])/output["RPM_TC_DES"], [0.7 , 0.76 , 0.84 , 0.91 , 0.91], 2)
     output["EPS_CAC_HTSTAGE"] = 0.7  # Effectiveness, as defined by the epsNTU method, of the High Temperature stage of the Charge Air Cooler, in [-]
     output["ETA_GB"] = 0.985   # Mechanical efficiency of the gearbox
     output["ETA_SHAFT"] = 0.99  # Mechanical efficiency of the engine shaft
@@ -120,6 +121,7 @@ def mainEngines(CONSTANTS):
 def auxiliaryEngines(CONSTANTS):
     output = {"MCR": 2760.0}  # Auxiliary engines maximum power, in [kW]
     output["RPM_DES"] = 750.0  # Auxiliary engines design speed, in [rpm]
+    output["RPM_TC_DES"] = 26000  # Auxiliary engines design speed, in [rpm]
 # AE_POLY_FUEL_RACK_2_MFR_FUEL = polyfit([17 27 37 44.5 46]/46, [336.3 587.8 836.6 953.1 1141]/3600, 2) # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
     output["POLY_LOAD_2_ISO_BSFC"] = np.polyfit(np.array([0.5, 0.75, 0.85, 1.0]), np.array([193.0, 182.0, 181.0, 184.0])/184.0*190.0, 2)  # Fits a 2nd degree polynomial relating relative fuel rack position to fuel flow in kg/s
     output["POLY_PIN_2_ETA_IS"] = np.array([-1.18e-2, 8.74e-2, 6.81e-1]) 

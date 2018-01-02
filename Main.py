@@ -134,7 +134,7 @@ elif do_data_processing == "yes":
 ## POSTPROCESSING	##
 ######################################
 
-processed = ppo.operationalModeCalculator(processed, dataset_raw, CONSTANTS, header_names)
+
 processed = ppo.seasonCalculator(processed)
 exported = ex.exportAggregatedEyergyFlows(processed, CONSTANTS, dict_structure)
 # clusteringEvaluation = clustering.punctualClustering(exported, "kmeans")
