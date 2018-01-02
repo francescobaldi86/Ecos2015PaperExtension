@@ -40,6 +40,20 @@ for n in range(len(old)):
 
 #%%
 
+df
+
+
+list(df)[2]
+
+df[list(df)[2]]['2014-02']
+
+
+plot(df[list(df)[2]]['2014-02-11'])
+
+
+
+#%%
+
 # creating histograms for all Datapoints and saving them
 
 nr_bin=60
