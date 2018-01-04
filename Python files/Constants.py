@@ -269,8 +269,8 @@ def seasons(dataset_raw, processed, CONSTANTS):
 
     # Definition of the summer based on the number of passengers
     temp = pd.Series(index=processed.index)
-    temp["2014-06-21":"2014-08-17"] = 1
-    temp[temp.isnull()] = 0
+    temp["2014-06-21":"2014-08-17"] = 1.
+    temp[temp.isnull()] = 0.
     passenger_summer = temp
 
     # Definition of the number of passengers

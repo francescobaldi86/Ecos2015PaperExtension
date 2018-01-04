@@ -1,20 +1,211 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+    <list default="true" id="99a27395-1440-4553-a18e-c1e849ee287f" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Analyse/Graph/ae1-ht-jwc_fw_p_in.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Analyse/Graph/ae2-ht-jwc_fw_p_in.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Analyse/Graph/ae3-ht-jwc_fw_p_in.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Analyse/Graph/ae4__rpm_.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ML-test/.ipynb_checkpoints/ml-test1-checkpoint.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ML-test/ml-test1.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-CAC_AIR_P_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-CAC_AIR_P_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-CAC_AIR_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-CAC_AIR_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-CYL_FUEL_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-CYL_FUEL_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-HT-CAC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-HT-CAC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-HT_FW_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-HT_FW_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-HT_FW_T_OUT1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-HT_FW_T_OUT1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-HT_FW_T_OUT2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-HT_FW_T_OUT2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-LOC_OIL_P_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-LOC_OIL_P_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-LOC_OIL_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-LOC_OIL_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-CAC_FW_P_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-CAC_FW_P_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-CAC_FW_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-CAC_FW_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-CAC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-CAC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-LOC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-LT-LOC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-TC_EG_T_IN1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-TC_EG_T_IN1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-TC_EG_T_IN2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-TC_EG_T_IN2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-TC_EG_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-TC_EG_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1-TC__RPM_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1-TC__RPM_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1_POWER_Wdot_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1_POWER_Wdot_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1__FRP_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1__FRP_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE1__RPM_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE1__RPM_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-CAC_AIR_P_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-CAC_AIR_P_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-CAC_AIR_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-CAC_AIR_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-CYL_FUEL_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-CYL_FUEL_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-HT-CAC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-HT-CAC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-HT_FW_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-HT_FW_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-HT_FW_T_OUT1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-HT_FW_T_OUT1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-HT_FW_T_OUT2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-HT_FW_T_OUT2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-LOC_OIL_P_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-LOC_OIL_P_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-LOC_OIL_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-LOC_OIL_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-CAC_FW_P_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-CAC_FW_P_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-CAC_FW_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-CAC_FW_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-CAC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-CAC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-LOC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-LT-LOC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-TC_EG_T_IN1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-TC_EG_T_IN1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-TC_EG_T_IN2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-TC_EG_T_IN2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-TC_EG_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-TC_EG_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2-TC__RPM_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2-TC__RPM_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2_POWER_Wdot_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2_POWER_Wdot_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2__FRP_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2__FRP_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE2__RPM_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE2__RPM_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-CAC_AIR_P_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-CAC_AIR_P_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-CAC_AIR_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-CAC_AIR_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-CYL_FUEL_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-CYL_FUEL_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-HT-CAC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-HT-CAC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-HT_FW_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-HT_FW_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-HT_FW_T_OUT1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-HT_FW_T_OUT1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-HT_FW_T_OUT2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-HT_FW_T_OUT2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-LOC_OIL_P_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-LOC_OIL_P_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-LOC_OIL_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-LOC_OIL_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-CAC_FW_P_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-CAC_FW_P_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-CAC_FW_T_IN.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-CAC_FW_T_IN.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-CAC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-CAC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-LOC_FW_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-LT-LOC_FW_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-TC_EG_T_IN1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-TC_EG_T_IN1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-TC_EG_T_IN2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-TC_EG_T_IN2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-TC_EG_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-TC_EG_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3-TC__RPM_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3-TC__RPM_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3_POWER_Wdot_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3_POWER_Wdot_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3__FRP_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3__FRP_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE3__RPM_.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE3__RPM_.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE4-CAC_AIR_P_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE4-CAC_AIR_P_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE4-CAC_AIR_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE4-CAC_AIR_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE4-TC_EG_T_IN1.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE4-TC_EG_T_IN1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE4-TC_EG_T_IN2.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE4-TC_EG_T_IN2.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/Graph/AE4-TC_EG_T_OUT.png" afterPath="$PROJECT_DIR$/Analyse/Graph/AE4-TC_EG_T_OUT.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Ecos2015PaperExtension.iml" afterPath="$PROJECT_DIR$/.idea/Ecos2015PaperExtension.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analyse/create_histograms.py" afterPath="$PROJECT_DIR$/Analyse/create_histograms.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Python files/Constants.py" afterPath="$PROJECT_DIR$/Python files/Constants.py" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="Main.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="174">
+              <caret line="30" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="indexing.py" pinned="false" current-in-tab="true">
+        <entry file="file:///anaconda/lib/python3.6/site-packages/pandas/core/indexing.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="174">
+              <caret line="1938" column="0" lean-forward="false" selection-start-line="1938" selection-start-column="0" selection-end-line="1938" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="series.py" pinned="false" current-in-tab="false">
+        <entry file="file:///anaconda/lib/python3.6/site-packages/pandas/core/series.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="639" column="0" lean-forward="false" selection-start-line="639" selection-start-column="0" selection-end-line="639" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="constants.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Python files/constants.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="132">
+              <caret line="271" column="0" lean-forward="false" selection-start-line="271" selection-start-column="0" selection-end-line="271" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="_pydev_execfile.py" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pydevd.py" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="230">
+              <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1598" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="20" />
+    <option name="y" value="27" />
+    <option name="width" value="1400" />
+    <option name="height" value="797" />
+  </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="/anaconda/bin/python" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.Main">
+    <configuration name="Main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Ecos2015PaperExtension" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Python.Main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+      <changelist id="99a27395-1440-4553-a18e-c1e849ee287f" name="Default" comment="" />
       <created>1500896551980</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -22,11 +213,84 @@
     </task>
     <servers />
   </component>
+  <component name="ToolWindowManager">
+    <frame x="20" y="27" width="1400" height="797" extended-state="0" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="30" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///anaconda/lib/python3.6/site-packages/pandas/core/series.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="639" column="0" lean-forward="false" selection-start-line="639" selection-start-column="0" selection-end-line="639" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Python files/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="271" column="0" lean-forward="false" selection-start-line="271" selection-start-column="0" selection-end-line="271" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1598" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///anaconda/lib/python3.6/site-packages/pandas/core/indexing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="1938" column="0" lean-forward="false" selection-start-line="1938" selection-start-column="0" selection-end-line="1938" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>
