@@ -119,7 +119,13 @@ def propertyCalculator(processed, dict_structure, CONSTANTS, system_list):
                         processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "mdot")] * processed[d2df(system, unit, flow, "b")]
                     elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] == "Qdot":
                         processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system,unit,flow,"Edot")] * (1 - processed["T_0"] / processed[d2df(system,unit,flow,"T")])
-                    elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"Wdot", "CEF"}:
+                    elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"Che"}:
+                        specificExergy = pd.Series(index=df_index)
+                        flowPhName = flow.replace("Ch","Ph")
+                        specificExergy[processed[d2df(system, unit, flowPhName, "T")] < 70] = CONSTANTS["General"]["MDO"]["specificExergy"]  # If T_fuel<70, it is Diesel
+                        specificExergy[processed[d2df(system, unit, flowPhName, "T")] >= 70] = CONSTANTS["General"]["HFO"]["specificExergy"]  # If T_fuel<70, it is Diesel
+                        processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flowPhName, "mdot")] * specificExergy
+                    elif dict_structure["systems"][system]["units"][unit]["flows"][flow]["type"] in {"Wdot", "Ele"}:
                         processed[d2df(system, unit, flow, "Bdot")] = processed[d2df(system, unit, flow, "Edot")]
     print("...done!")
     return processed

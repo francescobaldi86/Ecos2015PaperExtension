@@ -130,7 +130,7 @@ def flowStructure():
             structure["systems"][system]["units"]["Cyl"]["flows"] = {
                 "Air_in": {"type": "CPF", "IO": "input"},
                 "FuelPh_in": {"type": "IPF", "IO": "input"},
-                "FuelCh_in": {"type": "CEF", "IO": "input"},
+                "FuelCh_in": {"type": "Che", "IO": "input"},
                 "EG_out": {"type":"CPF"},
                 "Power_out": {"type": "Wdot", "IO": "output"},
                 "QdotJW_out": {"type":"Qdot"},
@@ -165,7 +165,7 @@ def flowStructure():
                 structure["systems"][system]["units"].update({"AG": {}})
                 structure["systems"][system]["units"]["AG"]["flows"] = {
                     "Power_in": {"type": "Wdot", "IO": "input"},
-                    "Power_out": {"type": "CEF", "IO": "output"},
+                    "Power_out": {"type": "Ele", "IO": "output"},
                     "Losses_out": {"type": "Qdot"}}
                 structure["systems"][system]["units"]["AG"]["equations"] = []
 
@@ -321,7 +321,7 @@ def flowStructure():
             structure["systems"][system]["units"]["Boiler1"]["flows"] = {
                 "Air_in": {"type": "CPF", "IO": "input"},
                 "EG_out": {"type": "CPF"},
-                "FuelCh_in": {"type": "CEF", "IO": "input"},
+                "FuelCh_in": {"type": "Che", "IO": "input"},
                 "FuelPh_in": {"type": "IPF", "IO": "input"},
                 "Steam_HotWell_in": {"type": "SF", "state": "SL", "IO": "output"},
                 "Steam_out": {"type": "SF", "state": "SV", "IO": "output"},
@@ -400,8 +400,8 @@ def flowStructure():
 
         elif system == "Demands":
             structure["systems"][system]["units"] = {"Electricity": {}, "Mechanical": {}, "Heat": {}}
-            structure["systems"][system]["units"]["Electricity"]["flows"] = {"Thrusters": {"type": "CEF"}, "HVAC": {"type": "CEF"}, "Other": {"type": "CEF"}, "Total": {"type": "CEF"}}
-            structure["systems"][system]["units"]["Mechanical"]["flows"] = {"Propeller1": {"type": "CEF"}, "Propeller2": {"type": "CEF"}, "Total": {"type": "CEF"}}
+            structure["systems"][system]["units"]["Electricity"]["flows"] = {"Thrusters": {"type": "Ele"}, "HVAC": {"type": "Ele"}, "Other": {"type": "Ele"}, "Total": {"type": "Ele"}}
+            structure["systems"][system]["units"]["Mechanical"]["flows"] = {"Propeller1": {"type": "Wdot"}, "Propeller2": {"type": "Wdot"}, "Total": {"type": "Wdot"}}
             structure["systems"][system]["units"]["Heat"]["flows"] = {
                 "HotWaterHeater": {"type": "Qdot"}, "HVACpreheater": {"type": "Qdot"}, "HVACreheater": {"type": "Qdot"},
                 "TankHeating": {"type": "Qdot"}, "OtherTanks": {"type": "Qdot"}, "HFOtankHeating": {"type": "Qdot"},

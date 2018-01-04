@@ -24,8 +24,8 @@
 # - EXERGY ANALYSIS
 
 
-do_processed_data_preparation = "no"
-do_data_processing = "no"
+do_processed_data_preparation = "yes"
+do_data_processing = "yes"
 
 
 
