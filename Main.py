@@ -24,8 +24,8 @@
 # - EXERGY ANALYSIS
 
 
-do_processed_data_preparation = "yes"
-do_data_processing = "yes"
+do_processed_data_preparation = "no"
+do_data_processing = "no"
 
 
 
@@ -49,7 +49,7 @@ import input
 import plotting as plot
 import datareading as dr
 import unitstructures as us
-import constants as kk
+import Constants as kk
 import fillerfunctions as ff
 import consistencycheck as cc
 import preprocessingAE as ppa

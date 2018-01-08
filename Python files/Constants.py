@@ -50,10 +50,10 @@ def general():
     # output["FLUIDS"] = {"BP": "Air", "Air": "Air", "Water": "Water"}
     output["MDO"] = {"LHV": 42230.0, "CP": 1.8, "C": 0.87, "H": 0.13}
     output["MDO"]["HHV"] = output["MDO"]["LHV"] * (1.0406 + 0.0144 * output["MDO"]["H"] / output["MDO"]["C"] * 12) * 1.01  # Calculated Higher heating value
-    output["MDO"]["specificExergy"] = output["MDO"]["LHV"] * (1.0401 + 0.1728 * output["MDO"]["H"] / output["MDO"]["C"] * 12)
+    output["MDO"]["specificExergy"] = output["MDO"]["LHV"] * (1.0401 + 0.1728 * output["MDO"]["H"] / output["MDO"]["C"])
     output["HFO"] = {"LHV": 40360.0, "CP": 1.8, "C": 0.89, "H": 0.11}
     output["HFO"]["HHV"] = output["HFO"]["LHV"] * (1.0406 + 0.0144 * output["HFO"]["H"] / output["HFO"]["C"] * 12) * 1.01  # Calculated Higher heating value
-    output["HFO"]["specificExergy"] = output["HFO"]["LHV"] * (1.0401 + 0.1728 * output["HFO"]["H"] / output["HFO"]["C"] * 12)
+    output["HFO"]["specificExergy"] = output["HFO"]["LHV"] * (1.0401 + 0.1728 * output["HFO"]["H"] / output["HFO"]["C"])
     output["NASA_POLY"] = {"N2":  [0.03298677E+02,  0.14082404E-02, -0.03963222E-04,  0.05641515E-07, -0.02444854E-10, -0.10208999E+04,  0.03950372E+02],
                  "O2":  [3.78245636E+00, -2.99673416E-03,  9.84730201E-06, -9.68129509E-09,  3.24372837E-12, -1.06394356E+03,  3.65767573E+00],
                  "CO2": [2.35677352E+00,  8.98459677E-03, -7.12356269E-06,  2.45919022E-09, -1.43699548E-13, -4.83719697E+04,  9.90105222E+00],
