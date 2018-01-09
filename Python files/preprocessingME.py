@@ -74,7 +74,13 @@ def readMainEnginesExistingValues(raw, processed, CONSTANTS, hd):
         processed[d2df(system, "TCshaft", "Power_out", "omega")] = raw[hd[system + "-TC__RPM_"]]
         processed[d2df(system, "Turbine", "Power_out", "omega")] = raw[hd[system + "-TC__RPM_"]]
         processed[d2df(system, "Compressor", "Power_in", "omega")] = raw[hd[system + "-TC__RPM_"]]
-
+        # TEMPORARY: Filter on fuel temperature
+        if system == "AE3":
+            processed.loc[
+                processed[d2df(system, "Cyl", "FuelPh_in", "T")] < 300, d2df(system, "Cyl", "FuelPh_in", "T")] = 300
+        else:
+            processed.loc[
+                processed[d2df(system, "Cyl", "FuelPh_in", "T")] < 350, d2df(system, "Cyl", "FuelPh_in", "T")] = 350
 
     print("...done!")
     return processed
