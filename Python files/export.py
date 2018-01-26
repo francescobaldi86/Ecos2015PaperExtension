@@ -41,6 +41,15 @@ def exportClusteringFlows(processed, CONSTANTS, dict_structure):
     return output
 
 
+def exportClusteringFlowsFB(processed, CONSTANTS, dict_structure):
+    # This function exports the most flows that might be interesting for clustering purposes
+    output = pd.DataFrame(index=processed.index)
+    output["totalElectricDemand"] = processed["Demands:Mechanical:Total:Edot"] + processed["Demands:Electricity:Total:Edot"]
+    output["heatDemand"] = processed["Demands:Heat:Total:Edot"] - processed["Demands:Heat:HFOheater:Edot"] - processed["Demands:Heat:HFOtankHeating:Edot"]
+    output.to_csv(CONSTANTS["filenames"]["flows_clustering"]+"FB")
+    return output
+
+
 def exportAggregatedEyergyFlows(processed, CONSTANTS, dict_structure):
     # This function exports all energy and exergy flows in two separate csv files
     # These are later processed and used for tables and plotting
