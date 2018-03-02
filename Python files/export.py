@@ -33,8 +33,8 @@ def exportClusteringFlows(processed, CONSTANTS, dict_structure):
     output["totalExergyDestructionMinusEngines"] = output["totalExergyDestruction"] - sum(processed[system + ":" + unit + ":" + "Idot"]
                           for system in {"ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4"}
                           for unit in {"Comp", "Turbine", "BPsplit", "BPmerge", "BPvalve", "TCshaft"})
-    output["relativeExergyDestruction"] = output["totalExergyDestruction"] / sum(processed[system + ":" + "Cyl" + ":" "FuelCh_in" + ":" + "Bdot"]
-                 for system in {"ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4"})
+    output["relativeExergyDestruction"] = output["totalExergyDestruction"] / (sum(processed[system + ":" + "Cyl" + ":" "FuelCh_in" + ":" + "Bdot"]
+                 for system in {"ME1", "ME2", "ME3", "ME4", "AE1", "AE2", "AE3", "AE4"}) + processed["Steam:Boiler1:FuelCh_in:Bdot"])
     output["shipSpeed"] = processed["ShipSpeed"]
     output["nPassengers"] = processed["Passengers_calc"]
     output.to_csv(CONSTANTS["filenames"]["flows_clustering"])
