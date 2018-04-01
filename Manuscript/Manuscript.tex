@@ -148,6 +148,10 @@ CO$_2$ emissions from shipping in 2012 amounted to a total of 949 million tonnes
 
 In addition to considerations related to GHG emissions, an emission control area (ECA) is enforced in the Baltic Sea  by the International Maritime Organisation since January 2015. This ECA stipulates that the fuel used must not contain more than 0.1\% sulphur, therefore requiring the use of more expensive distillate fuels. More generally making shipping sustainable is a challenge that will demand growing attention by the shipping industry \cite{Andersson2016}
 
+In this context, the cruise industry is growing at an even greater pace. Cruise ship passengers have increased from 17.8 million in 2009 to 24.7 million in 2015 \cite{CruiseOutlook2017}, and this growth is expected to continue in the coming years \cite{CruiseOutlook2017}. Cruise travels, with an estimated average of 160 $kg_{CO_2}$ per passenger and per day, are among the most carbon intensive in the whole tourism industry. The contribution of the cruise industry to global CO$_2$ emissions was estimated to 19.3 Mtons annually in 2010 \cite{Eijgelaar2010}.
+
+The cruise industry have also received much attention for its environmental impact other than in terms of GHG emissions. Cruise ships were shown to have a remarkable negative impact on both air \cite{Poplawski2011} and water \cite{Butt2007} quality, and were also pointed as sources of environmental damage from a wider perspective \cite{Brida2009}. The fact that cruise ships tend to operate extensively in highly populated and environmental sensitive areas makes the situation all the more worth of attention.
+
 Altogether, these conditions present a challenge to the shipping companies who attempt to reduce their fuel consumption, environmental impact, and operative costs. A wide range of fuel saving solutions for shipping are available and partially implemented in the existing fleet, both from the design and operational perspective; several specific studies have been conducted on these technologies, and a more detailed treatise would be out of the scope of this work. In this context, it has been acknowledged that the world fleet is heterogeneous, and measures need to be evaluated on a ship-to-ship basis \cite{Bouman2017}. In this process, a deeper understanding of energy use on board of the specific ship is vital.
 
 \subsection{Previous work}
@@ -167,7 +171,7 @@ More generally, several authors have highlighted the importance of a detailed kn
 Heat demand is rarely a subject of concern on board ships, with some notable exceptions. This is due to a combination of generally low demand and high availability from the waste heat of the engines. In a previous publications by the authors, for instance, it is shown that in the case of a product tanker, although the heat demand was estimated to account for roughly 20\% of the total energy demand of the ship on a yearly basis, it only contributes to 4.1\% of the total fuel consumption (contribution of the auxiliary boilers), while the rest of the demand is fulfilled using waste heat \cite{Baldi2015a}.
 
 %% WHR and heat availability
-It should be noted that, however, much research effort has been devoted, especially in recent times, to the improvement of the efficiency of ship energy systems by recovering the waste heat available from the engines. With reference to different types of technologies, case studies, and designs,the several authors showed the existance of a quite significant potential for energy saving when WHR systems are employed, ranging from around 1\% for single-pressure steam cycles applied to two-stroke engines \cite{Theotokatos2012} to more complex systems based on ORCs (up to 10\%, \cite{Hountalas2012}) or including the cooling systems as a source of waste heat (over10\%, \cite{Dimopoulos2012}).  The case of the installation of an ORC on board of the vessel investigated in this study (see Section \ref{sec:met:case}) was presented in \cite{Mondejar2015}, showing a similar potential.
+It should be noted that, however, much research effort has been devoted, especially in recent times, to the improvement of the efficiency of ship energy systems by recovering the waste heat available from the engines. With reference to different types of technologies, case studies, and designs,the several authors showed the existance of a quite significant potential for energy saving when WHR systems are employed, ranging from around 1\% for single-pressure steam cycles applied to two-stroke engines \cite{Theotokatos2012} to more complex systems based on ORCs (up to 10\%, \cite{Hountalas2012}) or including the cooling systems as a source of waste heat (over 10\%, \cite{Dimopoulos2012}).  The case of the installation of an ORC on board of the vessel investigated in this study (see Section \ref{sec:met:case}) was presented in \cite{Mondejar2015}, showing a similar potential.
 
 The potential uses for waste heat on board are not limited to improving the efficiency of the power plant. Waste heat is commonly used for fulfilling on board heat demand for spatial heating and freshwater generation \cite{Molland2011,Baldi2015a,Mccarthy1990};  Balaji et al. proposed the use of waste heat for ballast-water systems \cite{Balaji2012}; Salmi et al. suggested its use for adsorption refrigeration systems \cite{Salmi2017}. A detailed review of potential uses for waste heat from marine engines is presented by Shu et al \cite{Shu2013}. 
 
@@ -258,7 +262,23 @@ The energy and exergy analysis are here applied to a specific  cruise ship opera
 
 The ship has a capacity of 1800 passengers and has several restaurants, night clubs and bars, as well as saunas and pools. This means that the energy system regarding the heat and electricity demand is more complex than a regular cargo vessel in the same size. Typical ship operations, although they can vary slightly between different days, are represented in Figure \ref{fig:typicalShipOperations}. It should be noted that the ship stops and drifts in open sea during night hours before mooring at its destination in the morning, if allowed by weather conditions.
 
-The ship systems are summarized in Figure \ref{fig:shipSystems}. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four Wärtsilä 4-stroke Diesel engines (ME) rated 5850 kW each. All engines are equipped with selective catalytic reactors (SCR) for NOX emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\linewidth]{Figures/ShipOperationalProfile}
+	\caption{Reference operational profile (ship speed vs time) for the case study}
+	\label{fig:typicalShipOperations}
+\end{figure}
+
+
+The ship systems are summarized in Figure \ref{fig:shipSystems}. The propulsion system is composed of two equal propulsion lines, each made of two engines, a gearbox, and a propeller. The main engines are four W\"{a}rtsil\"{a} 4-stroke Diesel engines (ME) rated 5850 kW each. All engines are equipped with selective catalytic reactors (SCR) for NO$_X$ emissions abatement. Propulsion power is needed whenever the ship is sailing; however, it should be noted that the ship rarely sails at full speed, and most of the time it only needs one or two engines operated simultaneously.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\linewidth]{Figures/ShipLayout}
+	\caption{Layout of the case study energy systems}
+	\label{fig:shipSystems}
+\end{figure}
+
 
 Auxiliary power is provided by four auxiliary engines (AE) rated 2760 kW each. Auxiliary power is needed on board for a number of alternative functions, from pumps in the engine room to lights, restaurants, ventilation and entertainment for the passengers. 
 
@@ -300,7 +320,44 @@ The validity of this assumption can be seen by observing Figures \ref{fig:Pme_vs
 
 In the case of the auxiliary engines, instead, direct measurements of the power generated by each engine were available. 
 
-For both auxiliary and main engines, part of the relevant internal variables are not measured (particularly with relation to the bypass valves) and this required to determine them based on modeling the heat and mass balance of the engine. The model is explained in detail in Appendix REF.
+For both auxiliary and main engines, part of the relevant internal variables are not measured (particularly with relation to the bypass valves) and this required to determine them based on modeling the heat and mass balance of the engine. In particular, the following equations are used:
+\begin{itemize}
+	\item Mass balance on the split after the compressor, with one flow going to the engine inlet valves and the other flow going to the bypass valve. 
+	\begin{equation}
+	\dot{m}_{air,comp} = \dot{m}_{air,cyl} + \dot{m}_{air,bypass} \\
+	\end{equation}
+	\item Mass balance on the mixer before the turbine, with one flow coming from the engine exhaust valves and the other flow coming from the bypass valve
+	\begin{equation}
+	\dot{m}_{eg,turb} = \dot{m}_{eg,cyl} + \dot{m}_{air,bypass} \\
+	\end{equation}
+	\item Mass balance in the engine cylinder:
+	\begin{equation}
+	\dot{m}_{eg,cyl} = \dot{m}_{air,cyl} + \dot{m}_{fuel,cyl} \\
+	\end{equation}
+	\item Energy balance on the turbocharger: the power generated by the turbine must be equal to the power absorbed by the compressor
+	\begin{equation}
+	\dot{m}_{air,comp} \Delta h_{comp} = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
+	\end{equation}
+	\item Energy balance on the mixer between the air flow after the bypass valve and the exhaust gas flow after the exhaust valve
+	\begin{equation}
+	\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0)
+	\end{equation}
+\end{itemize}
+
+The energy balance over the whole engine is presented in Equation \ref{eqn:engineEnergyBalance}.
+\begin{equation}
+\dot{m}_{fuel} (LHV_{fuel} + c_{p,fuel} (T_{fuel,in} - T_0)) + \dot{m}_{air} c_{p,air} (T_{air,comp,in} - T_0) = \dot{W}_{mech} + \dot{m}_{eg} c_{p,eg} (T_{eg,TC,out} - T_0) + \dot{Q}_{cooling} 
+\end{equation} \label{eqn:engineEnergyBalance}
+With: 
+\begin{equation}
+\dot{Q}_{cooling} = \dot{Q}_{CAC,HT} + \dot{Q}_{CAC,LT} + \dot{Q}_{JWC} + \dot{Q}_{LOC}
+\end{equation} \label{eqn:engineCoolingBalance}
+The value of $\dot{Q}_{cooling}$ is determined based on the balance in Equation \ref{eqn:engineEnergyBalance}. The share between the four contributions in Equation \ref{eqn:engineCoolingBalance} is calculated based on the data for the heat loss to the HT and LT systems presented in the engines project guides as functions of the engine load. The values are interpolated based on a 2$^nd$ degree polynomial and scaled to respect the energy balance. In absence of more accurate data, it is then assumed that the contributions of $\dot{Q}_{JWC}$ and $\dot{Q}_{LOC}$ are equal for all loads. CHANGE VALUES IN THE TABLE
+
+
+
+
+
 
 \begin{figure}
 	\centering
@@ -369,8 +426,6 @@ For both auxiliary and main engines, part of the relevant internal variables are
 	\label{tab:ME_values}
 \end{table}
 
-INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
-
 
 \begin{table}
 	\small
@@ -422,8 +477,6 @@ INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
 	\label{tab:AE_values}
 \end{table}
 
-INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
-
 \begin{table}
 	\small
 	\centering
@@ -466,11 +519,17 @@ INCLUDE VALIDATION AGAINST PROJECT GUIDE DATA
 
 \subsubsection{Cooling systems}
 
-The ship's cooling systems are designed similarly to most ships and divided in two cooling systems of two separate temperature levels: the high temperature (HT) cooling systems (70-90$^o$C) and the low temperature (LT) cooling systems (40-60$^o$C). The cooling systems provide the necessary cooling to the engines, to the steam systems and to all other components on board. A representation of the ship cooling systems is provided in Figure XXX. 
+The ship's cooling systems are designed similarly to most ships and divided in two cooling systems of two separate temperature levels: the high temperature (HT) cooling systems (70-90$^o$C) and the low temperature (LT) cooling systems (40-60$^o$C). The cooling systems provide the necessary cooling to the engines, to the steam systems and to all other components on board. A representation of the ship cooling systems is provided in Figure \ref{fig:generalsystemssimplified}. 
 
 All values not directly measured in the cooling systems were calculated based on mass and energy balances. 
 
-Figure cooling systems
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{Figures/GeneralSystemsSimplified}
+	\caption{Layout of the ship heating and cooling system}
+	\label{fig:generalsystemssimplified}
+\end{figure}
+
 
 
 \subsection{Estimation of the electric power demand} \label{sec:met:electric}
@@ -689,7 +748,7 @@ The ship operates in different conditions, and it can be useful to provide a sep
 
 In this section, we observe and analyze direct measurements from ship systems, with no pre-processing, that are expected to have an influence on the energy analysis.
 
-Figures \ref{fig:TseaTairTIME} and \ref{fig:TseaTairDIST} represent the time evolution and the distribution over the year of the ambient air and sea water temperature. The relatively low temperatures that are experienced by the case study ship during its operations suggest that heating demand can be expected to be higher than cooling demand. On the other hand, the fact that, in summer, air temperatures reach up to 26 degrees Celsius justify the existence of an HVAC unit that can also operate in cooling mode. 
+Figures \ref{fig:TseaTairTIME} and \ref{fig:TseaTairDIST} represent the time evolution and the distribution over the year of the ambient air and sea water temperature. The relatively low temperatures that are experienced by the case study ship during its operations rises expectations for a high space heating demand and to a relatively low for summer HVAC electric power demand. On the other hand, the fact that, in summer, air temperatures reach up to 26 degrees Celsius justify the existence of an HVAC unit that can also operate in cooling mode. 
 
 \begin{figure}[htbp]
 	\centering
@@ -710,7 +769,9 @@ Figures \ref{fig:TseaTairTIME} and \ref{fig:TseaTairDIST} represent the time evo
 \end{figure}
 
 
-Figure \ref{fig:vship_hist} represents the distribution of the ship speed, both in terms of statistical distribution and in terms of a reference 24h period. The ship operates almost for the entire year according to a fix schedule, while there are a couple of periods (particularly during the summer months) when the ship operates at higher speed. This can also be seen from Figure \ref{fig:Pme_vs_vship}, where the main cluster of operations at middle-low speed can be clearly identified, as well as the smaller area of operations at high speed. 
+Figure \ref{fig:vship_hist} represents the distribution of the ship speed. The ship operates almost for the entire year according to a fix schedule, while there are a couple of periods (particularly during the summer months) when the ship operates at higher speed. The relatively large amount of time the ship spends in port can also be seen in Figure \ref{fig:opMode_pie}. This suggests that, in spite of the high installed power for propulsion, the energy demand for this category is expected to be relatively low.
+
+Figures \ref{fig:loadME_hist} and \ref{fig:loadME_hist} show the frequency of the load at which each of the engines (main and auxiliary engines, respectively) is operated. 
 
 \begin{figure}[htbp]
 	\centering
@@ -898,150 +959,7 @@ OTHER?
 	\end{tabular}
 \end{table}
 
-\section{Estimation of air and exhaust gas flows in the main engines}
 
-\subsection{Mass balances}
-
-Mass balance on the split after the compressor, with one flow going to the engine inlet valves and the other flow going to the bypass valve
-\begin{equation}
-\dot{m}_{air,comp} = \dot{m}_{air,cyl} + \dot{m}_{air,bypass} \\
-\end{equation}
-
-Mass balance on the mixer before the turbine, with one flow coming from the engine exhaust valves and the other flow coming from the bypass valve
-\begin{equation}
-\dot{m}_{eg,turb} = \dot{m}_{eg,cyl} + \dot{m}_{air,bypass} \\
-\end{equation}
-
-Note that the exhaust gas mass flow from the cylinders is fully defined as follows:
-\begin{equation}
-\dot{m}_{eg,cyl} = \dot{m}_{air,cyl} + \dot{m}_{fuel,cyl} \\
-\end{equation}
-
-\subsection{Energy balances}
-
-Energy balance on the turbocharger: the power generated by the turbine must be equal to the power absorbed by the compressor
-\begin{equation}
-\dot{m}_{air,comp} \Delta h_{comp} = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
-\end{equation}
-
-Energy balance on the mixer between the air flow after the bypass valve and the exhaust gas flow after the exhaust valve
-\begin{equation}
-\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0)
-\end{equation}
-
-
-The system of four equations is to be solved in the four following unknowns:
-\begin{itemize}
-	\item $ \dot{m}_{eg,turb} $
-	\item $ \dot{m}_{air,bypass} $
-	\item $ \dot{m}_{air,comp} $
-	\item $ T_{turb,in} $ (In the case of the Main engines)
-	\item $ T_{cyl,out} $ (In the case of the Auxiliary engines)
-\end{itemize}
-
-Include other assumptions:
-- TC efficiency
-- Compressor efficiency
-- Turbine efficiency
-
-
-\subsection{Main Engines}
-
-To calculate what we need, we must make the system explicit on the variables we need to calculate. This process is different for the main and auxiliary engines, mostly because the temperature measurement of the exhaust gas before the turbine is positioned differently. In the case of the main engines, the temperature at the \textbf{cylinder outlet} is measured and, hence, known. 
-
-First, we make all equations explicit in $ \dot{m}_{air,bypass} $ thus eliminating both 
-$ \dot{m}_{eg,turb} $ and $ \dot{m}_{air,comp} $
-
-$$
-(\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) \Delta h_{comp} = (\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech} 
-$$
-$$
-\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0)  = (\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_0)
-$$
-
-At this point, we use the first equation to simplify the system and make it explicit in the $ \dot{m}_{air,bypass} $ variable alone:
-
-\begin{eqnarray*}
-	(\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}  & = & (\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) \Delta h_{comp} \\
-	T_{turb,in} - T_{turb,out} & = & \frac{\dot{m}_{air,cyl} + \dot{m}_{air,bypass}}{\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}} \frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}} \\
-	T_{turb,in} & = & T_{turb,out} + \frac{\dot{m}_{air,cyl} + \dot{m}_{air,bypass}}{\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}} \frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}}  \\
-\end{eqnarray*}
-
-We can now substitute this expression in the second equation:
-
-\begin{multline}
-\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0)  =  \\ 
-(\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,out} + \frac{\dot{m}_{air,cyl} + \dot{m}_{air,bypass}}{\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}} \frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}} - T_0)
-\end{multline}
-
-
-We first execute the multiplication in the term on the right of the equal:
-\begin{multline}
-\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0)  =  \\
-\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_0) + \\
-\dot{m}_{air,bypass} c_{p,eg} (T_{turb,out} - T_0) + \\ 
-\frac{\Delta h_{comp}}{c_{p,eg} \eta_{mech}}(\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) c_{p,eg}
-\end{multline}
-
-Now, we can group together the elements in the variable of interest:
-\begin{multline}
-\dot{m}_{air,bypass} \left[ c_{p,air} (T_{comp,out} - T_0) - c_{p,eg} (T_{turb,out} - T_0) - \frac{\Delta h_{comp}}{\eta_{mech}} \right] = \\
-\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_0) - \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}
-\end{multline}
-
-This can be further simplified into:
-\begin{multline}
-\dot{m}_{air,bypass} \left[ c_{p,air} (T_{comp,out} - T_0) - c_{p,eg} (T_{turb,out} - T_0) - \frac{\Delta h_{comp}}{\eta_{mech}} \right] = \\
-\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_{cyl,out}) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}
-\end{multline}
-
-Finally, we can assume the specific heat at constant pressure of air and exhaust gas to be sufficiently similar for considering them equal in the term at the numerator (we ignored changes in the properties of the mixture in other points as well):
-\begin{multline}
-\dot{m}_{air,bypass} \left[ c_{p,eg} (T_{comp,out} - T_{turb,out}) - \frac{\Delta h_{comp}}{\eta_{mech}} \right] = \\
-\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_{cyl,out}) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}
-\end{multline}
-
-From which we can derive the final form:
-\begin{equation}
-\dot{m}_{air,bypass} = \frac{\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,out} - T_{cyl,out}) + \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}}{c_{p,eg} (T_{comp,out} - T_{turb,out}) - \frac{\Delta h_{comp}}{\eta_{mech}}} 
-\end{equation}
-
-Which can be rewritten, in order to have both numerator and denominator positive, as follows:
-\begin{equation}
-\dot{m}_{air,bypass} = \frac{\dot{m}_{eg,cyl} c_{p,eg} (T_{cyl,out} - T_{turb,out}) - \frac{\Delta h_{comp}}{\eta_{mech}}\dot{m}_{air,cyl}}{c_{p,eg} (T_{turb,out} - T_{comp,out}) - \frac{\Delta h_{comp}}{\eta_{mech}}} 
-\end{equation}
-
-
-
-\subsection{Auxiliary Engines}
-
-In the case of the auxiliary engines, what we know instead is the temperature of the exhaust gas \textbf{before the turbine}, hence after the merging between the exhaust gas and the bypass.
-
-In this case, however, things appear to be simple: the energy balance on the turbocharger can be calculated as there is only one variable unknown: the total mass flow in the compressor, and hence the bypass flow:
-$$
-(\dot{m}_{air,cyl} + \dot{m}_{air,bypass}) \Delta h_{comp} = (\dot{m}_{eg,cyl} + \dot{m}_{air,bypass}) c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
-$$
-$$
-\dot{m}_{air,cyl} \Delta h_{comp} + \dot{m}_{air,bypass} \Delta h_{comp} = \dot{m}_{eg,cyl} c_{p,eg} (T_{turb,in} - T_{turb,out}) + \dot{m}_{air,bypass} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}
-$$
-$$
-\dot{m}_{air,bypass} (\Delta h_{comp} - c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}) = \dot{m}_{eg,cyl} c_{p,eg} (T_{turb,in} - T_{turb,out}) - \dot{m}_{air,cyl} \Delta h_{comp}
-$$
-\begin{equation}
-\dot{m}_{air,bypass} = \frac{\dot{m}_{eg,cyl} c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech} - \dot{m}_{air,cyl} \Delta h_{comp}}{\Delta h_{comp} - c_{p,eg} (T_{turb,in} - T_{turb,out}) \eta_{mech}}
-\end{equation}
-
-Now that we have the value for the bypass flow, it is easy to calculate backwards the temperature of the exhaust gas after the cylinder outlet valves, before the merging with the bypass flow:
-
-$$
-\dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0) + \dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0)
-$$
-$$
-\dot{m}_{eg,cyl} c_{p,eg}  (T_{cyl,out} - T_0) = \dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0) - \dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0)
-$$
-\begin{equation}
-T_{cyl,out} = T_0 + \frac{\dot{m}_{eg,turb} c_{p,eg} (T_{turb,in} - T_0) - \dot{m}_{air,bypass} c_{p,air} (T_{comp,out} - T_0)}{\dot{m}_{eg,cyl} c_{p,eg}}
-\end{equation}
 
 \section{Full list of available measurements}
 

@@ -441,13 +441,19 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
             temp1 = []
             for engine in {"AE1", "AE2", "AE3", "AE4"}:
                 temp1.append(processed[engine+":Cyl:Power_out:Edot"][processed[engine+":on"]]/CONSTANTS["AuxEngines"]["MCR"])
-            ax.hist(tuple(temp1), normed=1, alpha=0.8, label=["AE1", "AE2", "AE3", "AE4"])
+            ax.hist(tuple(temp1), normed=False, alpha=0.8, label=["AE1", "AE2", "AE3", "AE4"])
             plt.legend()
+            plt.xlabel("Engine load")
+            plt.ylabel("Number of observations")
 
         if filename == "Hist:MainEngines":
+            temp1 = []
             for engine in {"ME1", "ME2", "ME3", "ME4"}:
-                ax.hist(processed[engine+":Cyl:Power_out:Edot"][processed[engine+":on"]]/CONSTANTS["MainEngines"]["MCR"], normed=1, alpha=0.5, label=engine)
+                temp1.append(processed[engine + ":Cyl:Power_out:Edot"][processed[engine + ":on"]] / CONSTANTS["MainEngines"]["MCR"])
+            ax.hist(tuple(temp1), normed=False, alpha=0.8, label=["ME1", "ME2", "ME3", "ME4"])
             plt.legend()
+            plt.xlabel("Engine load")
+            plt.ylabel("Number of observations")
 
 
         ### SCATTER PLOTS ###
