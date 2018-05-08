@@ -19,7 +19,7 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
     counter_p_tot = 0
     counter_T_tot = 0
     counter_c_tot = 0
-    processed = unitOffCheck(processed, dict_structure, CONSTANTS, call_ID)
+    processed = unitOffCheck(processed, dict_structure, CONSTANTS, system_set, call_ID)
     for system in system_set:
         for unit in dict_structure["systems"][system]["units"]:
             # (counter_c, processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, call_ID)
@@ -37,7 +37,7 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
                 else:
                     print("Equation not recognized")
                         # Trivial assignment: doing this if the flow is connected with other flows
-    processed = unitOffCheck(processed, dict_structure, CONSTANTS, call_ID)
+    processed = unitOffCheck(processed, dict_structure, CONSTANTS, system_set, call_ID)
     for system in system_set:
         for unit in dict_structure["systems"][system]["units"]:
             (counter_c,processed) = connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, call_ID)
@@ -47,9 +47,9 @@ def systemFill(processed, dict_structure, CONSTANTS, system_type, call_ID):
 
 
 
-def unitOffCheck(processed, dict_structure, CONSTANTS, call_ID):
+def unitOffCheck(processed, dict_structure, CONSTANTS, system_set, call_ID):
     # Assigns to 0 all values related to components when they are off
-    for system in dict_structure["systems"]:
+    for system in system_set:
         if processed[system + ":" + "on"].isnull().sum() == 0:
             for unit in dict_structure["systems"][system]["units"]:
                 for flow in dict_structure["systems"][system]["units"][unit]["flows"]:
@@ -85,7 +85,12 @@ def connectionAssignment(processed, dict_structure, CONSTANTS, system, unit, cal
                             processed[ID_c] = processed[ID]
                             counter = counter + 1
                         elif (processed[ID] - processed[ID_c]).sum() > processed[ID].max():
-                            text_file.write("ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows {} and {} should be the same, they are not. \n".format(ID, ID_c))
+                            error = abs(processed[ID] - processed[ID_c])
+                            relativeError = error / processed[ID].mean()
+                            averageError = relativeError.mean()
+                            timesOfError = sum(error > 0.01*processed[ID].mean())
+                            text_file.write("ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows {} and {} should be the same, they are not. "
+                                            "Average relative error is {}, total times of error is {}\n".format(ID, ID_c, str(averageError), str(timesOfError)))
     text_file.close()
     return (counter,processed)
 
