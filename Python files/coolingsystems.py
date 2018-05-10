@@ -111,18 +111,18 @@ def centralCoolingSystems(processed, CONSTANTS):
 
     # We can now calculate the flows into the LTHT merge for the ER 13
     mdot_HTHR13_tot = processed["CoolingSystems:LTHTmerge13:HTWater_ME1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_ME3_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE1_out:mdot"] + processed["CoolingSystems:LTHTmerge13:HTWater_AE3_out:mdot"]
-    processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = mdot_HTHR13_tot * (
-        CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"]) / (
-        processed["CoolingSystems:LTHTmerge13:HTWater_in:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"])
+    #processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = mdot_HTHR13_tot * (
+    #    CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"]) / (
+    #    processed["CoolingSystems:LTHTmerge13:HTWater_in:T"] - processed["CoolingSystems:LTcollector13:HTWater_out:T"])
     # If the previously calculated mass flow is NaN, we set it equal to 0
     processed.loc[np.isnan(processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"]), "CoolingSystems:LTHTmerge13:HTWater_in:mdot"] = 0
     processed["CoolingSystems:LTHTmerge13:LTWater_in:mdot"] = mdot_HTHR13_tot - processed["CoolingSystems:LTHTmerge13:HTWater_in:mdot"]
 
     # We can now calculate the flows into the LTHT merge for the ER 24
     mdot_HTHR24_tot = processed["CoolingSystems:LTHTmerge24:HTWater_ME2_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_ME4_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_AE2_out:mdot"] + processed["CoolingSystems:LTHTmerge24:HTWater_AE4_out:mdot"]
-    processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"] = mdot_HTHR24_tot * (
-        CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"]) / (
-        processed["CoolingSystems:LTHTmerge24:HTWater_in:T"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"])
+    #processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"] = mdot_HTHR24_tot * (
+    #    CONSTANTS["MainEngines"]["T_COOLING_MIX"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"]) / (
+    #    processed["CoolingSystems:LTHTmerge24:HTWater_in:T"] - processed["CoolingSystems:LTcollector24:HTWater_out:T"])
     # If the previously calculated mass flow is NaN, we set it equal to 0
     processed.loc[np.isnan(processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"]), "CoolingSystems:LTHTmerge24:HTWater_in:mdot"] = 0
     processed["CoolingSystems:LTHTmerge24:LTWater_in:mdot"] = mdot_HTHR24_tot - processed["CoolingSystems:LTHTmerge24:HTWater_in:mdot"]

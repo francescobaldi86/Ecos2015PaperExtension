@@ -1,2 +1,426 @@
 === STARTING THE REPORT FILE === 
  
+ERROR. FUN: ppo.connectionAssignment. Something is wrong. Flows CoolingSystems:LTcollector24:HTWater_out:mdot and CoolingSystems:LTHTmerge24:LTWater_in:mdot should be the same, they are not. Average relative error is inf, total times of error is 13343
+
+ *** CALCULATING EFFICIENCIES *** 
+Flow Demands:Electricity:Thrusters is not recognised as either input or output 
+Flow Demands:Electricity:HVAC is not recognised as either input or output 
+Flow Demands:Electricity:Other is not recognised as either input or output 
+Flow Demands:Electricity:Total is not recognised as either input or output 
+Flow Demands:Mechanical:Propeller1 is not recognised as either input or output 
+Flow Demands:Mechanical:Propeller2 is not recognised as either input or output 
+Flow Demands:Mechanical:Total is not recognised as either input or output 
+Flow Demands:Heat:HotWaterHeater is not recognised as either input or output 
+Flow Demands:Heat:HVACpreheater is not recognised as either input or output 
+Flow Demands:Heat:HVACreheater is not recognised as either input or output 
+Flow Demands:Heat:TankHeating is not recognised as either input or output 
+Flow Demands:Heat:OtherTanks is not recognised as either input or output 
+Flow Demands:Heat:HFOtankHeating is not recognised as either input or output 
+Flow Demands:Heat:MachinerySpaceHeaters is not recognised as either input or output 
+Flow Demands:Heat:HFOheater is not recognised as either input or output 
+Flow Demands:Heat:Galley is not recognised as either input or output 
+Flow Demands:Heat:Total is not recognised as either input or output 
+
+ *** CONSISTENTCY CHECK FOR ENGINES *** 
+ME1 Compressor temperatures are consistent for 100.0 % of the datapoints 
+ME1 Exhaust temperatures (Cyl->TC are consistent for 99.97111774333301 % of the datapoints 
+ME1 Turbine temperatures are consistent for 100.0 % of the datapoints 
+ME1 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME1 LOC temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME1 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME1 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME1 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME1 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+ME1 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+ME4 Compressor temperatures are consistent for 100.0 % of the datapoints 
+WARNING ME4 Exhaust temperatures (Cyl->TC are consistent for 94.51952651691677 % of the datapoints 
+ME4 Turbine temperatures are consistent for 100.0 % of the datapoints 
+ME4 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME4 LOC temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME4 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+ME4 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+ME2 Compressor temperatures are consistent for 100.0 % of the datapoints 
+ME2 Exhaust temperatures (Cyl->TC are consistent for 100.0 % of the datapoints 
+ME2 Turbine temperatures are consistent for 100.0 % of the datapoints 
+ME2 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME2 LOC temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME2 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME2 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME2 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME2 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+ME2 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+ME3 Compressor temperatures are consistent for 100.0 % of the datapoints 
+ME3 Exhaust temperatures (Cyl->TC are consistent for 96.26859255438053 % of the datapoints 
+ME3 Turbine temperatures are consistent for 100.0 % of the datapoints 
+ME3 LOC temperatures (oil side) are consistent for 100.0 % of the datapoints 
+ME3 LOC temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME3 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME3 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+ME3 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+ME3 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+ME3 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+AE4 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE4 Exhaust temperatures (Cyl->TC are consistent for 97.65619054866448 % of the datapoints 
+AE4 Turbine temperatures are consistent for 100.0 % of the datapoints 
+AE4 LOC temperatures (oil side) are consistent for 99.49775511757096 % of the datapoints 
+AE4 LOC temperatures (LT water side) are consistent for 99.49775511757096 % of the datapoints 
+AE4 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE4 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+AE4 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE4 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+AE4 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+AE2 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE2 Exhaust temperatures (Cyl->TC are consistent for 96.92214846107423 % of the datapoints 
+AE2 Turbine temperatures are consistent for 99.99329444109166 % of the datapoints 
+AE2 LOC temperatures (oil side) are consistent for 98.9472272513914 % of the datapoints 
+AE2 LOC temperatures (LT water side) are consistent for 98.9472272513914 % of the datapoints 
+AE2 CAC_LT temperatures (air side) are consistent for 99.99329444109166 % of the datapoints 
+AE2 CAC_LT temperatures (LT water side) are consistent for 99.99329444109166 % of the datapoints 
+AE2 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE2 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+AE2 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+AE1 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE1 Exhaust temperatures (Cyl->TC are consistent for 97.9326105442177 % of the datapoints 
+AE1 Turbine temperatures are consistent for 99.94153911564626 % of the datapoints 
+AE1 LOC temperatures (oil side) are consistent for 99.34630102040816 % of the datapoints 
+AE1 LOC temperatures (LT water side) are consistent for 99.34630102040816 % of the datapoints 
+AE1 CAC_LT temperatures (air side) are consistent for 99.99468537414967 % of the datapoints 
+AE1 CAC_LT temperatures (LT water side) are consistent for 99.99468537414967 % of the datapoints 
+AE1 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE1 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+AE1 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+AE3 Compressor temperatures are consistent for 100.0 % of the datapoints 
+AE3 Exhaust temperatures (Cyl->TC are consistent for 95.91223716860388 % of the datapoints 
+AE3 Turbine temperatures are consistent for 97.88428888598668 % of the datapoints 
+AE3 LOC temperatures (oil side) are consistent for 98.1063079535066 % of the datapoints 
+AE3 LOC temperatures (LT water side) are consistent for 98.1063079535066 % of the datapoints 
+AE3 CAC_LT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_LT temperatures (LT water side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_HT temperatures (air side) are consistent for 100.0 % of the datapoints 
+AE3 CAC_HT temperatures (HT water side) are consistent for 100.0 % of the datapoints 
+AE3 The overall energy balance of the engine is consistent for 100.0 % of the datapoints 
+
+ *** CONSISTENTCY CHECK FOR THE HTHR SYSTEM *** 
+ HTHR-24 inlet temperatures on the HR side are consistent for 100.0 % of the datapoints 
+ HTHR-13 (HT side) temperatures are consistent for 100.0 % of the datapoints 
+ HTHR-13 (HR side) temperatures are consistent for 100.0 % of the datapoints 
+ HTHR-24 (HT side) temperatures are consistent for 100.0 % of the datapoints 
+ HTHR-24 (HR side) temperatures are consistent for 100.0 % of the datapoints 
+ Steam heater (HR side) temperatures are consistent for 99.90582191780823 % of the datapoints 
+ HVAC-Preheater (HR side) temperatures are consistent for 100.0 % of the datapoints 
+ HVAC-Reheater (HR side) temperatures are consistent for 100.0 % of the datapoints 
+ Hot Water Heater (HR side) temperatures are consistent for 100.0 % of the datapoints 
+
+ *** CONSISTENTCY CHECK FOR THE STEAM SYSTEMS *** 
+TankHeatingSteam mass flows are consistent for 100.0 % of the datapoints 
+OtherTanksSteam mass flows are consistent for 100.0 % of the datapoints 
+HFOtankHeatingSteam mass flows are consistent for 100.0 % of the datapoints 
+MachinerySpaceHeatersSteam mass flows are consistent for 100.0 % of the datapoints 
+HFOheaterSteam mass flows are consistent for 100.0 % of the datapoints 
+GalleySteam mass flows are consistent for 100.0 % of the datapoints 
+
+ *** LIST OF MISSING VALUES *** 
+The field Demands:Mechanical:Propeller1:omega is still empty 
+The field Demands:Mechanical:Propeller2:omega is still empty 
+The field Demands:Mechanical:Total:omega is still empty 
+The field Demands:Heat:Total:Bdot is still empty 
+The field Demands:Heat:Total:T is still empty 
+
+ *** CHECKING THE MASS BALANCE *** 
+The mass balance is fine for ME1_Comp unit 
+The mass balance is fine for ME1_Turbine unit 
+The mass balance is fine for ME1_BPsplit unit 
+The mass balance is ALMOST fine for ME1_BPmerge unit 
+The mass balance is fine for ME1_BPvalve unit 
+The mass balance is fine for ME1_CAC_HT unit 
+The mass balance is fine for ME1_CAC_LT unit 
+The mass balance is fine for ME1_LOC unit 
+The mass balance is fine for ME1_JWC unit 
+The mass balance is fine for ME1_Cyl unit 
+The mass balance is fine for ME1_HTsplit unit 
+The mass balance is ALMOST fine for ME1_HTmerge unit 
+There is no mass balance for ME1_TCshaft unit 
+The mass balance is fine for ME2_Comp unit 
+The mass balance is fine for ME2_Turbine unit 
+The mass balance is fine for ME2_BPsplit unit 
+The mass balance is fine for ME2_BPmerge unit 
+The mass balance is fine for ME2_BPvalve unit 
+The mass balance is fine for ME2_CAC_HT unit 
+The mass balance is fine for ME2_CAC_LT unit 
+The mass balance is fine for ME2_LOC unit 
+The mass balance is fine for ME2_JWC unit 
+The mass balance is fine for ME2_Cyl unit 
+The mass balance is fine for ME2_HTsplit unit 
+The mass balance is ALMOST fine for ME2_HTmerge unit 
+There is no mass balance for ME2_TCshaft unit 
+The mass balance is fine for ME2_HRSG unit 
+The mass balance is fine for ME3_Comp unit 
+The mass balance is fine for ME3_Turbine unit 
+The mass balance is fine for ME3_BPsplit unit 
+---Mass balance for ME3_BPmerge unit is respected 98.77853881278538% of the times, with 1.3390505058830928% average error 
+The mass balance is fine for ME3_BPvalve unit 
+The mass balance is fine for ME3_CAC_HT unit 
+The mass balance is fine for ME3_CAC_LT unit 
+The mass balance is fine for ME3_LOC unit 
+The mass balance is fine for ME3_JWC unit 
+The mass balance is fine for ME3_Cyl unit 
+The mass balance is fine for ME3_HTsplit unit 
+The mass balance is ALMOST fine for ME3_HTmerge unit 
+There is no mass balance for ME3_TCshaft unit 
+The mass balance is fine for ME3_HRSG unit 
+The mass balance is fine for ME4_Comp unit 
+The mass balance is fine for ME4_Turbine unit 
+The mass balance is fine for ME4_BPsplit unit 
+---Mass balance for ME4_BPmerge unit is respected 98.32477168949771% of the times, with 3.702507822261727% average error 
+The mass balance is fine for ME4_BPvalve unit 
+The mass balance is fine for ME4_CAC_HT unit 
+The mass balance is fine for ME4_CAC_LT unit 
+The mass balance is fine for ME4_LOC unit 
+The mass balance is fine for ME4_JWC unit 
+The mass balance is fine for ME4_Cyl unit 
+The mass balance is fine for ME4_HTsplit unit 
+The mass balance is ALMOST fine for ME4_HTmerge unit 
+There is no mass balance for ME4_TCshaft unit 
+The mass balance is fine for AE1_Comp unit 
+The mass balance is fine for AE1_Turbine unit 
+The mass balance is fine for AE1_BPsplit unit 
+The mass balance is fine for AE1_BPmerge unit 
+---Mass balance for AE1_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The mass balance is fine for AE1_CAC_HT unit 
+The mass balance is fine for AE1_CAC_LT unit 
+The mass balance is fine for AE1_LOC unit 
+The mass balance is fine for AE1_JWC unit 
+The mass balance is fine for AE1_Cyl unit 
+The mass balance is fine for AE1_HTsplit unit 
+The mass balance is ALMOST fine for AE1_HTmerge unit 
+There is no mass balance for AE1_TCshaft unit 
+The mass balance is fine for AE1_HRSG unit 
+There is no mass balance for AE1_AG unit 
+The mass balance is fine for AE2_Comp unit 
+The mass balance is fine for AE2_Turbine unit 
+The mass balance is fine for AE2_BPsplit unit 
+The mass balance is fine for AE2_BPmerge unit 
+---Mass balance for AE2_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The mass balance is fine for AE2_CAC_HT unit 
+The mass balance is fine for AE2_CAC_LT unit 
+The mass balance is fine for AE2_LOC unit 
+The mass balance is fine for AE2_JWC unit 
+The mass balance is fine for AE2_Cyl unit 
+The mass balance is fine for AE2_HTsplit unit 
+The mass balance is ALMOST fine for AE2_HTmerge unit 
+There is no mass balance for AE2_TCshaft unit 
+The mass balance is fine for AE2_HRSG unit 
+There is no mass balance for AE2_AG unit 
+The mass balance is fine for AE3_Comp unit 
+The mass balance is fine for AE3_Turbine unit 
+The mass balance is fine for AE3_BPsplit unit 
+The mass balance is fine for AE3_BPmerge unit 
+---Mass balance for AE3_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The mass balance is fine for AE3_CAC_HT unit 
+The mass balance is fine for AE3_CAC_LT unit 
+The mass balance is fine for AE3_LOC unit 
+The mass balance is fine for AE3_JWC unit 
+The mass balance is fine for AE3_Cyl unit 
+The mass balance is fine for AE3_HTsplit unit 
+The mass balance is ALMOST fine for AE3_HTmerge unit 
+There is no mass balance for AE3_TCshaft unit 
+The mass balance is fine for AE3_HRSG unit 
+There is no mass balance for AE3_AG unit 
+The mass balance is fine for AE4_Comp unit 
+The mass balance is fine for AE4_Turbine unit 
+The mass balance is fine for AE4_BPsplit unit 
+The mass balance is fine for AE4_BPmerge unit 
+---Mass balance for AE4_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The mass balance is fine for AE4_CAC_HT unit 
+The mass balance is fine for AE4_CAC_LT unit 
+The mass balance is fine for AE4_LOC unit 
+The mass balance is fine for AE4_JWC unit 
+The mass balance is fine for AE4_Cyl unit 
+The mass balance is fine for AE4_HTsplit unit 
+The mass balance is ALMOST fine for AE4_HTmerge unit 
+There is no mass balance for AE4_TCshaft unit 
+The mass balance is fine for AE4_HRSG unit 
+There is no mass balance for AE4_AG unit 
+The mass balance is fine for CoolingSystems_SWC13 unit 
+The mass balance is fine for CoolingSystems_SWC24 unit 
+The mass balance is fine for CoolingSystems_HTcollector13 unit 
+The mass balance is fine for CoolingSystems_HTcollector24 unit 
+The mass balance is ALMOST fine for CoolingSystems_LTcollector13 unit 
+The mass balance is ALMOST fine for CoolingSystems_LTcollector24 unit 
+The mass balance is fine for CoolingSystems_LTdistribution13 unit 
+The mass balance is fine for CoolingSystems_LTdistribution24 unit 
+The mass balance is fine for CoolingSystems_LTHTmerge13 unit 
+The mass balance is fine for CoolingSystems_LTHTmerge24 unit 
+The mass balance is fine for CoolingSystems_HTsplit13 unit 
+The mass balance is fine for CoolingSystems_HTsplit24 unit 
+The mass balance is fine for HTHR_HTHR13 unit 
+The mass balance is fine for HTHR_HTHR24 unit 
+The mass balance is fine for HTHR_HTHRsplit unit 
+The mass balance is fine for HTHR_HTHRmerge unit 
+The mass balance is fine for HTHR_HVACpreheater unit 
+The mass balance is fine for HTHR_HVACreheater unit 
+The mass balance is fine for HTHR_SteamHeater unit 
+The mass balance is fine for HTHR_HotWaterHeater unit 
+The mass balance is fine for Steam_Boiler1 unit 
+The mass balance is ALMOST fine for Steam_HotWell unit 
+The mass balance is fine for Steam_SteamDistribution unit 
+The mass balance is fine for Steam_TankHeating unit 
+The mass balance is fine for Steam_OtherTanks unit 
+The mass balance is fine for Steam_HFOtankHeating unit 
+The mass balance is fine for Steam_MachinerySpaceHeaters unit 
+The mass balance is fine for Steam_HFOheater unit 
+The mass balance is fine for Steam_Galley unit 
+There is no mass balance for Demands_Electricity unit 
+There is no mass balance for Demands_Mechanical unit 
+There is no mass balance for Demands_Heat unit 
+
+ *** CHECKING THE ENERGY BALANCE *** 
+The energy balance is fine for ME1_Comp unit 
+The energy balance is fine for ME1_Turbine unit 
+The energy balance is fine for ME1_BPsplit unit 
+---energy balance for ME1_BPmerge unit is respected 98.8156392694064% of the times, with 1.1033597337805356% average error 
+The energy balance is fine for ME1_BPvalve unit 
+The energy balance is fine for ME1_CAC_HT unit 
+The energy balance is fine for ME1_CAC_LT unit 
+The energy balance is fine for ME1_LOC unit 
+The energy balance is fine for ME1_JWC unit 
+The energy balance is fine for ME1_Cyl unit 
+The energy balance is fine for ME1_HTsplit unit 
+The energy balance is ALMOST fine for ME1_HTmerge unit 
+The energy balance is fine for ME1_TCshaft unit 
+The energy balance is fine for ME2_Comp unit 
+The energy balance is fine for ME2_Turbine unit 
+The energy balance is fine for ME2_BPsplit unit 
+The energy balance is ALMOST fine for ME2_BPmerge unit 
+The energy balance is fine for ME2_BPvalve unit 
+The energy balance is fine for ME2_CAC_HT unit 
+The energy balance is fine for ME2_CAC_LT unit 
+The energy balance is fine for ME2_LOC unit 
+The energy balance is fine for ME2_JWC unit 
+The energy balance is fine for ME2_Cyl unit 
+The energy balance is fine for ME2_HTsplit unit 
+The energy balance is ALMOST fine for ME2_HTmerge unit 
+The energy balance is fine for ME2_TCshaft unit 
+The energy balance is fine for ME2_HRSG unit 
+The energy balance is fine for ME3_Comp unit 
+The energy balance is fine for ME3_Turbine unit 
+The energy balance is fine for ME3_BPsplit unit 
+The energy balance is ALMOST fine for ME3_BPmerge unit 
+The energy balance is fine for ME3_BPvalve unit 
+The energy balance is fine for ME3_CAC_HT unit 
+The energy balance is fine for ME3_CAC_LT unit 
+The energy balance is fine for ME3_LOC unit 
+The energy balance is fine for ME3_JWC unit 
+The energy balance is fine for ME3_Cyl unit 
+The energy balance is fine for ME3_HTsplit unit 
+The energy balance is ALMOST fine for ME3_HTmerge unit 
+The energy balance is fine for ME3_TCshaft unit 
+The energy balance is fine for ME3_HRSG unit 
+The energy balance is fine for ME4_Comp unit 
+The energy balance is fine for ME4_Turbine unit 
+The energy balance is fine for ME4_BPsplit unit 
+---energy balance for ME4_BPmerge unit is respected 98.4189497716895% of the times, with 1.6962749826168695% average error 
+The energy balance is fine for ME4_BPvalve unit 
+The energy balance is fine for ME4_CAC_HT unit 
+The energy balance is fine for ME4_CAC_LT unit 
+The energy balance is fine for ME4_LOC unit 
+The energy balance is fine for ME4_JWC unit 
+The energy balance is fine for ME4_Cyl unit 
+The energy balance is fine for ME4_HTsplit unit 
+The energy balance is ALMOST fine for ME4_HTmerge unit 
+The energy balance is fine for ME4_TCshaft unit 
+The energy balance is fine for AE1_Comp unit 
+The energy balance is fine for AE1_Turbine unit 
+The energy balance is fine for AE1_BPsplit unit 
+The energy balance is fine for AE1_BPmerge unit 
+---energy balance for AE1_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The energy balance is fine for AE1_CAC_HT unit 
+The energy balance is fine for AE1_CAC_LT unit 
+The energy balance is fine for AE1_LOC unit 
+The energy balance is fine for AE1_JWC unit 
+The energy balance is ALMOST fine for AE1_Cyl unit 
+The energy balance is fine for AE1_HTsplit unit 
+The energy balance is ALMOST fine for AE1_HTmerge unit 
+---energy balance for AE1_TCshaft unit is respected 47.679794520547944% of the times, with 7.20711318707626% average error 
+The energy balance is fine for AE1_HRSG unit 
+The energy balance is fine for AE1_AG unit 
+The energy balance is fine for AE2_Comp unit 
+The energy balance is fine for AE2_Turbine unit 
+The energy balance is fine for AE2_BPsplit unit 
+The energy balance is fine for AE2_BPmerge unit 
+---energy balance for AE2_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The energy balance is fine for AE2_CAC_HT unit 
+The energy balance is ALMOST fine for AE2_CAC_LT unit 
+The energy balance is fine for AE2_LOC unit 
+The energy balance is fine for AE2_JWC unit 
+The energy balance is ALMOST fine for AE2_Cyl unit 
+The energy balance is ALMOST fine for AE2_HTsplit unit 
+The energy balance is ALMOST fine for AE2_HTmerge unit 
+---energy balance for AE2_TCshaft unit is respected 60.419520547945204% of the times, with 2.2415824876043846% average error 
+The energy balance is fine for AE2_HRSG unit 
+The energy balance is fine for AE2_AG unit 
+The energy balance is fine for AE3_Comp unit 
+The energy balance is fine for AE3_Turbine unit 
+The energy balance is fine for AE3_BPsplit unit 
+The energy balance is fine for AE3_BPmerge unit 
+---energy balance for AE3_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The energy balance is fine for AE3_CAC_HT unit 
+The energy balance is fine for AE3_CAC_LT unit 
+The energy balance is fine for AE3_LOC unit 
+The energy balance is fine for AE3_JWC unit 
+The energy balance is ALMOST fine for AE3_Cyl unit 
+The energy balance is fine for AE3_HTsplit unit 
+The energy balance is ALMOST fine for AE3_HTmerge unit 
+---energy balance for AE3_TCshaft unit is respected 79.60045662100457% of the times, with 6.366538392302008% average error 
+The energy balance is fine for AE3_HRSG unit 
+The energy balance is fine for AE3_AG unit 
+The energy balance is fine for AE4_Comp unit 
+The energy balance is fine for AE4_Turbine unit 
+The energy balance is fine for AE4_BPsplit unit 
+The energy balance is fine for AE4_BPmerge unit 
+---energy balance for AE4_BPvalve unit is respected 0.0% of the times, with nan% average error 
+The energy balance is fine for AE4_CAC_HT unit 
+The energy balance is fine for AE4_CAC_LT unit 
+The energy balance is fine for AE4_LOC unit 
+The energy balance is fine for AE4_JWC unit 
+The energy balance is ALMOST fine for AE4_Cyl unit 
+The energy balance is fine for AE4_HTsplit unit 
+The energy balance is ALMOST fine for AE4_HTmerge unit 
+---energy balance for AE4_TCshaft unit is respected 63.724315068493155% of the times, with 7.295383341029366% average error 
+The energy balance is fine for AE4_HRSG unit 
+The energy balance is fine for AE4_AG unit 
+---energy balance for CoolingSystems_SWC13 unit is respected 77.70833333333333% of the times, with 2.947906032683302% average error 
+---energy balance for CoolingSystems_SWC24 unit is respected 82.84246575342465% of the times, with 3.750399108643903% average error 
+The energy balance is fine for CoolingSystems_HTcollector13 unit 
+The energy balance is fine for CoolingSystems_HTcollector24 unit 
+The energy balance is ALMOST fine for CoolingSystems_LTcollector13 unit 
+The energy balance is ALMOST fine for CoolingSystems_LTcollector24 unit 
+The energy balance is fine for CoolingSystems_LTdistribution13 unit 
+The energy balance is fine for CoolingSystems_LTdistribution24 unit 
+---energy balance for CoolingSystems_LTHTmerge13 unit is respected 13.10216894977169% of the times, with 1.0248894650949942% average error 
+The energy balance is ALMOST fine for CoolingSystems_LTHTmerge24 unit 
+The energy balance is fine for CoolingSystems_HTsplit13 unit 
+The energy balance is fine for CoolingSystems_HTsplit24 unit 
+The energy balance is fine for HTHR_HTHR13 unit 
+The energy balance is fine for HTHR_HTHR24 unit 
+The energy balance is fine for HTHR_HTHRsplit unit 
+The energy balance is fine for HTHR_HTHRmerge unit 
+The energy balance is fine for HTHR_HVACpreheater unit 
+The energy balance is fine for HTHR_HVACreheater unit 
+The energy balance is fine for HTHR_SteamHeater unit 
+The energy balance is fine for HTHR_HotWaterHeater unit 
+The energy balance is ALMOST fine for Steam_Boiler1 unit 
+The energy balance is ALMOST fine for Steam_HotWell unit 
+The energy balance is fine for Steam_SteamDistribution unit 
+The energy balance is fine for Steam_TankHeating unit 
+The energy balance is fine for Steam_OtherTanks unit 
+The energy balance is fine for Steam_HFOtankHeating unit 
+The energy balance is fine for Steam_MachinerySpaceHeaters unit 
+The energy balance is fine for Steam_HFOheater unit 
+The energy balance is fine for Steam_Galley unit 
+---energy balance for Demands_Electricity unit is respected 0.008561643835616438% of the times, with 96.45183178695045% average error 
+---energy balance for Demands_Mechanical unit is respected 36.361301369863014% of the times, with 43.336687862363156% average error 
+---energy balance for Demands_Heat unit is respected 0.0% of the times, with 114.53822167692226% average error 
