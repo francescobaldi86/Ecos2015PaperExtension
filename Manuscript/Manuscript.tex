@@ -716,15 +716,8 @@ The full Sankey diagram representation of the energy flows on board is provided 
 
 \subsection{Exergy Analysis} \label{sec:res:exergy}
 
-The results of the exergy analysis of the ship energy systems are shown in Figure \ref{fig:Grassmann} and in Tables REF to REF in the Appendix. 
-\begin{itemize}
-	\item Table(s) --> Exergy efficiencies
-	\begin{itemize}
-		\item General at system level
-		\item One per system (MEs, AEs, CoolingSystems, SteamSystems) 
-	\end{itemize}
-	\item Figure --> Grassman diagram
-\end{itemize}
+The results of the exergy analysis of the ship energy systems are shown in Figure \ref{fig:Grassmann} and in Tables \ref{tab:flows:ex:ME} to \ref{tab:flows:ex:D} in the Appendix. 
+
 
 \begin{figure}
 	\centering
@@ -733,7 +726,7 @@ The results of the exergy analysis of the ship energy systems are shown in Figur
 	\label{fig:Grassmann}
 \end{figure}
 
-It can be observed that there are large irreversibilities concentrated in some specific parts of the system that show potential for improvement. The individual largest contribution to exergy destruction in the ship systems is associated to combustion, both in the engines and in the boilers. The loss of energy resulting from the conversion of chemical energy to heat contributes to more than 76\% of the total exergy destruction on board. Once this contribution is isolated, the largest sources of exergy destruction are located in the engine turbochargers (28.9\%), in the exhaust gas boilers (10.7\%), in the steam heater of the HTHR system (10.5\%), the HVAC preheater (10.4\%) and the sea water cooler (8.5\%). In all the cases above, excluding that of the turbochargers, the exergy destruction is a consequence of a combination of large exergy flows and of the mismatch between hot and cold streams of the heat exchangers. In the exhaust boilers, exhaust gas are cooled in average from more than 300$^o$C to 200$^o$C, while the heat is used to generate steam at relatively low pressure (6 bar); in the steam heater, the steam is used to heat up water at 90$^o$C; in the HVAC preheater, the relatively high-temperature water from the HTHR systems is used for heating up air to around 30$^o$C.
+It can be observed that there are large irreversibilities concentrated in some specific parts of the system that show potential for improvement. As expected, the individual largest contribution to exergy destruction in the ship systems is associated to combustion, both in the engines and in the boilers. The loss of energy resulting from the conversion of chemical energy to heat contributes to more than 76\% of the total exergy destruction on board. Focusing on the remaining parts of the system, the largest sources of exergy destruction are located in the engine turbochargers (28.9\%), in the exhaust gas boilers (10.7\%), in the steam heater of the HTHR system (10.5\%), the HVAC preheater (10.4\%) and the sea water cooler (8.5\%). In all the cases above, excluding the turbochargers, the exergy destruction is a consequence of a combination of large exergy flows and of the mismatch between hot and cold stream temperatures in the heat exchangers. In the exhaust boilers, exhaust gas are cooled in average from more than 300$^o$C to 200$^o$C, while the heat is used to generate steam at relatively low pressure (6 bar); in the steam heater, the steam is used to heat up water at 90$^o$C; in the HVAC preheater, the relatively high-temperature water from the HTHR systems is used for heating up air to around 30$^o$C.
 
  
 \begin{table}
@@ -756,7 +749,7 @@ It can be observed that there are large irreversibilities concentrated in some s
 
 From the point of view of the exergy losses, it appears that the largest exergy losses are located in the exhaust gas. It should be noted that, even though a large part of this exergy cannot be recovered given the limitations on the exhaust gas outlet temperature to avoid the condensation of sulphuric acid, there is still a significant potential to be harvested if all the available exergy in the exhaust gas was recovered. This potential is further increased by the exergy destroyed in the process of dumping steam when it is produced in excess during summer. The exergy lost in the sea water coolers as low-temperature sea water discharged to the environment is lower, highlighting the fact that the potential for improving the efficiency of the system is located in other parts of the cooling systems. 
 
-The efficiency of the recovery systems is also shown in Figure \ref{fig:Bar_efficiencyWHR}, where we show the fraction of the total energy (exergy) lost by the cooling systems and the exhaust gas of the ship's engines. It can be noted that, even when only looking at the energy that can be recovered based on the existing systems (i.e. not including the LT cooling systems, for instance), the recovery efficiency is located at around 25-35\% depending on whether the energy or the exergy efficiency is considered. Worth noting is also the fact that the efficiency on the exhaust gas side is lowered by the fact that two of the main engines are currently not equipped with HRSGs. 
+The efficiency of the recovery systems is also shown in Figure \ref{fig:Bar_efficiencyWHR}, where the fraction of the total energy (exergy) lost by the cooling systems and the exhaust gas of the ship's engines is represented. It can be noted that, even when only looking at the energy that can be recovered based on the existing systems (i.e. not including the LT cooling systems, for instance), the recovery efficiency is located at around 25-35\% depending on whether the energy or the exergy efficiency is considered. Worth noting is also the fact that the efficiency on the exhaust gas side is lowered by the fact that two of the main engines are currently not equipped with HRSGs. 
 
 \begin{figure}
 	\centering
@@ -1006,6 +999,7 @@ ME & Fuel tank & ME & Cyl. & Q & 1.09 & 0.002 & 0.875 & 0.102 & 0.109 & 0.455 & 
 \bottomrule
 \end{tabular}}
 \caption{Summary of energy flows for the main engines}
+\label{tab:flows:en:ME}
 \end{table}
 
 
@@ -1042,6 +1036,7 @@ AE & Fuel tank & AE & Cyl. & Q & 0.62 & 0.15 & 0.38 & 0.06 & 0.02 & 0.28 & 0.25 
 \bottomrule
 \end{tabular}}
 \caption{Summary of energy flows for the auxiliary engines}
+\label{tab:flows:en:AE}
 \end{table}
 
 
@@ -1074,7 +1069,8 @@ P & Prop. sh. shaft & P & Prop. sh. & W & 104.19 & 0.14 & 82.62 & 9.84 & 11.59 &
 P & Prop. sh. shaft & E & Losses & Q & 3.20 & 0.00 & 2.54 & 0.30 & 0.36 & 1.26 & 1.37 & 0.57\\
 \bottomrule
 \end{tabular}}
-\caption{Summary of energy flows for the boiler/steam s}
+\caption{Summary of energy flows for the boiler/steam systems}
+\label{tab:flows:en:S}
 \end{table}
 
 
@@ -1118,6 +1114,7 @@ ME & Fuel tank & ME & Cyl. & Q & 0.15 & 0.000 & 0.125 & 0.014 & 0.014 & 0.068 & 
 \bottomrule
 \end{tabular}}
 \caption{Summary of exergy flows for the main engines}
+\label{tab:flows:ex:ME}
 \end{table}
 
 \begin{table}[hbp!]
@@ -1153,6 +1150,7 @@ AE & Fuel tank & AE & Cyl. & Q & 0.08 & 0.019 & 0.054 & 0.009 & 0.003 & 0.041 & 
 \bottomrule
 \end{tabular}}
 \caption{Summary of exergy flows for the auxiliary engines}
+\label{tab:flows:ex:AE}
 \end{table}
 
 \begin{table}[hbp!]
@@ -1186,6 +1184,7 @@ S & Boiler & E & Dumped steam & Q & 0.81 & 0.00 & 0.43 & 0.13 & 0.25 & 0.05 & 0.
 \bottomrule
 \end{tabular}}
 \caption{Summary of exergy flows for the boiler and steam systems}
+\label{tab:flows:ex:S}
 \end{table}
 
 \begin{table}[hbp!]
@@ -1207,6 +1206,7 @@ D& OT & D & Dem. & Q & 0.15 & 0.05 & 0.08 & 0.01 & 0.00 & 0.07 & 0.07 & 0.02\\
 \bottomrule
 \end{tabular}}
 \caption{Summary of exergy flows for the heating demand}
+\label{tab:flows:ex:D}
 \end{table}
 
 
