@@ -56,6 +56,9 @@
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+% Package for drawing pictures
+\usepackage{tikz}
+
 
 \def\bibsection{\section*{References}}
 %% The lineno packages adds line numbers. Start line numbering with
@@ -177,7 +180,7 @@ More generally, several authors have highlighted the importance of a detailed kn
 Heat demand is rarely a subject of concern on board ships, with some notable exceptions. This is due to a combination of generally low demand and high availability from the waste heat of the engines. In a previous publications by the authors, for instance, it is shown that in the case of a product tanker, although the heat demand was estimated to account for roughly 20\% of the total energy demand of the ship on a yearly basis, it only contributes to 4.1\% of the total fuel consumption (contribution of the auxiliary boilers), while the rest of the demand is fulfilled using waste heat \cite{Baldi2015a}.
 
 %% WHR and heat availability
-It should be noted that, however, much research effort has been devoted, especially in recent times, to the improvement of the efficiency of ship energy systems by recovering the waste heat available from the engines. With reference to different types of technologies, case studies, and designs,the several authors showed the existance of a quite significant potential for energy saving when WHR systems are employed, ranging from around 1\% for single-pressure steam cycles applied to two-stroke engines \cite{Theotokatos2012} to more complex systems based on ORCs (up to 10\%, \cite{Hountalas2012}) or including the cooling systems as a source of waste heat (over 10\%, \cite{Dimopoulos2012}).  The case of the installation of an ORC on board of the vessel investigated in this study (see Section \ref{sec:met:case}) was presented in \cite{Mondejar2015}, showing a similar potential.
+It should be noted that, however, much research effort has been devoted, especially in recent times, to the improvement of the efficiency of ship energy systems by recovering the waste heat available from the engines. With reference to different types of technologies, case studies, and designs,the several authors showed the existance of a quite significant potential for energy saving when WHR systems are employed, ranging from around 1\% for single-pressure steam cycles applied to two-stroke engines \cite{Theotokatos2012} to more complex systems based on ORCs (up to 10\%, \cite{Hountalas2012}) or including the cooling systems as a source of waste heat (over 10\%, \cite{Dimopoulos2012}).  The case of the installation of an ORC on board of the vessel investigated in this study (see Section \ref{sec:met:case}) was presented in \cite{Mondejar2017}, showing a similar potential.
 
 The potential uses for waste heat on board are not limited to improving the efficiency of the power plant. Waste heat is commonly used for fulfilling on board heat demand for spatial heating and freshwater generation \cite{Molland2011,Baldi2015a,Mccarthy1990};  Balaji et al. proposed the use of waste heat for ballast-water systems \cite{Balaji2012}; Salmi et al. suggested its use for adsorption refrigeration systems \cite{Salmi2017}. A detailed review of potential uses for waste heat from marine engines is presented by Shu et al \cite{Shu2013}. 
 
@@ -226,7 +229,7 @@ The energy flow associated with a material stream is calculated as the sum of th
 
 \subsubsection{Exergy analysis}
 
-\emph{Exergy} may be defined as the `maximum theoretical useful work (shaft work or electrical work) as the system is brought into complete thermodynamic equilibrium with the thermodynamic environment while the system interacts with it only'~\citep{Moran1989}. Unlike energy, exergy is not conserved but some is destroyed because of the irreversible phenomena taking place in real processes (e.g. chemical reactions like combustion). The exergy balance for the system under study can be expressed as:
+\emph{Exergy} may be defined as the `maximum theoretical useful work (shaft work or electrical work) as the system is brought into complete thermodynamic equilibrium with the thermodynamic environment while the system interacts with it only' \cite{Tsatsaronis2007}. Unlike energy, exergy is not conserved but some is destroyed because of the irreversible phenomena taking place in real processes (e.g. chemical reactions like combustion). The exergy balance for the system under study can be expressed as:
 
 \begin{align}
 	\sum_{\mathrm{in}} \dot{E}_{\mathrm{in}} &= \sum_{\mathrm{out}} \dot{E}_{\mathrm{out}} +\dot{E}_{d} \\
@@ -462,17 +465,17 @@ where the vector $\textbf{p}$ includes the calibration parameters that are part 
 		\hline 
 		Parameter name & Symbol  & Unit & Lower Boundary & Higher Boundary & Optimal value \\ 
 		\hline
-		Constant HTHR heat demand	 & $\dot{Q}_{k,HTHR}$ & kW & 0 & 1000 &  \\ 
-		Constant steam demand		 & $\dot{Q}_{k,steam}$ & kW & 0 & 1000 &  \\
-		Weight factor of the HVAC Re-heater & $f_{HVAC,RH}$ & - & 0.5 & 1 &  \\ 
-		Weight factor of the HVAC Pre-heater & $f_{HVAC,PH}$ & - & 0 & 1 &  \\ 
-		Weight factor of hot water heater & $f_{HWH}$ & - & 0.5 & 1 &  \\ 
-		Weight factor of the galley & $f_{G}$ & - & 0.5 & 1 &  \\ 
-		Weight factor of the other consumers & $f_{Other}$ & - & 0.5 & 1 &  \\ 
-		HTHR inlet temperature & $T_{HTHR,ER1,in}$ & K & 343 & 353 &  \\
-		Effectiveness of the HTHR HEX & $\epsilon_{HTHR} $ & - & 0.5 & 0.9 &  \\
-		Boiler drum steam storage capacity & $Q_{ab,max}$ & MJ & 100 & 100000 &  \\ 
-		Boiler heat rate & $\dot{Q}_{ab,des}$ & kW & 2000 & 8000 &  \\ 
+		Constant HTHR heat demand	 & $\dot{Q}_{k,HTHR}$ & kW & 0 & 1000 & 20.5 \\ 
+		Constant steam demand		 & $\dot{Q}_{k,steam}$ & kW & 0 & 1000 & 0 \\
+		Weight factor of the HVAC Re-heater & $f_{HVAC,RH}$ & - & 0.5 & 1 & 0.40 \\ 
+		Weight factor of the HVAC Pre-heater & $f_{HVAC,PH}$ & - & 0 & 1 & 1.00 \\ 
+		Weight factor of hot water heater & $f_{HWH}$ & - & 0.5 & 1 & 0.72 \\ 
+		Weight factor of the galley & $f_{G}$ & - & 0.5 & 1 & 0.68 \\ 
+		Weight factor of the other consumers & $f_{Other}$ & - & 0.5 & 1 & 0.21 \\ 
+		HTHR inlet temperature & $T_{HTHR,ER1,in}$ & K & 343 & 353 & 348 \\
+		Effectiveness of the HTHR HEX & $\epsilon_{HTHR} $ & - & 0.5 & 0.9 & 0.5 \\
+		Boiler drum steam storage capacity & $Q_{ab,max}$ & MJ & 100 & 100000 & 9.5e6 \\ 
+		Boiler heat rate & $\dot{Q}_{ab,des}$ & kW & 2000 & 8000 & 5100 \\ 
 		\hline
 	\end{tabular}
 	\caption{Parameters optimized in the parameter estimation for the heat balance}
@@ -525,7 +528,7 @@ The heat recovered in the EGBs is the only contribution to the heat balance that
 
 where $T_{eg,EGB,out}$ and $T_{eg,EGB,in}$ are measured for all EGBs, $c_{p,eg}$ is calculated as a function of the exhaust gas composition and temperature, and $ \dot{m}_{eg} $ is calculated based on the engine energy and mass balance.
 
-It is known that the ship heating systems are designed for recovering energy from the high temperature cooling systems of all the ship's engines. Based on the available measurements, we calculated the heat exchanged in the two HTHRs according to equation \label{eqn:HTHR2},
+It is known that the ship heating systems are designed for recovering energy from the high temperature cooling systems of all the ship's engines. Based on the available measurements, we calculated the heat exchanged in the two HTHRs according to equation \ref{eqn:HTHR2},
 
 \begin{eqnarray}
 \dot{Q}_{HTHR} & = & \dot{Q}_{HTHR,ER1} + \dot{Q}_{HTHR,ER2} \label{eqn:HTHR1} \\
@@ -556,7 +559,7 @@ The uncertainty of the heat generated by the ABs can be reduced to the contribut
 The estimation of the uncertainty of $\dot{Q}_{HTHR}$ can be based on \ref{eqn:HTHR2} having assigned an acceptable variation of 20\% to the effectiveness of the heat exchanger, 20\% on the estimation of the reference mass flow, $\pm 5$ K uncertainty on water temperature measurements and considering negligible the uncertainty on $c_{p,w}$, leading to a 145\% uncertainty on this measurement. 
 
 
-\subsection{Operational mode}
+\subsection{Operational mode} \label{sec:met:operationalMode}
 
 The ship operates in different conditions, and it can be useful to provide a separate analysis depending on the operational mode. The four operational modes identified for the selected case study, together with the conditions applied to the dataset to uniquely identify each time step to a separate operational mode, are given as follows:
 \begin{description}
@@ -568,7 +571,35 @@ The ship operates in different conditions, and it can be useful to provide a sep
 
 
 
-\subsection{Determination of typical operational conditions}
+\subsection{Determination of typical operational conditions} \label{sec:met:typicalDays}
+
+Improving the performance of a ship requires a detailed analysis of the energy demands to optimize the dimensioning and operation of the technologies and processes to install on-board. It requires the analysis of the hourly, daily and seasonal variations of the heat/power consumption, operating (e.g. ship speed) and external conditions (e.g. air temperature). However, gathering and processing those data may be time-consuming because of the high number of points to assess. It is therefore desirable to reduce this large quantity of information while keeping the relevant details on the relations between the variables of interest. 
+One way is to represent these yearly profiles in a limited number of representative (typical) periods, avoiding the repetition of similar data sets. Clustering consists of grouping such sets in a single group (cluster) so that the items in the same group are more like each other than to those belonging to other groups. Several algorithms are introduced in the literature to partition these datasets. The one selected in this work is the Lloyd’s (k-means) algorithm, which is a non-deterministic method computationally faster than conventional hierarchical tools. The approach applied by Fazlollahi et al. was used to select the optimum number of clusters (Nk). It (Nk) should be as low as possible for data handling purposes, while preserving a high accuracy of the retrieved data. It builds on the calculation of three criteria: 
+\begin{enumerate}
+	\item the average intra-cluster distance to assess the density of each cluster, preferably small;
+	\item the average inter-cluster distance to assess the distance between each, preferably high; 
+	\item the expected square error, which is a statistical measure suggested by Pham et al.. 
+\end{enumerate}
+
+In parallel, the cluster quality was systematically evaluated by calculating the following performance indicators:
+\begin{enumerate}
+	\item the profile deviation (deviation between original and typical period profiles),$\sigma_{profile}$;
+	\item the deviation from the load duration curve of the average values of each period, $\sigma{CDC}$;
+	\item the relative error in load duration curve deviation $ELDC$;
+	\item the maximum duration load curve difference $\Delta_{MLDC}$;
+	\item the number of periods with relative errors $\Delta_{prod}$ higher than 7\%.
+\end{enumerate}
+
+This set of performance objectives is defined as a set of constraints with an upper limit that should be respected when minimizing the number of clusters, applying the e-constraints algorithm. The dataset is further reduced by partitioning each typical day into a set of segments using a similar approach. 
+The aim of the present clustering is to identify typical periods that are appropriate for improving the thermodynamic performance of ship energy systems. It can be achieved through either reducing the external energy demands (better energy management), e.g. with storage systems or internal recovery, or through implementing new technologies that result in higher fuel-to-demand efficiencies (better energy conversion). Hence, the attributes that are the primary focus of this study are: 
+\begin{enumerate}
+	\item the total power consumption, including the mechanical and electrical loads;
+	\item the total heating demand, further divided into the low- and high-temperature needs, which is related to the external temperature; 
+	\item the total exergy destruction on-board, which quantifies the thermodynamic performance of the ship energy systems.
+\end{enumerate}
+A one-year data with 35,040 time steps (sampling of 15 minutes) was selected and divided into typical periods based on these three attributes. 
+The clustering approach proposed by Fazlollahi et al. \cite{Fazlollah2014} provides as output typical days having the same data frequency as the original time series (in this case, 15 minutes). From a computational perspective, however, this might not necessarily be the most efficient sampling. Operating conditions within a certain cluster (typical day) are often nearly constant for a longer time, suggesting that a variable time resolution would lead to a lower dimensionality of the data while retaining most of the original information. 
+To this purpose, in this paper we employ the Adaptive Piecewise Constant Approximation (APCA) approach proposed by Keogh et al. \cite{Keogh2001}
 
 
 
@@ -580,8 +611,7 @@ The ship operates in different conditions, and it can be useful to provide a sep
 
 
 
-
-\section{Results (and discussion)}
+\section{Results and discussion} \label{sec:results}
 
 \subsection{Exploratory analysis} \label{sec:res:exploratory}
 
@@ -705,7 +735,7 @@ The full Sankey diagram representation of the energy flows on board is provided 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.99\linewidth]{Figures/Sankey_diagram_energy_ship_v9}
+	\includegraphics[width=0.95\linewidth]{Figures/Sankey_diagram_energy_ship_v9}
 	\caption{Sankey diagram}
 	\label{fig:Sankey}
 \end{figure}
@@ -721,7 +751,7 @@ The results of the exergy analysis of the ship energy systems are shown in Figur
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.99\linewidth]{Figures/Grassmann_diagram_v5}
+	\includegraphics[width=0.95\linewidth]{Figures/Grassmann_diagram_v5}
 	\caption{Grassmann diagram}
 	\label{fig:Grassmann}
 \end{figure}
@@ -751,9 +781,9 @@ From the point of view of the exergy losses, it appears that the largest exergy 
 
 The efficiency of the recovery systems is also shown in Figure \ref{fig:Bar_efficiencyWHR}, where the fraction of the total energy (exergy) lost by the cooling systems and the exhaust gas of the ship's engines is represented. It can be noted that, even when only looking at the energy that can be recovered based on the existing systems (i.e. not including the LT cooling systems, for instance), the recovery efficiency is located at around 25-35\% depending on whether the energy or the exergy efficiency is considered. Worth noting is also the fact that the efficiency on the exhaust gas side is lowered by the fact that two of the main engines are currently not equipped with HRSGs. 
 
-\begin{figure}
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.99\linewidth]{Figures/Bar_WHRefficiency}
+	\includegraphics[width=0.9\linewidth]{Figures/Bar_WHRefficiency}
 	\caption{Energy and exergy efficiency of the WHR systems}
 	\label{fig:Bar_efficiencyWHR}
 \end{figure}
@@ -761,6 +791,65 @@ The efficiency of the recovery systems is also shown in Figure \ref{fig:Bar_effi
 
 \subsection{Typical operational days}  \label{sec:res:typicalDays}
 
+A data clustering was applied at first on the total power and heating demands along the operation year, using 1000 starting points generated randomly for cluster initialization. As presented in Section \ref{sec:met:typicalDays}, the number of typical days depends on the values of the intra- and inter-cluster distances and on the expected squared error, obeying five constraints on the load duration profiles. A higher number of typical days would result in smaller data losses, but the calculation of the ESE indicator shows that this gain of information is negligible. 
+The average power demand is about 4700 kW with a standard deviation of 3000 kW and a 95\% percentile of 8300 kW. These figures denote a high variability, but the number of optimum clusters is only 2, which shows that the power demand follows repeatable trends over time. The first typical day corresponds to more than 32000 hours (low to high demands, up to 12000 kW), and the second one to \~{}3000 hours (peak demands, above 12000 kW). On the contrary, the total heating demand presents variations of smaller amplitude, but a higher number of clusters is necessary. Five typical days appear sufficient to represent the load duration curve and energy demand profiles. The cases with the greatest power consumption and different trends are already considered in these five clusters, and the addition of an extreme period is not necessary. 
+The large number of typical days (5) compared to those required (2) when clustering only the power demand (2) illustrates the lack of direct correlation between the power and heating requirements. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\linewidth]{Figures/ld_multyday_at1.png}
+	\caption{Power profile and duration curves, represented with the 35,040 datapoints (black curve) and five typical days (other colors).}
+	\label{fig:res:powerProfile}
+\end{figure}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=0.95\linewidth]{Figures/ld_multyday_at2.png}
+	\caption{Power profile and duration curves, represented with the 35,040 datapoints (black curve) and five typical days (other colors).}
+	\label{fig:res:heatProfile}
+\end{figure}
+
+The quality of the clustering was assessed by calculating the performance indicators for both attributes (Table \ref{tab:res:clusteringKPI}). The suggested typical periods present low relative errors and are slightly better for characterization of the heat demand profiles.  
+\begin{table}
+	\centering
+	\begin{tabular}{crr}
+		\toprule 
+								& $P_{el}+P_{mech}$ & $Q_{tot}$ \\
+		\midrule
+		$\sigma_{profile}$		&  0.65				&  0.10		\\ 
+		$\sigma_{CDC}$ 			&  0.11				&  0.11		\\ 
+		$ELDC$ 					&  0.23				&  0.07		\\ 
+		$\Delta_{MLDC}$			&  0.18				&  0.06		\\ 
+		$\delta_{prod} (7\%)$	&  155.00			&  168.00	\\ 
+		\bottomrule 
+		\end{tabular} 
+		\caption{Performance parameters for the 5-cluster power and heat}
+		\label{tab:res:clusteringKPI}
+\end{table}
+
+The five typical days are further segmented and the closeness of the plots for both demands illustrates the quality of the segmentation. In most typical days, the power consumption varies in a 2000-8000 kW range, with an average consumption of about 4500-5000 kW and similar trends. The maximum values, of about 19000 kW, are reached at highest ship speeds.   
+
+\begin{figure}[htbp!]
+	\centering
+	\includegraphics[width=0.95\linewidth]{Figures/segmentation_power_heat.png}
+	\caption{Power (left) and heat (right) profiles, original (dotted) and segmented (full), for the 5 typical days and duration curves.}
+	\label{fig:res:powerProfileSegmented}
+\end{figure}
+ 
+ 
+
+The same findings can be deduced from the segmentation of the heat profiles as all present similar tendencies. The only significant difference is the range between the minimum and maximum values reached in a single day (e.g. 2000-2800 kW, 1000-2000 kW, 700-1700 kW, etc.). These differences are correlated to changes of the outer temperature and are thus seasonal variations. Heat storage from low-demand to high-demand days is not feasible, but may be implemented, if responsive enough, on single days.   
+
+A data clustering was applied on the total power demand and exergy destruction, following the same approach as above. In this case, the optimum number of clusters resulted to be only 2, which shows the direct relation between the power consumption and exergy destruction, and, consequently, the weak relation with the heating needs. This result is as expected, since the engines and subsequent components are responsible for the largest irreversibilities in the system. High accuracy of the clustering for even such a small number of typical days is reached, as shown, for instance, with the relative load differences ($\Delta_{MLDC}$) are 0.18 for both power and exergy. A further segmentation of these two typical days shows that these two variables follow the same trend in both regular and extreme conditions. The data clustering shows that, for the energy system of the case study ship, it is critical to reduce the power demand or to improve the power generation system for enhancing the system performance. Such findings are valid for all types of operation days.  
+
+
+
+\begin{figure}[htbp!]
+	\centering
+	\includegraphics[width=0.95\linewidth]{Figures/segmentation_power_exergy.png}
+	\caption{Exergy destruction profile and duration curve (left), represented with the 35,040 datapoints (black curve) and two typical days (dark and clear blue). Segmented power and exergy destruction profiles for the two typical days (right). }
+	\label{fig:res:exergyDestructionProfile}
+\end{figure}
 
 
 
@@ -771,7 +860,7 @@ Based on the results of the energy and exergy analysis, it is possible to identi
 
 Given the fact that many engines are operated at low load (both main and auxiliary engines), the system would benefit from both an electrification of the system and from the installation of batteries. The system electrification was explored by the authors \cite{Baldi2016b} and showed a relevant potential from both an environmental and an economic point of view. The installation of batteries was also considered in a previous publication by the authors \cite{Baldi2017} and proved the potential for yearly savings of 1-2\%. In this second case, however, it should be noted that the economic performance was not ensured. 
 
-The availability of waste heat that is not already recovered by the system suggests that the system could benefit from the installation of a Heat-to-power WHR. This possibility was tested by the authors both in the case that no additional retrofit is performed \cite{Ahlgren2016,Mondejar2017}, with estimated savings of 22\% of the auxiliary power demand for a reference voyge, and in the case of a full integration with the rest of the system \cite{Baldi2017}, with estimated savings of up to 6\% of the total fuel consumption for a year of ship operations. 
+The availability of waste heat that is not already recovered by the system suggests that the system could benefit from the installation of a Heat-to-power WHR. This possibility was tested by the authors both in the case that no additional retrofit is performed \cite{Ahlgren2016,Mondejar2017}, with estimated savings of 22\% of the auxiliary power demand for a reference voyage, and in the case of a full integration with the rest of the system \cite{Baldi2017}, with estimated savings of up to 6\% of the total fuel consumption for a year of ship operations. 
 
 It should be noted that in the second case the advantages in terms of system performance were obtained through a system-wide optimization of the system, where an improved utilization of the low-temperature waste heat available allowed "freeing" part of the high-temperature heat from the exhaust gas to the heat-to-power WHR system, hence improving the overall exergy efficiency of the system. This includes, for instance, the concept of using heat from the LT cooling systems (currently unused) for the HVAC preheater, hence reducing exergy destruction in the HVAC preheater itself and in the steam heater. This concept could be extended to other low-temperature heat consumers (such as the machinery space heating), but it would clearly constitute a larger benefit if applied to the HVAC preheater, which is the largest heat demand on board. 
 
@@ -779,8 +868,9 @@ The analysis also suggests that the electric power demand resulting from the use
 
 
 
-\section{Conclusion}
-\label{sec:conclusion}
+\section{Conclusion} \label{sec:conclusion}
+
+
 
 
 
