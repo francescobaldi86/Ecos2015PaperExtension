@@ -1,0 +1,16 @@
+-------------------------------------------------------------
+
+Performance indicators of typical period for each type of attributes:
+
+Sigma CDC:                                        0.10616                                           0.11367                                           
+Sigma PROFILE:                                    0.64615                                           0.10141                                           
+Relative error in load duration curve (ELDC):     0.22542                                           0.074365                                          
+Sum of total value (REAL):                        166201033.9393                                    60885324.9501                                     
+Sum of total value (equvalant):                   166201033.9393                                    60885324.9501                                     
+Relative difference:                              1.9187e-14                                        -2.3985e-14                                       
+Max value (real):                                 23333.4852                                        3051.3628                                         
+Max value (equvalant):                            19027.505                                         2885.4526                                         
+Relative difference in load:                      0.18454                                           0.054372                                          
+Number of period a year overvalue                 155                                               168                                               
+
+--------------------------------------------------------------

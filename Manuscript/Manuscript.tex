@@ -58,6 +58,7 @@
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 % Package for drawing pictures
 \usepackage{tikz}
+\usepackage{pgfplots}
 
 
 \def\bibsection{\section*{References}}
@@ -364,7 +365,7 @@ The case study ship is not provided with any means to directly measure the heat 
  The heat demand and generation are summarized in equations \ref{eq:Qgen} and \ref{eq:Qdem}.
 \begin{align}
 \dot{Q}_{gen} & = \sum_{i=2,3} \dot{Q}_{EGB,ME,i} +  \sum_{i=1:4} \dot{Q}_{EGB,AE,i} + \sum_{j=ME,AE, i=1:4}\dot{Q}_{HTHR,j,i} + \dot{Q}_{AB} \label{eq:Qgen} \\
-\dot{Q}_{dem} & = \dot{Q}_{HVAC,PH} + \dot{Q}_{HVAC,RH} + \dot{Q}_{HWH} + \dot{Q}_{HH} + \dot{Q}_{TH} + \dot{Q}_{G} + \dot{Q}_{OT} + 	\dot{Q}_{HTH} + \dot{Q}_{MSH} \label{eq:Qdem} \\
+\dot{Q}_{dem} & = \dot{Q}_{HVAC,PH} + \dot{Q}_{HVAC,RH} + \dot{Q}_{HWH} + \dot{Q}_{HH} + \dot{Q}_{TH} + \dot{Q}_{G} + \dot{Q}_{OT} + 	\dot{Q}_{HTH} + \dot{Q}_{MSH} \label{eq:Qdem}
 \end{align}
 
 The ship's cooling systems are designed similarly to most ships and divided in two cooling systems operated at two separate temperature levels: the high temperature (HT) cooling systems (70-90$^o$C) and the low temperature (LT) cooling systems (40-60$^o$C). The cooling systems provide the necessary cooling to the engines, to the steam systems and to all other components on board. An overview of the ship heating and cooling systems is provided in Figure \ref{fig:generalsystemssimplified}. 
@@ -657,9 +658,11 @@ The quality of the clustering was assessed by calculating the performance indica
 
 The five typical days are further segmented and the closeness of the plots for both demands illustrates the quality of the segmentation. In most typical days, the power consumption varies in a 2000-8000 kW range, with an average consumption of about 4500-5000 kW and similar trends. The maximum values, of about 19000 kW, are reached at highest ship speeds.   
 
+
 \begin{figure}[htbp!]
 	\centering
-	\includegraphics[width=0.95\linewidth]{Figures/segmentation_power_heat.png}
+ 	% \includegraphics[width=0.95\linewidth]{Figures/segmentation_power_heat.png}
+ 	\includegraphics[width=0.95\linewidth]{Figures/segmentation_new.pdf}
 	\caption{Power (left) and heat (right) profiles, original (dotted) and segmented (full), for the 5 typical days and duration curves.}
 	\label{fig:res:powerProfileSegmented}
 \end{figure}
