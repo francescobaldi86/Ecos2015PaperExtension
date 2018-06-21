@@ -357,7 +357,7 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
                           processed["Demands:Heat:HFOheater:Edot"].sum(),
                           processed["Demands:Heat:HFOtankHeating:Edot"].sum(),
                           processed["Demands:Heat:Galley:Edot"].sum()]
-            labels = ["Propeller-1" , "Propeller-1" ,
+            labels = ["Propeller-1" , "Propeller-2" ,
                       "HVAC", "Thrusters", "Other users",
                       "HVAC Preheater", "HVAC Reheater", "Hot water heater",
                       "Machinery space heaters", "Other tanks heating", "Fuel tanks heating", "HFO tanks heating", "HFO pre-injection heating", "Galley"]
@@ -368,8 +368,8 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
                      "blue", "blue", "blue",
                      "sandybrown","sandybrown","sandybrown",
                      "red","red","red","red","red","red"]
-            ax.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', colors=colors)
-
+            patches, texts, autotexts = ax.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', colors=colors)
+            [_.set_fontsize(12) for _ in texts]
         if filename == "Pie:GenerationFull":
             quantities = [processed["ME1:Cyl:FuelPh_in:mdot"].sum(),
                           processed["ME2:Cyl:FuelPh_in:mdot"].sum(),

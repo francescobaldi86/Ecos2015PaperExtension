@@ -1,0 +1,45 @@
+\toprule
+Identifier & Full name \\
+\midrule
+\multirow{ 14}{*}{\rotatebox[origin=c]{90}{Low temperature cooling}} & $HEX_{LT1.1 & Charge air cooler, LT stage (ME1)  \\
+ & $HEX_{LT1.2}$ & Lubricating oil cooler (ME1) \\
+ & $HEX_{LT2.1}$ & Charge air cooler, LT stage (ME3) \\
+ & $HEX_{LT2.2}$ & Lubricating oil cooler (ME3) \\
+ & $HEX_{LT3.1}$ & Charge air cooler, LT stage (AE1) \\
+ & $HEX_{LT3.2}$ & Lubricating oil cooler (AE1) \\
+ & $HEX_{LT4.1}$ & Charge air cooler, LT stage (AE3) \\
+ & $HEX_{LT4.2}$ & Lubricating oil cooler (AE3) \\
+ & $HEX_{LT5}$ & Generator cooler (AE) \\
+ & $HEX_{LT6}$ & Propeller oil cooler \\
+ & $HEX_{LT7}$ & Shaft bearing cooler (ME) \\
+ & $HEX_{LT8}$ & Steam condenser \\
+ & $HEX_{LT9}$ & Fin stabiliser cooler \\
+ & $HEX_{LT10}$ & Gearbox cooler \\
+\midrule
+\multirow{ 9}{*}{\rotatebox[origin=c]{90}{High temperature cooling}} & $HEX_{HT1.1 & Jacket water cooler (ME1) \\
+ & $HEX_{HT1.2}$ & Charge air cooler, HT stage (ME1) \\
+ & $HEX_{HT2.1}$ & Jacket water cooler (ME3) \\
+ & $HEX_{HT2.2}$ & Charge air cooler, HT stage (ME3) \\
+ & $HEX_{HT3.1}$ & Jacket water cooler  (AE1) \\
+ & $HEX_{HT3.2}$ & Charge air cooler, HT stage  (AE1) \\
+ & $HEX_{HT4.1}$ & Jacket water cooler  (AE3) \\
+ & $HEX_{HT4.2}$ & Charge air cooler, HT stage  (AE3) \\
+ & $HEX_{HT-HR1}$ & Heat recovery from high temperature cooling (eng.room1/3) \\
+\midrule
+ \multirow{ 7}{*}{\rotatebox[origin=c]{90}{Hot water heat recovery system}} & $HEX_{HT-HR1 & Heat recovery from high temperature cooling (eng.room1/3) \\
+ & $HEX_{HT-HR2}$ & Heat recovery from high temperature cooling (eng.room 2/4) \\
+ & $HEX_{St-HR}$ & Steam heater \\
+ & $HEX_{HR1}$ & AC-Reating \\
+ & $HEX_{HR2}$ & AC-Preheating \\
+ & $HEX_{HR3}$ & Hot water heater \\
+ & $HEX_{HR4}$ & Technical water generator \\
+\midrule 
+\multirow{ 8}{*}{\rotatebox[origin=c]{90}{Steam systems}} & $HEX_{HRSG1 & Heat recovery steam generator (AE1) \\
+ & $HEX_{HRSG2}$ & Heat recovery steam generator (AE3) \\
+ & $HEX_{HRSG3}$ & Heat recovery steam generator (ME3) \\
+ & $HEX_{HRSG4}$ & Heat recovery steam generator (AE2) \\
+ & $HEX_{HRSG5}$ & Heat recovery steam generator (AE4) \\
+ & $HEX_{HRSG6}$ & Heat recovery steam generator (ME2) \\
+ & $HEX_{AB1}$ & Auxiliary boiler 1 \\
+ & $HEX_{AB2}$ & Auxiliary boiler 2 \\
+\bottomrule

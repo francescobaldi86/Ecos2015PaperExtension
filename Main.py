@@ -24,8 +24,8 @@
 # - EXERGY ANALYSIS
 
 
-do_processed_data_preparation = "yes"
-do_data_processing = "yes"
+do_processed_data_preparation = "no"
+do_data_processing = "no"
 
 
 
@@ -135,9 +135,9 @@ elif do_data_processing == "yes":
 ######################################
 
 
-processed = ppo.seasonCalculator(processed)
-exported = ex.exportAggregatedEyergyFlows(processed, CONSTANTS, dict_structure)
-clusteringExport = ex.exportClusteringFlows(processed, CONSTANTS, dict_structure)
+#processed = ppo.seasonCalculator(processed)
+#exported = ex.exportAggregatedEyergyFlows(processed, CONSTANTS, dict_structure)
+#clusteringExport = ex.exportClusteringFlows(processed, CONSTANTS, dict_structure)
 #clusteringExportFB = ex.exportClusteringFlowsFB(processed, CONSTANTS, dict_structure)
 #clusteringEvaluation = clustering.punctualClustering(exported, "kmeans")
 #clustering.clusteringTest(exported, "kmeans", 10, (1,20))
@@ -145,7 +145,7 @@ clusteringExport = ex.exportClusteringFlows(processed, CONSTANTS, dict_structure
 ######################################
 ## PLOTTING	##
 ######################################
-plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure,["TimeSeries:HeatGenerationStacked"])
+plot.predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure,["Pie:DemandFull"])
 
 # processed = ea.efficiencyCalculator(processed, dict_structure, CONSTANTS)
 

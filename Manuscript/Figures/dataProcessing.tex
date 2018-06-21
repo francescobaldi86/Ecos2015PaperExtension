@@ -38,6 +38,7 @@ frameOutput/.style={
 	text width=10em,
 	text centered,
 	text = white,
+	font = \sffamily\Large,
 	fill = coltwo
 },
   % THESIS SECTIONS
@@ -55,6 +56,7 @@ frameOutput/.style={
   text width = 10em,
   text = white,
   fill = colthree,
+  font = \sffamily\Large,
   text centered
   },
   % VARIABLE BOXES
@@ -86,9 +88,9 @@ frameOutput/.style={
 \node [frameInput] (input_tech) at (0,-5) {Ship technical \\ documentation} ;
 
 % Entries on the left
-\node [frameSections] (section1) at (0,3) {Data collection} ;
-\node [frameSections] (section2) at (14,2) {Data processing} ;
-\node [frameSections] (section3) at (31,2) {Analysis} ;
+\node [frameSections] (section1) at (1,2) {Data collection} ;
+\node [frameSections] (section2) at (15,2) {Data processing} ;
+\node [frameSections] (section3) at (29.5,2) {Analysis} ;
 
 
 % Processes for ship 1
@@ -109,7 +111,6 @@ frameOutput/.style={
 
 % Lines for ship 1
 \path [lineData] (input_data.east) -- (process_filtering.west) ;
-\path [lineInfo] (input_tech.east) -| (process_filtering.south) ;
 
 \path [lineData] (process_filtering.east) --  (process_CS.west) ;
 \path [lineData] (process_filtering.east) -| (9,-2) |- (process_ME.west) ;
@@ -132,16 +133,16 @@ frameOutput/.style={
 
 
 % LINE INFO
-\path [lineInfo] (11,-6) -| (process_AE.south) ;
-\path [lineInfo] (11,-2) -| (process_ME.south) ;
-\path [lineInfo] (13.5,-10) -| (process_HTHR.south) ;
-\path [lineInfo] (19,-9) -| (process_Q.south) ;
-\path [lineInfo] (19,-6) -| (process_Paux.south) ;
-
+%\path [lineInfo] (11,-6) -| (process_AE.south) ;
+%\path [lineInfo] (11,-2) -| (process_ME.south) ;
+%\path [lineInfo] (13.5,-10) -| (process_HTHR.south) ;
+%\path [lineInfo] (19,-9) -| (process_Q.south) ;
+%\path [lineInfo] (19,-6) -| (process_Paux.south) ;
+%\path [lineInfo] (input_tech.east) -| (process_filtering.south) ;
 
 % VARIABLES
-\node [frameVar] (aa1) at (25,-2.5) {$\dot{W}, \dot{Q}$} ;
-\node [frameVar] (aa1) at (25,-5.5) {$\dot{B}$} ;
+%\node [frameVar] (aa1) at (25,-2.5) {$\dot{W}, \dot{Q}$} ;
+%\node [frameVar] (aa1) at (25,-5.5) {$\dot{B}$} ;
 % \node [frameVar] (aa1) at (25,-6.5) {$\dot{m}, T$} ;
 
 % Papers
