@@ -361,15 +361,17 @@ def predefinedPlots(processed, dataset_raw, CONSTANTS, dict_structure, filenames
                       "HVAC", "Thrusters", "Other users",
                       "HVAC Preheater", "HVAC Reheater", "Hot water heater",
                       "Machinery space heaters", "Other tanks heating", "Fuel tanks heating", "HFO tanks heating", "HFO pre-injection heating", "Galley"]
+            #explode = [0, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]
             explode = []
             for idx in range(len(labels)):
-                explode.append((1-(quantities[idx]/sum(quantities))) * 0.1)
+                explode.append((1-(quantities[idx]/sum(quantities))) * 0.05)
             colors = ["green", "green",
                      "blue", "blue", "blue",
                      "sandybrown","sandybrown","sandybrown",
                      "red","red","red","red","red","red"]
-            patches, texts, autotexts = ax.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', colors=colors)
-            [_.set_fontsize(12) for _ in texts]
+            patches, texts, autotexts = ax.pie(quantities, labels=labels, explode=explode, autopct='%1.1f%%', colors=colors, pctdistance=0.9)
+            [_.set_fontsize(14) for _ in texts]
+            [_.set_fontsize(14) for _ in autotexts]
         if filename == "Pie:GenerationFull":
             quantities = [processed["ME1:Cyl:FuelPh_in:mdot"].sum(),
                           processed["ME2:Cyl:FuelPh_in:mdot"].sum(),
