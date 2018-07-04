@@ -1,0 +1,86 @@
+\begin{thenomenclature} 
+
+ \nomgroup{A}
+
+  \item [{AB}]\begingroup Auxiliar boiler\nomeqref {14}\nompageref{14}
+  \item [{AE}]\begingroup Auxiliary engine\nomeqref {11}\nompageref{11}
+  \item [{APCA}]\begingroup Adaptive piecewise constant approximation\nomeqref {14}
+		\nompageref{17}
+  \item [{ECA}]\begingroup Emission Controlled Area\nomeqref {0}
+		\nompageref{2}
+  \item [{EGB}]\begingroup Exhaust gas boilers\nomeqref {14}
+		\nompageref{14}
+  \item [{GHG}]\begingroup Greenhous gas\nomeqref {0}\nompageref{2}
+  \item [{HH}]\begingroup HFO heater\nomeqref {14}\nompageref{14}
+  \item [{HT}]\begingroup High temperature\nomeqref {12}\nompageref{13}
+  \item [{HTH}]\begingroup HFO tank heating\nomeqref {14}
+		\nompageref{14}
+  \item [{HTHR}]\begingroup High temperature heat recovery\nomeqref {14}
+		\nompageref{14}
+  \item [{HVAC}]\begingroup Heat, ventilation and air conditioning\nomeqref {14}
+		\nompageref{14}
+  \item [{HWH}]\begingroup Hot water heater\nomeqref {14}
+		\nompageref{14}
+  \item [{LT}]\begingroup Low temperature\nomeqref {12}\nompageref{13}
+  \item [{ME}]\begingroup Main engine\nomeqref {11}\nompageref{11}
+  \item [{MSH}]\begingroup Machinery space heating\nomeqref {14}
+		\nompageref{14}
+  \item [{OECD}]\begingroup Organisation for Economic Co-operation and Development\nomeqref {0}
+		\nompageref{1}
+  \item [{ORC}]\begingroup Organic Rankine cycle\nomeqref {0}
+		\nompageref{4}
+  \item [{OT}]\begingroup Other tanks heating\nomeqref {14}
+		\nompageref{14}
+  \item [{PH}]\begingroup Preheater\nomeqref {14}\nompageref{14}
+  \item [{RH}]\begingroup Reheater\nomeqref {14}\nompageref{14}
+  \item [{TH}]\begingroup Fuel Tank heating\nomeqref {14}
+		\nompageref{14}
+  \item [{WHR}]\begingroup Waste heat recovery\nomeqref {0}
+		\nompageref{4}
+
+ \nomgroup{S}
+
+  \item [{d}]\begingroup Destroyed\nomeqref {4}\nompageref{6}
+  \item [{des}]\begingroup Design\nomeqref {11}\nompageref{11}
+  \item [{el}]\begingroup Electric\nomeqref {2}\nompageref{6}
+  \item [{in}]\begingroup Inlet\nomeqref {2}\nompageref{6}
+  \item [{l}]\begingroup Lost\nomeqref {4}\nompageref{6}
+  \item [{out}]\begingroup Outlet\nomeqref {2}\nompageref{6}
+  \item [{prod}]\begingroup Product\nomeqref {4}\nompageref{6}
+  \item [{tot}]\begingroup Total\nomeqref {8}\nompageref{7}
+
+ \nomgroup{V}
+
+  \item [{$\delta$}]\begingroup Irreversibility share\nomeqref {8}
+		\nompageref{7}
+  \item [{$\Delta_{MLDC}$}]\begingroup Maximum duration load curve difference\nomeqref {14}
+		\nompageref{16}
+  \item [{$\Delta_{prod}$}]\begingroup Number of periods with relative errors\nomeqref {14}
+		\nompageref{16}
+  \item [{$\dot{m}$}]\begingroup Mass flow\nomeqref {11}\nompageref{11}
+  \item [{$\eta$}]\begingroup Energy efficiency\nomeqref {11}
+		\nompageref{11}
+  \item [{$\lambda$}]\begingroup Efficiency defect\nomeqref {8}
+		\nompageref{7}
+  \item [{$\omega$}]\begingroup Rotational speed\nomeqref {11}
+		\nompageref{11}
+  \item [{$\sigma_{CDC}$}]\begingroup Deviation from the load duration curve\nomeqref {14}
+		\nompageref{16}
+  \item [{$\sigma_{profile}$}]\begingroup Profile deviation\nomeqref {14}
+		\nompageref{16}
+  \item [{$\varepsilon$}]\begingroup Exergy efficiency\nomeqref {8}
+		\nompageref{7}
+  \item [{$ELDC$}]\begingroup Relative error in load duration curve deviation\nomeqref {14}
+		\nompageref{16}
+  \item [{$N_k$}]\begingroup Number of clusters\nomeqref {14}
+		\nompageref{17}
+  \item [{E}]\begingroup Exergy\nomeqref {4}\nompageref{6}
+  \item [{frp}]\begingroup Fuel rack position\nomeqref {11}
+		\nompageref{11}
+  \item [{H}]\begingroup Enthalpy\nomeqref {2}\nompageref{6}
+  \item [{LHV}]\begingroup Lower heating value\nomeqref {11}
+		\nompageref{11}
+  \item [{P}]\begingroup Power\nomeqref {12}\nompageref{12}
+  \item [{Q}]\begingroup Heat\nomeqref {2}\nompageref{6}
+
+\end{thenomenclature}

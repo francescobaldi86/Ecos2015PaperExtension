@@ -1,0 +1,48 @@
+\nomenclatureentry{AOECD@[{OECD}]\begingroup Organisation for Economic Co-operation and Development\nomeqref {0}|nompageref}{4}
+\nomenclatureentry{AGHG@[{GHG}]\begingroup Greenhous gas\nomeqref {0}|nompageref}{5}
+\nomenclatureentry{AECA@[{ECA}]\begingroup Emission Controlled Area\nomeqref {0}|nompageref}{5}
+\nomenclatureentry{AWHR@[{WHR}]\begingroup Waste heat recovery\nomeqref {0}|nompageref}{7}
+\nomenclatureentry{AORC@[{ORC}]\begingroup Organic Rankine cycle\nomeqref {0}|nompageref}{7}
+\nomenclatureentry{VH@[{H}]\begingroup Enthalpy\nomeqref {2}|nompageref}{9}
+\nomenclatureentry{Sin@[{in}]\begingroup Inlet\nomeqref {2}|nompageref}{9}
+\nomenclatureentry{Sout@[{out}]\begingroup Outlet\nomeqref {2}|nompageref}{9}
+\nomenclatureentry{VQ@[{Q}]\begingroup Heat\nomeqref {2}|nompageref}{9}
+\nomenclatureentry{Sel@[{el}]\begingroup Electric\nomeqref {2}|nompageref}{9}
+\nomenclatureentry{VE@[{E}]\begingroup Exergy\nomeqref {4}|nompageref}{9}
+\nomenclatureentry{Sd@[{d}]\begingroup Destroyed\nomeqref {4}|nompageref}{9}
+\nomenclatureentry{Sl@[{l}]\begingroup Lost\nomeqref {4}|nompageref}{9}
+\nomenclatureentry{Sprod@[{prod}]\begingroup Product\nomeqref {4}|nompageref}{9}
+\nomenclatureentry{V$\varepsilon$@[{$\varepsilon$}]\begingroup Exergy efficiency\nomeqref {8}|nompageref}{10}
+\nomenclatureentry{V$\lambda$@[{$\lambda$}]\begingroup Efficiency defect\nomeqref {8}|nompageref}{10}
+\nomenclatureentry{V$\delta$@[{$\delta$}]\begingroup Irreversibility share\nomeqref {8}|nompageref}{10}
+\nomenclatureentry{Stot@[{tot}]\begingroup Total\nomeqref {8}|nompageref}{10}
+\nomenclatureentry{V$\omega$@[{$\omega$}]\begingroup Rotational speed\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{V$\dot{m}$@[{$\dot{m}$}]\begingroup Mass flow\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{V$\eta$@[{$\eta$}]\begingroup Energy efficiency\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{Sdes@[{des}]\begingroup Design\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{AME@[{ME}]\begingroup Main engine\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{AAE@[{AE}]\begingroup Auxiliary engine\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{VLHV@[{LHV}]\begingroup Lower heating value\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{Vfrp@[{frp}]\begingroup Fuel rack position\nomeqref {11}|nompageref}{14}
+\nomenclatureentry{VP@[{P}]\begingroup Power\nomeqref {12}|nompageref}{15}
+\nomenclatureentry{AHT@[{HT}]\begingroup High temperature\nomeqref {12}|nompageref}{16}
+\nomenclatureentry{ALT@[{LT}]\begingroup Low temperature\nomeqref {12}|nompageref}{16}
+\nomenclatureentry{AAB@[{AB}]\begingroup Auxiliar boiler\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AHVAC@[{HVAC}]\begingroup Heat, ventilation and air conditioning\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{APH@[{PH}]\begingroup Preheater\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{ARH@[{RH}]\begingroup Reheater\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AHWH@[{HWH}]\begingroup Hot water heater\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{ATH@[{TH}]\begingroup Fuel Tank heating\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AOT@[{OT}]\begingroup Other tanks heating\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AMSH@[{MSH}]\begingroup Machinery space heating\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AHH@[{HH}]\begingroup HFO heater\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AHTH@[{HTH}]\begingroup HFO tank heating\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AEGB@[{EGB}]\begingroup Exhaust gas boilers\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{AHTHR@[{HTHR}]\begingroup High temperature heat recovery\nomeqref {14}|nompageref}{17}
+\nomenclatureentry{V$\Delta_{prod}$@[{$\Delta_{prod}$}]\begingroup Number of periods with relative errors\nomeqref {14}|nompageref}{19}
+\nomenclatureentry{V$\sigma_{profile}$@[{$\sigma_{profile}$}]\begingroup Profile deviation\nomeqref {14}|nompageref}{19}
+\nomenclatureentry{V$\sigma_{CDC}$@[{$\sigma_{CDC}$}]\begingroup Deviation from the load duration curve\nomeqref {14}|nompageref}{19}
+\nomenclatureentry{V$ELDC$@[{$ELDC$}]\begingroup Relative error in load duration curve deviation\nomeqref {14}|nompageref}{19}
+\nomenclatureentry{V$\Delta_{MLDC}$@[{$\Delta_{MLDC}$}]\begingroup Maximum duration load curve difference\nomeqref {14}|nompageref}{19}
+\nomenclatureentry{AAPCA@[{APCA}]\begingroup Adaptive piecewise constant approximation\nomeqref {14}|nompageref}{20}
+\nomenclatureentry{V$N_k$@[{$N_k$}]\begingroup Number of clusters\nomeqref {14}|nompageref}{20}
